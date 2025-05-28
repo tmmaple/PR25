@@ -1,0 +1,16 @@
+plugins {
+  id "application"
+}
+
+dependencies {
+  implementation project(':core')
+}
+
+mainClassName = 'ua.tmmaple.pr25.anmc.AnmCompilerLauncher'
+application.setMainClass(mainClassName)
+eclipse.project.name = appName + '-anmc'
+java.sourceCompatibility = 8
+java.targetCompatibility = 8
+if (JavaVersion.current().isJava9Compatible()) {
+  compileJava.options.release.set(8)
+}
