@@ -6,6 +6,7 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.Logger;
 import ua.tmmaple.pr25.assets.loaders.AnmLoader;
+import ua.tmmaple.pr25.assets.loaders.BgmLoader;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
@@ -20,9 +21,9 @@ public final class Assets {
         loaded = false;
     }
 
-    public static void register() {
+    public static int register() {
         Flow.FlowNode<Assets> node = new Flow.FlowNode<>(global, Assets::update, Assets::added, Assets::removed);
-        Flow.global.addToUpdate(node, 999);
+        return Flow.global.addToUpdate(node, 999);
     }
 
     public <T> T get(Class<T> type, String filename) {
@@ -30,52 +31,39 @@ public final class Assets {
         return manager.get(filename, type);
     }
 
-    public static <T> void load(Class<T> type, String filename) {
-        if (global == null) throw new PR25RuntimeException("Asset manager is not initialized");
-
-        global.manager.load(filename, type);
+    public <T> void load(Class<T> type, String filename) {
+        manager.load(filename, type);
     }
 
-    public static <T> void load(Class<T> type, String filename, AssetLoaderParameters<T> params) {
-        if (global == null) throw new PR25RuntimeException("Asset manager is not initialized");
-
-        global.manager.load(filename, type, params);
+    public <T> void load(Class<T> type, String filename, AssetLoaderParameters<T> params) {
+        manager.load(filename, type, params);
     }
 
-    public static void unload(String filename) {
-        if (global == null) throw new PR25RuntimeException("Asset manager is not initialized");
-
-        global.manager.unload(filename);
+    public void unload(String filename) {
+        manager.unload(filename);
     }
 
-    public static void unload() {
-        if (global == null) throw new PR25RuntimeException("Asset manager is not initialized");
-
-        for (String a : global.manager.getAssetNames())
-            global.manager.unload(a);
+    public void unload() {
+        for (String a : manager.getAssetNames())
+            manager.unload(a);
     }
 
-    public static void flush() {
-        if (global == null) throw new PR25RuntimeException("Asset manager is not initialized");
-
-        global.manager.clear();
+    public void flush() {
+        manager.clear();
     }
 
-    public static boolean isLoaded() {
-        if (global == null) throw new PR25RuntimeException("Asset manager is not initialized");
-
-        return global.loaded;
+    public boolean isLoaded() {
+        return loaded;
     }
 
-    public static boolean isLoaded(String filename) {
-        if (global == null) throw new PR25RuntimeException("Asset manager is not initialized");
-
-        return global.manager.isLoaded(filename);
+    public boolean isLoaded(String filename) {
+        return manager.isLoaded(filename);
     }
 
     private static int added(Assets assets) {
         assets.manager = new AssetManager();
         assets.manager.setLoader(Anm.class, new AnmLoader(new InternalFileHandleResolver()));
+        assets.manager.setLoader(Bgm.class, new BgmLoader(new InternalFileHandleResolver()));
         return 0;
     }
 
