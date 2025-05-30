@@ -22,13 +22,13 @@ public final class AnmData {
 
     public AnmData(FileHandle file) {
         data = file.readBytes();
-        stream = new DataInputStream(new BufferedInputStream(new ByteArrayInputStream(data), 64));
+        stream = new DataInputStream(new BufferedInputStream(new ByteArrayInputStream(data), 256));
         parse();
     }
 
     public AnmData(byte[] data) {
         this.data = data;
-        stream = new DataInputStream(new BufferedInputStream(new ByteArrayInputStream(data), 64));
+        stream = new DataInputStream(new BufferedInputStream(new ByteArrayInputStream(data), 256));
         parse();
     }
 

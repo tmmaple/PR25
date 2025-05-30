@@ -119,10 +119,7 @@ public final class AnmVirtualMachine {
     float lastAbsoluteAngle;
     Vector2 lastAbsoluteScale;
 
-    CharSequence text;
-
     Anm anm;
-    BitmapFont font;
     TextureRegion region;
 
     public AnmVirtualMachine() {
@@ -190,14 +187,6 @@ public final class AnmVirtualMachine {
 
     public void loadTexture(TextureRegion region) {
         this.region = new TextureRegion(region);
-    }
-
-    public void loadFont(BitmapFont font) {
-        this.font = font;
-    }
-
-    public void clearFont() {
-        this.font = null;
     }
 
     public void interrupt(byte interrupt) {

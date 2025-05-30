@@ -50,7 +50,7 @@ public final class AnmLoader extends AsynchronousAssetLoader<Anm, AnmLoader.AnmP
 
     @Override
     public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, AnmParameter parameter) {
-        Array<AssetDescriptor> deps = new Array();
+        Array<AssetDescriptor> deps = new Array<>();
         if (data == null) data = new AnmData(file);
         for (int i = 0; i < data.imports(); ++i) {
             String importPath = data.getImport(i);

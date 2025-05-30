@@ -91,8 +91,6 @@ public final class GraphicManager {
 
     public void draw(AnmVirtualMachine o) {
         if (!o.absoluteVisible()) return;
-        if (o.font != null && o.text != null && o.text.length() > 0)
-            o.font.draw(batch, o.text, 60.0f, 60.0f);
         if (o.region != null) {
             float flipX = (o.flags & AnmVirtualMachine.ANM_FLAG_FLIP_X) != 0 ? -1.0f : 1.0f;
             float flipY = (o.flags & AnmVirtualMachine.ANM_FLAG_FLIP_Y) != 0 ? -1.0f : 1.0f;
@@ -102,6 +100,14 @@ public final class GraphicManager {
             float an = o.absoluteAngle();
             Vector2 off = o.absoluteAnchorOffset();
             Vector2 sc = o.absoluteScale();
+            Texture.TextureWrap wrap;
+            switch (o.uvMode) {
+                case AnmVirtualMachine.ANM_UV_NONE: wrap = Texture.TextureWrap.ClampToEdge; break;
+                case AnmVirtualMachine.ANM_UV_REPEAT: wrap = Texture.TextureWrap.Repeat; break;
+                case AnmVirtualMachine.ANM_UV_MIRROR: wrap = Texture.TextureWrap.MirroredRepeat; break;
+                default: wrap = o.region.getTexture().getUWrap(); break;
+            }
+            o.region.getTexture().setWrap(wrap, wrap);
             if ((o.flags & AnmVirtualMachine.ANM_FLAG_TELEPORT) != 0) {
                 o.flags &= ~AnmVirtualMachine.ANM_FLAG_TELEPORT;
                 o.lastAbsolutePosition = pos;
