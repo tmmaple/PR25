@@ -11,7 +11,6 @@ import ua.tmmaple.pr25.Game;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
 public final class GraphicManager {
-
     /* Таблиця розмірів інструкцій в байтах */
     public static final byte[] ANM_INSTRUCTION_SIZES = {
         3, 3, 3, 3, 3, 4, 7, 3, 7,
@@ -90,6 +89,7 @@ public final class GraphicManager {
     }
 
     public void draw(AnmVirtualMachine o) {
+        if (!drawing) throw new PR25RuntimeException("GraphicManager is not drawing");
         if (!o.absoluteVisible()) return;
         if (o.region != null) {
             float flipX = (o.flags & AnmVirtualMachine.ANM_FLAG_FLIP_X) != 0 ? -1.0f : 1.0f;
