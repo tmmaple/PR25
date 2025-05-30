@@ -83,6 +83,12 @@ public final class AnmVirtualMachine {
     final Tweener.FloatTweener angleInterpolator;
     final Tweener.Vector2Tweener scaleInterpolator;
 
+    public AnmVirtualMachine parent;
+
+    public Vector2 position;
+    public float angle;
+    public Vector2 scale;
+
     int flags;
 
     short time;
@@ -93,12 +99,6 @@ public final class AnmVirtualMachine {
 
     int previousPointer;
     short previousTime;
-
-    AnmVirtualMachine parent;
-
-    public Vector2 position;
-    public float angle;
-    public Vector2 scale;
 
     float uScrolling;
     float vScrolling;
@@ -137,10 +137,6 @@ public final class AnmVirtualMachine {
         positionInterpolator = new Tweener.Vector2Tweener();
         angleInterpolator = new Tweener.FloatTweener();
         scaleInterpolator = new Tweener.Vector2Tweener();
-    }
-
-    public void setParent(AnmVirtualMachine parent) {
-        this.parent = parent;
     }
 
     public void loadAnm(Anm anm) {
