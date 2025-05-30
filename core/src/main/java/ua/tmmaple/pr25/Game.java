@@ -16,7 +16,6 @@ public class Game extends ApplicationAdapter {
     @Override
     public void create() {
         Audio.global = new Audio();
-        Audio.global.loadSounds();
         GraphicManager.global = new GraphicManager();
         Flow.global = new Flow();
 
@@ -25,7 +24,8 @@ public class Game extends ApplicationAdapter {
 
         accumulator = UPDATE_DELTA;
 
-        GraphicManager.initialize();
+        Audio.global.initialize();
+        GraphicManager.global.initialize();
 
         Assets.register();
         God.register();
@@ -64,7 +64,7 @@ public class Game extends ApplicationAdapter {
     @Override
     public void dispose() {
         Flow.global.shutdown();
-        GraphicManager.shutdown();
+        GraphicManager.global.shutdown();
         Audio.global.shutdown();
     }
 }

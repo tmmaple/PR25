@@ -19,7 +19,7 @@ public final class Audio {
         sounds = new HashMap<>();
     }
 
-    public void loadSounds() {
+    public void initialize() {
         FileHandle root = Gdx.files.internal("sounds");
         if (!root.exists() || !root.isDirectory()) return;
         for (FileHandle fh : root.list()) {
