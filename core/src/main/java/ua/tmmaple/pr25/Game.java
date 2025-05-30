@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.graphics.GraphicManager;
+import ua.tmmaple.pr25.graphics.TextManager;
 
 public class Game extends ApplicationAdapter {
     public static final int BASE_WINDOW_WIDTH = 640;
@@ -17,6 +18,7 @@ public class Game extends ApplicationAdapter {
     public void create() {
         Audio.global = new Audio();
         GraphicManager.global = new GraphicManager();
+        TextManager.global = new TextManager();
         Flow.global = new Flow();
 
         Assets.global = new Assets();
@@ -26,6 +28,7 @@ public class Game extends ApplicationAdapter {
 
         Audio.global.initialize();
         GraphicManager.global.initialize();
+        TextManager.global.initialize();
 
         Assets.register();
         God.register();
@@ -48,11 +51,13 @@ public class Game extends ApplicationAdapter {
         }
         GraphicManager.global.update(accumulator / UPDATE_DELTA);
         GraphicManager.global.begin();
+        TextManager.global.begin();
         switch (Flow.global.executeDraw()) {
             case 1: Gdx.app.exit(); break;
             case 2: break;
             case -1: System.exit(-1); break;
         }
+        TextManager.global.end();
         GraphicManager.global.end();
     }
 
@@ -64,6 +69,7 @@ public class Game extends ApplicationAdapter {
     @Override
     public void dispose() {
         Flow.global.shutdown();
+        TextManager.global.shutdown();
         GraphicManager.global.shutdown();
         Audio.global.shutdown();
     }
