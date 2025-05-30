@@ -81,7 +81,9 @@ forward_start:
 +6: source(FORWARD_1);
 +6: source(FORWARD_2);
 +6: source(FORWARD_3);
-+6: jump forward_start;
++6:
+    move(40, -120.0, -40.0, INTERPOLATION_EASE_IN_OUT);
+    jump forward_start;
 
     interrupt ANIM_LEFT;
 left_start:
@@ -89,7 +91,7 @@ left_start:
 +6: source(LEFT_1);
 +6: source(LEFT_2);
 +6: source(LEFT_3);
-+6: move(40, 120.0, 40.0, INTERPOLATION_EASE_OUT); jump left_start;
++6: jump left_start;
 
     interrupt ANIM_RIGHT;
 right_start:
