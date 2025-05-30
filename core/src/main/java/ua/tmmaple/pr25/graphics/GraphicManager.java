@@ -36,16 +36,16 @@ public final class GraphicManager {
         backgroundColor = Color.BLACK;
     }
 
-    public static void initialize() {
-        global.batch = new SpriteBatch();
-        global.viewport = new FitViewport(Game.BASE_WINDOW_WIDTH, Game.BASE_WINDOW_HEIGHT);
-        global.viewport.apply();
-        global.surface = null;
+    public void initialize() {
+        batch = new SpriteBatch();
+        viewport = new FitViewport(Game.BASE_WINDOW_WIDTH, Game.BASE_WINDOW_HEIGHT);
+        viewport.apply();
+        surface = null;
     }
 
-    public static void shutdown() {
-        if (global.surface != null)
-            global.surface.fbo.end();
+    public void shutdown() {
+        if (surface != null)
+            surface.fbo.end();
     }
 
     public void begin() {
