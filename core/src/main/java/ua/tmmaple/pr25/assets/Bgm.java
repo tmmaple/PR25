@@ -49,6 +49,14 @@ public class Bgm implements Disposable {
         backing.setLooping(false);
     }
 
+    public void pause() {
+        backing.pause();
+    }
+
+    public void resume() {
+        backing.play();
+    }
+
     public void stop() {
         backing.stop();
         backing.setOnCompletionListener(null);

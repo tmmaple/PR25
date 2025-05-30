@@ -20,7 +20,9 @@ public final class Flow {
 
     public Flow() {
         toUpdate = new FlowNode[32];
+        toUpdateSize = 0;
         toDraw = new FlowNode[32];
+        toDrawSize = 0;
     }
 
     public int addToUpdate(FlowNode<?> node, int priority) {
