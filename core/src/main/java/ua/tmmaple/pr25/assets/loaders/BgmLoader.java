@@ -34,6 +34,5 @@ public final class BgmLoader extends AsynchronousAssetLoader<Bgm, BgmLoader.BgmP
     }
 
 
-    public static final class BgmParam extends AssetLoaderParameters<Bgm> {
-    }
+    public static final class BgmParam extends AssetLoaderParameters<Bgm> { }
 }
