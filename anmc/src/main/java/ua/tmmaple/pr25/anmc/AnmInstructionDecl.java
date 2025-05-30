@@ -1,6 +1,6 @@
 package ua.tmmaple.pr25.anmc;
 
-import ua.tmmaple.pr25.graphics.AnmVM;
+import ua.tmmaple.pr25.graphics.GraphicManager;
 
 public final class AnmInstructionDecl {
     public static final AnmInstructionDecl[] INSTRUCTION_TABLE = {
@@ -58,13 +58,13 @@ public final class AnmInstructionDecl {
     }
 
     public static int size(int opcode) {
-        if (opcode >= AnmVM.ANM_INSTRUCTION_SIZES.length) throw new AnmParserException("Invalid opcode: " + opcode);
-        return AnmVM.ANM_INSTRUCTION_SIZES[opcode];
+        if (opcode >= GraphicManager.ANM_INSTRUCTION_SIZES.length) throw new AnmParserException("Invalid opcode: " + opcode);
+        return GraphicManager.ANM_INSTRUCTION_SIZES[opcode];
     }
 
     public static int size(String name) {
         for (int i = 0; i < INSTRUCTION_TABLE.length; ++i)
-            if (INSTRUCTION_TABLE[i].name.equals(name)) return AnmVM.ANM_INSTRUCTION_SIZES[i];
+            if (INSTRUCTION_TABLE[i].name.equals(name)) return GraphicManager.ANM_INSTRUCTION_SIZES[i];
         return 0;
     }
 
@@ -79,7 +79,7 @@ public final class AnmInstructionDecl {
     }
 
     public static byte sizeByKeyword(int keyword) {
-        if (keyword < KEYWORD_LOOKUP_TABLE.length) return AnmVM.ANM_INSTRUCTION_SIZES[KEYWORD_LOOKUP_TABLE[keyword]];
+        if (keyword < KEYWORD_LOOKUP_TABLE.length) return GraphicManager.ANM_INSTRUCTION_SIZES[KEYWORD_LOOKUP_TABLE[keyword]];
         return 0;
     }
 

@@ -11,87 +11,81 @@ public final class Flow {
     public static final int FLOW_RESULT_EXIT = 5;
     public static final int FLOW_RESULT_FATAL = 6;
 
-    private static Flow instance;
+    public static Flow global;
 
     private final FlowNode<?>[] toUpdate;
     private int toUpdateSize;
     private final FlowNode<?>[] toDraw;
     private int toDrawSize;
 
-    Flow() {
+    public Flow() {
         toUpdate = new FlowNode[32];
         toDraw = new FlowNode[32];
     }
 
-    public static int addToUpdate(FlowNode<?> node, int priority) {
-        if (instance == null) throw new PR25RuntimeException("Flow is not initialized");
-
-        if (instance.toUpdateSize == instance.toUpdate.length) throw new PR25RuntimeException("Flow update list is full");
+    public int addToUpdate(FlowNode<?> node, int priority) {
+        if (toUpdateSize == toUpdate.length) throw new PR25RuntimeException("Flow update list is full");
         node.priority = priority;
 
         int i = 0;
         FlowNode<?> current = null;
-        while (i < instance.toUpdateSize && (current = instance.toUpdate[i]).priority <= priority) { ++i; }
+        while (i < toUpdateSize && (current = toUpdate[i]).priority <= priority) { ++i; }
 
         if (current != null && current.priority > priority) ++i;
-        if (i == instance.toUpdateSize)
-            instance.toUpdate[instance.toUpdateSize++] = node;
+        if (i == toUpdateSize)
+            toUpdate[toUpdateSize++] = node;
         else {
-            for (int j = instance.toUpdateSize++; j > i; --j)
-                instance.toUpdate[j] = instance.toUpdate[j - 1];
-            instance.toUpdate[i] = node;
+            for (int j = toUpdateSize++; j > i; --j)
+                toUpdate[j] = toUpdate[j - 1];
+            toUpdate[i] = node;
         }
 
         return node.added();
     }
 
-    public static int addToDraw(FlowNode<?> node, int priority) {
-        if (instance == null) throw new PR25RuntimeException("Flow is not initialized");
-
-        if (instance.toDrawSize == instance.toDraw.length) throw new PR25RuntimeException("Flow draw list is full");
+    public int addToDraw(FlowNode<?> node, int priority) {
+        if (toDrawSize == toDraw.length) throw new PR25RuntimeException("Flow draw list is full");
         node.priority = priority;
 
         int i = 0;
         FlowNode<?> current = null;
-        while (i < instance.toDrawSize && (current = instance.toDraw[i]).priority <= priority) { ++i; }
+        while (i < toDrawSize && (current = toDraw[i]).priority <= priority) { ++i; }
 
         if (current != null && current.priority > priority) ++i;
-        if (i == instance.toDrawSize)
-            instance.toDraw[instance.toDrawSize++] = node;
+        if (i == toDrawSize)
+            toDraw[toDrawSize++] = node;
         else {
-            for (int j = instance.toDrawSize++; j > i; --j)
-                instance.toDraw[j] = instance.toDraw[j - 1];
-            instance.toDraw[i] = node;
+            for (int j = toDrawSize++; j > i; --j)
+                toDraw[j] = toDraw[j - 1];
+            toDraw[i] = node;
         }
 
         return node.added();
     }
 
-    public static int cut(FlowNode<?> node) {
-        if (instance == null) throw new PR25RuntimeException("Flow is not initialized");
-
+    public int cut(FlowNode<?> node) {
         int type = 0;
         int i = 0;
-        while (i < instance.toUpdateSize && instance.toUpdate[i] != node) { ++i; }
-        if (i < instance.toUpdateSize) type = 1;
+        while (i < toUpdateSize && toUpdate[i] != node) { ++i; }
+        if (i < toUpdateSize) type = 1;
         else {
             i = 0;
-            while (i < instance.toDrawSize && instance.toDraw[i] != node) { ++i; }
-            if (i < instance.toDrawSize) type = 2;
+            while (i < toDrawSize && toDraw[i] != node) { ++i; }
+            if (i < toDrawSize) type = 2;
         }
 
         if (type == 1) {
-            --instance.toUpdateSize;
-            while (i < instance.toUpdateSize) { instance.toUpdate[i] = instance.toUpdate[++i]; }
+            --toUpdateSize;
+            while (i < toUpdateSize) { toUpdate[i] = toUpdate[++i]; }
         } else if (type == 2) {
-            --instance.toDrawSize;
-            while (i < instance.toDrawSize) { instance.toDraw[i] = instance.toDraw[++i]; }
+            --toDrawSize;
+            while (i < toDrawSize) { toDraw[i] = toDraw[++i]; }
         } else throw new PR25RuntimeException("Node doesn't exist in update or draw list");
 
         return node.removed();
     }
 
-    int executeUpdate() {
+    public int executeUpdate() {
         execution:
         for (int i = 0; i < toUpdateSize; ++i) {
             int result = FLOW_RESULT_REPEAT;
@@ -118,7 +112,7 @@ public final class Flow {
         return 0;
     }
 
-    int executeDraw() {
+    public int executeDraw() {
         execution:
         for (int i = 0; i < toDrawSize; ++i) {
             int result = FLOW_RESULT_REPEAT;
@@ -145,34 +139,13 @@ public final class Flow {
         return 0;
     }
 
-    static void initialize(Flow instance) {
-        if (Flow.instance != null) throw new PR25RuntimeException("Flow was already initialized to instance");
-
-        Flow.instance = instance;
-        instance.toUpdateSize = 0;
-        instance.toDrawSize = 0;
-    }
-
-    static void shutdown() {
-        if (Flow.instance == null) throw new PR25RuntimeException("Flow was not initialized, can't shut down");
-
-        Flow.instance.releaseUpdate(0);
-        Flow.instance.releaseDraw(0);
-        Flow.instance = null;
-    }
-
-    private void releaseUpdate(int from) {
-        if (from >= instance.toUpdateSize) return;
-
-        for (int i = toUpdateSize - 1; i >= from; --i, --toUpdateSize)
+    public void shutdown() {
+        for (int i = 0; i < toUpdateSize; ++i)
             toUpdate[i].removed();
-    }
-
-    private void releaseDraw(int from) {
-        if (from >= instance.toDrawSize) return;
-
-        for (int i = toDrawSize - 1; i >= from; --i, --toDrawSize)
+        toUpdateSize = 0;
+        for (int i = 0; i < toDrawSize; ++i)
             toDraw[i].removed();
+        toDrawSize = 0;
     }
 
     public interface FlowListener<T> {

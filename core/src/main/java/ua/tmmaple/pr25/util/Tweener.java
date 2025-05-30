@@ -3,7 +3,7 @@ package ua.tmmaple.pr25.util;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
-public abstract class Interpolator<T> {
+public abstract class Tweener<T> {
     public static final byte INTERPOLATION_LINEAR = 0;
     public static final byte INTERPOLATION_EASE_IN = 1;
     public static final byte INTERPOLATION_EASE_OUT = 2;
@@ -19,7 +19,7 @@ public abstract class Interpolator<T> {
 
     private boolean running;
 
-    Interpolator() {
+    Tweener() {
         running = false;
     }
 
@@ -74,21 +74,21 @@ public abstract class Interpolator<T> {
         return value;
     }
 
-    public static class FloatInterpolator extends Interpolator<Float> {
+    public static class FloatTweener extends Tweener<Float> {
         @Override
         protected void setValue(float alpha) {
             value = a + (b - a) * alpha;
         }
     }
 
-    public static class Vector2Interpolator extends Interpolator<Vector2> {
+    public static class Vector2Tweener extends Tweener<Vector2> {
         @Override
         protected void setValue(float alpha) {
             value = a.cpy().lerp(b, alpha);
         }
     }
 
-    public static class ColorInterpolator extends Interpolator<Color> {
+    public static class ColorTweener extends Tweener<Color> {
         @Override
         protected void setValue(float alpha) {
             value = a.cpy().lerp(b, alpha);

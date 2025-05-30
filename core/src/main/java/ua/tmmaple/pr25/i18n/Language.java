@@ -19,39 +19,34 @@ public final class Language {
         new Locale("uk", "UA"),
     };
 
-    private static Language instance;
+    public static Language global;
 
     private FileHandle baseHandle;
     private I18NBundle bundle;
 
-    public static void register(Language instance) {
-        if (Language.instance != null) throw new RuntimeException("Language is already initialized");
+    public static void register() {
+        global.baseHandle = Gdx.files.internal(LANGUAGE_BASE_HANDLE);
 
-        instance.baseHandle = Gdx.files.internal(LANGUAGE_BASE_HANDLE);
-        Language.instance = instance;
-
-        Flow.FlowNode<Language> node = new Flow.FlowNode<>(instance, Language::update, Language::added);
-        Flow.addToUpdate(node, 997);
+        Flow.FlowNode<Language> node = new Flow.FlowNode<>(global, Language::update, Language::added);
+        Flow.global.addToUpdate(node, 997);
     }
 
-    public static String get(String key) {
-        if (instance == null) return "???" + key + "???";
-        return instance.bundle.get(key);
+    public String get(String key) {
+        return bundle.get(key);
     }
 
-    public static String get(String key, Object... args) {
-        if (instance == null) return "???" + key + "???";
-        return instance.bundle.format(key, args);
+    public String get(String key, Object... args) {
+        return bundle.format(key, args);
     }
 
-    private static int added(Language instance) {
-        instance.bundle = I18NBundle.createBundle(instance.baseHandle, SUPPORTED_LOCALES[God.get().language()]);
+    private static int added(Language language) {
+        language.bundle = I18NBundle.createBundle(language.baseHandle, SUPPORTED_LOCALES[God.global.language()]);
         return 0;
     }
 
-    private static int update(Language instance) {
-        if (instance.bundle == null || instance.bundle.getLocale() != SUPPORTED_LOCALES[God.get().language()])
-            instance.bundle = I18NBundle.createBundle(instance.baseHandle, SUPPORTED_LOCALES[God.get().language()]);
+    private static int update(Language language) {
+        if (language.bundle == null || language.bundle.getLocale() != SUPPORTED_LOCALES[God.global.language()])
+            language.bundle = I18NBundle.createBundle(language.baseHandle, SUPPORTED_LOCALES[God.global.language()]);
         return Flow.FLOW_RESULT_CONTINUE;
     }
 }

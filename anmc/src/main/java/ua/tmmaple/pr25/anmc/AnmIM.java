@@ -1,22 +1,22 @@
 package ua.tmmaple.pr25.anmc;
 
-import ua.tmmaple.pr25.graphics.AnmVM;
-import ua.tmmaple.pr25.util.Interpolator;
+import ua.tmmaple.pr25.graphics.AnmVirtualMachine;
+import ua.tmmaple.pr25.util.Tweener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public interface AnmIM {
     Object[] BUILTIN_CONSTANTS = {
-        "UV_NONE", new AnmValue(AnmVM.UV_NONE), "UV_REPEAT", new AnmValue(AnmVM.UV_REPEAT), "UV_MIRROR", new AnmValue(AnmVM.UV_MIRROR),
-        "ORIGIN_PARENT", new AnmValue(AnmVM.ORIGIN_PARENT), "ORIGIN_SURFACE", new AnmValue(AnmVM.ORIGIN_SURFACE),
-        "ANCHOR_TOP_LEFT", new AnmValue(AnmVM.ANCHOR_TOP_LEFT), "ANCHOR_TOP_MIDDLE", new AnmValue(AnmVM.ANCHOR_TOP_MIDDLE), "ANCHOR_TOP_RIGHT", new AnmValue(AnmVM.ANCHOR_TOP_RIGHT),
-        "ANCHOR_MIDDLE_LEFT", new AnmValue(AnmVM.ANCHOR_MIDDLE_LEFT), "ANCHOR_CENTER", new AnmValue(AnmVM.ANCHOR_CENTER), "ANCHOR_MIDDLE_RIGHT", new AnmValue(AnmVM.ANCHOR_MIDDLE_RIGHT),
-        "ANCHOR_BOTTOM_LEFT", new AnmValue(AnmVM.ANCHOR_BOTTOM_LEFT), "ANCHOR_BOTTOM_MIDDLE", new AnmValue(AnmVM.ANCHOR_BOTTOM_MIDDLE), "ANCHOR_BOTTOM_RIGHT", new AnmValue(AnmVM.ANCHOR_BOTTOM_RIGHT),
-        "INTERPOLATION_LINEAR", new AnmValue(Interpolator.INTERPOLATION_LINEAR),
-        "INTERPOLATION_EASE_IN", new AnmValue(Interpolator.INTERPOLATION_EASE_IN),
-        "INTERPOLATION_EASE_OUT", new AnmValue(Interpolator.INTERPOLATION_EASE_OUT),
-        "INTERPOLATION_EASE_IN_OUT", new AnmValue(Interpolator.INTERPOLATION_EASE_IN_OUT),
+        "ANM_UV_NONE", new AnmValue(AnmVirtualMachine.ANM_UV_NONE), "ANM_UV_REPEAT", new AnmValue(AnmVirtualMachine.ANM_UV_REPEAT), "ANM_UV_MIRROR", new AnmValue(AnmVirtualMachine.ANM_UV_MIRROR),
+        "ANM_ORIGIN_PARENT", new AnmValue(AnmVirtualMachine.ANM_ORIGIN_PARENT), "ANM_ORIGIN_SURFACE", new AnmValue(AnmVirtualMachine.ANM_ORIGIN_SURFACE),
+        "ANM_ANCHOR_TOP_LEFT", new AnmValue(AnmVirtualMachine.ANM_ANCHOR_TOP_LEFT), "ANM_ANCHOR_TOP_MIDDLE", new AnmValue(AnmVirtualMachine.ANM_ANCHOR_TOP_MIDDLE), "ANM_ANCHOR_TOP_RIGHT", new AnmValue(AnmVirtualMachine.ANM_ANCHOR_TOP_RIGHT),
+        "ANM_ANCHOR_MIDDLE_LEFT", new AnmValue(AnmVirtualMachine.ANM_ANCHOR_MIDDLE_LEFT), "ANM_ANCHOR_CENTER", new AnmValue(AnmVirtualMachine.ANM_ANCHOR_CENTER), "ANM_ANCHOR_MIDDLE_RIGHT", new AnmValue(AnmVirtualMachine.ANM_ANCHOR_MIDDLE_RIGHT),
+        "ANM_ANCHOR_BOTTOM_LEFT", new AnmValue(AnmVirtualMachine.ANM_ANCHOR_BOTTOM_LEFT), "ANM_ANCHOR_BOTTOM_MIDDLE", new AnmValue(AnmVirtualMachine.ANM_ANCHOR_BOTTOM_MIDDLE), "ANM_ANCHOR_BOTTOM_RIGHT", new AnmValue(AnmVirtualMachine.ANM_ANCHOR_BOTTOM_RIGHT),
+        "INTERPOLATION_LINEAR", new AnmValue(Tweener.INTERPOLATION_LINEAR),
+        "INTERPOLATION_EASE_IN", new AnmValue(Tweener.INTERPOLATION_EASE_IN),
+        "INTERPOLATION_EASE_OUT", new AnmValue(Tweener.INTERPOLATION_EASE_OUT),
+        "INTERPOLATION_EASE_IN_OUT", new AnmValue(Tweener.INTERPOLATION_EASE_IN_OUT),
     };
 
     byte VALUE_TYPE_BYTE = 0;
