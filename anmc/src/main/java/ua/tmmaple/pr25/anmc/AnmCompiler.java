@@ -1,6 +1,6 @@
 package ua.tmmaple.pr25.anmc;
 
-import ua.tmmaple.pr25.g2d.Anm;
+import ua.tmmaple.pr25.graphics.Anm;
 
 import java.io.*;
 
@@ -42,34 +42,18 @@ public final class AnmCompiler {
                 for (AnmIM.AnmInstruction instr : s.instructions)
                     fullSize += AnmInstructionDecl.size(instr.opcode);
                 dos.writeInt(fullSize);
-                fullSize = 0;
                 for (AnmIM.AnmInstruction instr : s.instructions) {
                     dos.writeByte(instr.opcode);
-                    fullSize += 1;
-                    dos.writeInt(instr.time);
-                    fullSize += 4;
+                    dos.writeShort(instr.time);
                     for (AnmIM.AnmValue arg : instr.args) {
                         switch (arg.type) {
-                            case AnmIM.VALUE_TYPE_BYTE:
-                                dos.writeByte(arg.asByte());
-                                fullSize += 1;
-                                break;
-                            case AnmIM.VALUE_TYPE_INTEGER:
-                                dos.writeInt(arg.asInteger());
-                                fullSize += 4;
-                                break;
-                            case AnmIM.VALUE_TYPE_FLOAT: {
-                                dos.writeFloat(arg.asFloat());
-                                fullSize += 4;
-                            } break;
-                            case AnmIM.VALUE_TYPE_BYTE_OFFSET: {
-                                dos.writeInt(arg.asByteOffset() - instr.byteOffset);
-                                fullSize += 4;
-                            } break;
+                            case AnmIM.VALUE_TYPE_BYTE: dos.writeByte(arg.asByte()); break;
+                            case AnmIM.VALUE_TYPE_INTEGER: dos.writeInt(arg.asInteger()); break;
+                            case AnmIM.VALUE_TYPE_FLOAT: dos.writeFloat(arg.asFloat()); break;
+                            case AnmIM.VALUE_TYPE_BYTE_OFFSET: dos.writeInt(arg.asByteOffset() - instr.byteOffset); break;
                         }
                     }
                 }
-                fullSize = fullSize;
             }
             dos.close();
         } catch (IOException e) {

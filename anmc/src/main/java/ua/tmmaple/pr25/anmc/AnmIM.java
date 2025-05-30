@@ -1,19 +1,22 @@
 package ua.tmmaple.pr25.anmc;
 
+import ua.tmmaple.pr25.graphics.AnmVM;
+import ua.tmmaple.pr25.util.Interpolator;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public interface AnmIM {
     Object[] BUILTIN_CONSTANTS = {
-        "UV_NONE", new AnmValue(ua.tmmaple.pr25.g2d.Anm.UV_NONE), "UV_REPEAT", new AnmValue(ua.tmmaple.pr25.g2d.Anm.UV_REPEAT), "UV_MIRROR", new AnmValue(ua.tmmaple.pr25.g2d.Anm.UV_MIRROR),
-        "ORIGIN_PARENT", new AnmValue(ua.tmmaple.pr25.g2d.Anm.ORIGIN_PARENT), "ORIGIN_SURFACE", new AnmValue(ua.tmmaple.pr25.g2d.Anm.ORIGIN_SURFACE), "ORIGIN_SCREEN", new AnmValue(ua.tmmaple.pr25.g2d.Anm.ORIGIN_SCREEN),
-        "ANCHOR_TOP_LEFT", new AnmValue(ua.tmmaple.pr25.g2d.Anm.ANCHOR_TOP_LEFT), "ANCHOR_TOP_MIDDLE", new AnmValue(ua.tmmaple.pr25.g2d.Anm.ANCHOR_TOP_MIDDLE), "ANCHOR_TOP_RIGHT", new AnmValue(ua.tmmaple.pr25.g2d.Anm.ANCHOR_TOP_RIGHT),
-        "ANCHOR_MIDDLE_LEFT", new AnmValue(ua.tmmaple.pr25.g2d.Anm.ANCHOR_MIDDLE_LEFT), "ANCHOR_CENTER", new AnmValue(ua.tmmaple.pr25.g2d.Anm.ANCHOR_CENTER), "ANCHOR_MIDDLE_RIGHT", new AnmValue(ua.tmmaple.pr25.g2d.Anm.ANCHOR_MIDDLE_RIGHT),
-        "ANCHOR_BOTTOM_LEFT", new AnmValue(ua.tmmaple.pr25.g2d.Anm.ANCHOR_BOTTOM_LEFT), "ANCHOR_BOTTOM_MIDDLE", new AnmValue(ua.tmmaple.pr25.g2d.Anm.ANCHOR_BOTTOM_MIDDLE), "ANCHOR_BOTTOM_RIGHT", new AnmValue(ua.tmmaple.pr25.g2d.Anm.ANCHOR_BOTTOM_RIGHT),
-        "INTERPOLATION_LINEAR", new AnmValue(ua.tmmaple.pr25.g2d.Anm.INTERPOLATION_LINEAR),
-        "INTERPOLATION_EASE_IN", new AnmValue(ua.tmmaple.pr25.g2d.Anm.INTERPOLATION_EASE_IN),
-        "INTERPOLATION_EASE_OUT", new AnmValue(ua.tmmaple.pr25.g2d.Anm.INTERPOLATION_EASE_OUT),
-        "INTERPOLATION_EASE_IN_OUT", new AnmValue(ua.tmmaple.pr25.g2d.Anm.INTERPOLATION_EASE_IN_OUT),
+        "UV_NONE", new AnmValue(AnmVM.UV_NONE), "UV_REPEAT", new AnmValue(AnmVM.UV_REPEAT), "UV_MIRROR", new AnmValue(AnmVM.UV_MIRROR),
+        "ORIGIN_PARENT", new AnmValue(AnmVM.ORIGIN_PARENT), "ORIGIN_SURFACE", new AnmValue(AnmVM.ORIGIN_SURFACE),
+        "ANCHOR_TOP_LEFT", new AnmValue(AnmVM.ANCHOR_TOP_LEFT), "ANCHOR_TOP_MIDDLE", new AnmValue(AnmVM.ANCHOR_TOP_MIDDLE), "ANCHOR_TOP_RIGHT", new AnmValue(AnmVM.ANCHOR_TOP_RIGHT),
+        "ANCHOR_MIDDLE_LEFT", new AnmValue(AnmVM.ANCHOR_MIDDLE_LEFT), "ANCHOR_CENTER", new AnmValue(AnmVM.ANCHOR_CENTER), "ANCHOR_MIDDLE_RIGHT", new AnmValue(AnmVM.ANCHOR_MIDDLE_RIGHT),
+        "ANCHOR_BOTTOM_LEFT", new AnmValue(AnmVM.ANCHOR_BOTTOM_LEFT), "ANCHOR_BOTTOM_MIDDLE", new AnmValue(AnmVM.ANCHOR_BOTTOM_MIDDLE), "ANCHOR_BOTTOM_RIGHT", new AnmValue(AnmVM.ANCHOR_BOTTOM_RIGHT),
+        "INTERPOLATION_LINEAR", new AnmValue(Interpolator.INTERPOLATION_LINEAR),
+        "INTERPOLATION_EASE_IN", new AnmValue(Interpolator.INTERPOLATION_EASE_IN),
+        "INTERPOLATION_EASE_OUT", new AnmValue(Interpolator.INTERPOLATION_EASE_OUT),
+        "INTERPOLATION_EASE_IN_OUT", new AnmValue(Interpolator.INTERPOLATION_EASE_IN_OUT),
     };
 
     byte VALUE_TYPE_BYTE = 0;
@@ -89,12 +92,12 @@ public interface AnmIM {
     }
 
     final class AnmInstruction {
-        public final int time;
+        public final short time;
         public final int opcode;
         public final AnmValue[] args;
         public final int byteOffset;
 
-        public AnmInstruction(int time, int opcode, int byteOffset, AnmValue... args) {
+        public AnmInstruction(short time, int opcode, int byteOffset, AnmValue... args) {
             this.time = time;
             this.opcode = opcode;
             this.args = args;

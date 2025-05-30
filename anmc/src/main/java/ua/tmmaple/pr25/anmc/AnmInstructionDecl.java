@@ -1,5 +1,7 @@
 package ua.tmmaple.pr25.anmc;
 
+import ua.tmmaple.pr25.graphics.AnmVM;
+
 public final class AnmInstructionDecl {
     public static final AnmInstructionDecl[] INSTRUCTION_TABLE = {
         new AnmInstructionDecl("nop"),
@@ -24,7 +26,7 @@ public final class AnmInstructionDecl {
         new AnmInstructionDecl("color", AnmIM.VALUE_TYPE_FLOAT, AnmIM.VALUE_TYPE_FLOAT, AnmIM.VALUE_TYPE_FLOAT),
         new AnmInstructionDecl("alpha", AnmIM.VALUE_TYPE_FLOAT),
         new AnmInstructionDecl("changeColor", AnmIM.VALUE_TYPE_INTEGER, AnmIM.VALUE_TYPE_FLOAT, AnmIM.VALUE_TYPE_FLOAT, AnmIM.VALUE_TYPE_FLOAT, AnmIM.VALUE_TYPE_BYTE),
-        new AnmInstructionDecl("fade", AnmIM.VALUE_TYPE_FLOAT, AnmIM.VALUE_TYPE_BYTE),
+        new AnmInstructionDecl("fade", AnmIM.VALUE_TYPE_INTEGER, AnmIM.VALUE_TYPE_FLOAT, AnmIM.VALUE_TYPE_BYTE),
         new AnmInstructionDecl("blending", AnmIM.VALUE_TYPE_BYTE),
         new AnmInstructionDecl("visible", AnmIM.VALUE_TYPE_BYTE),
         new AnmInstructionDecl("flipX", AnmIM.VALUE_TYPE_BYTE),
@@ -49,32 +51,20 @@ public final class AnmInstructionDecl {
 
     public final String name;
     public final byte[] args;
-    public final byte size;
 
     private AnmInstructionDecl(String name, byte... args) {
         this.name = name;
         this.args = args;
-        byte size = 5;
-        if (args != null && args.length > 0)
-            for (byte b : args)
-                switch (b) {
-                    case AnmIM.VALUE_TYPE_BYTE: size += 1; break;
-                    case AnmIM.VALUE_TYPE_INTEGER:
-                    case AnmIM.VALUE_TYPE_FLOAT:
-                    case AnmIM.VALUE_TYPE_BYTE_OFFSET: size += 4; break;
-                }
-        this.size = size;
     }
 
     public static int size(int opcode) {
-        if (opcode >= INSTRUCTION_TABLE.length) throw new AnmParserException("Invalid opcode: " + opcode);
-        AnmInstructionDecl instruction = INSTRUCTION_TABLE[opcode];
-        return instruction.size;
+        if (opcode >= AnmVM.ANM_INSTRUCTION_SIZES.length) throw new AnmParserException("Invalid opcode: " + opcode);
+        return AnmVM.ANM_INSTRUCTION_SIZES[opcode];
     }
 
     public static int size(String name) {
-        for (AnmInstructionDecl instruction : INSTRUCTION_TABLE)
-            if (instruction.name.equals(name)) return instruction.size;
+        for (int i = 0; i < INSTRUCTION_TABLE.length; ++i)
+            if (INSTRUCTION_TABLE[i].name.equals(name)) return AnmVM.ANM_INSTRUCTION_SIZES[i];
         return 0;
     }
 
@@ -89,7 +79,7 @@ public final class AnmInstructionDecl {
     }
 
     public static byte sizeByKeyword(int keyword) {
-        if (keyword < KEYWORD_LOOKUP_TABLE.length) return INSTRUCTION_TABLE[KEYWORD_LOOKUP_TABLE[keyword]].size;
+        if (keyword < KEYWORD_LOOKUP_TABLE.length) return AnmVM.ANM_INSTRUCTION_SIZES[KEYWORD_LOOKUP_TABLE[keyword]];
         return 0;
     }
 
