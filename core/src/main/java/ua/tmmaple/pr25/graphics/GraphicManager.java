@@ -21,7 +21,7 @@ public final class GraphicManager {
 
     public static GraphicManager global;
 
-    private SpriteBatch batch;
+    final SpriteBatch batch;
     private Viewport viewport;
 
     private float t;
@@ -32,11 +32,11 @@ public final class GraphicManager {
     private Color backgroundColor;
 
     public GraphicManager() {
+        batch = new SpriteBatch();
         backgroundColor = Color.BLACK;
     }
 
     public void initialize() {
-        batch = new SpriteBatch();
         viewport = new FitViewport(Game.BASE_WINDOW_WIDTH, Game.BASE_WINDOW_HEIGHT);
         viewport.apply();
         surface = null;
