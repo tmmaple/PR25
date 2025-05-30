@@ -1,6 +1,6 @@
 package ua.tmmaple.pr25.anmc;
 
-import ua.tmmaple.pr25.g2d.Anm;
+import ua.tmmaple.pr25.graphics.Anm;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -20,7 +20,7 @@ public final class AnmCompilerLauncher {
     private final AnmCompiler compiler;
 
     public static void main(String[] args) {
-        System.out.println("Anm compiler for Team Maple ANM version " + Anm.ANM_VERSION);
+        System.out.println("ANM compiler for Team Maple ANM version " + Anm.ANM_VERSION);
         System.out.println("Copyright (c) 2025 Team Maple, Hasmile\n");
         new AnmCompilerLauncher().run();
     }

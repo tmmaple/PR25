@@ -1,0 +1,115 @@
+#import "game/plr.png"
+
+// Рух уперед
+#source(0, 0, 0, 42, 52)
+#define FORWARD_0 0
+#source(0, 42, 0, 42, 52)
+#define FORWARD_1 1
+#source(0, 84, 0, 42, 52)
+#define FORWARD_2 2
+#source(0, 126, 0, 42, 52)
+#define FORWARD_3 3
+
+// Рух вліво
+#source(0, 0, 52, 42, 52)
+#define LEFT_0 4
+#source(0, 42, 52, 42, 52)
+#define LEFT_1 5
+#source(0, 84, 52, 42, 52)
+#define LEFT_2 6
+#source(0, 126, 52, 42, 52)
+#define LEFT_3 7
+
+// Рух вправо
+#source(0, 0, 104, 42, 52)
+#define RIGHT_0 8
+#source(0, 42, 104, 42, 52)
+#define RIGHT_1 9
+#source(0, 84, 104, 42, 52)
+#define RIGHT_2 10
+#source(0, 126, 104, 42, 52)
+#define RIGHT_3 11
+
+// Хітбокс
+#source(0, 0, 156, 4, 4)
+#define HITBOX 12
+
+// Велика куля
+#source(0, 0, 160, 6, 8)
+#define BULLET_BIG 13
+
+// Мала куля
+#source(0, 6, 160, 4, 5)
+#define BULLET_SMALL 14
+
+// Сфера
+#source(0, 16, 156, 16, 16)
+#define SPHERE_0 15
+#source(0, 16, 172, 16, 16)
+#define SPHERE_1 16
+#source(0, 16, 188, 16, 16)
+#define SPHERE_2 17
+
+#define ANIM_VINCIBLE 0
+#define ANIM_INVINCIBLE 1
+
+#define ANIM_FORWARD 0
+#define ANIM_LEFT 1
+#define ANIM_RIGHT 2
+
+#define ANIM_UNFOCUSED 0
+#define ANIM_FOCUSED 1
+
+// Анімація гравця загалом
+script Player {
+    interrupt ANIM_VINCIBLE;
+    visible(true);
+    stop;
+
+    interrupt ANIM_INVINCIBLE;
+blinking_start:
+    visible(true);
++15: visible(false);
++15: jump blinking_start;
+}
+
+// Анімація, власне, спрайту гравця
+script PlayerSprite {
+    interrupt ANIM_FORWARD;
+forward_start:
+    source(FORWARD_0);
++6: source(FORWARD_1);
++6: source(FORWARD_2);
++6: source(FORWARD_3);
++6: jump forward_start;
+
+    interrupt ANIM_LEFT;
+left_start:
+    source(LEFT_0);
++6: source(LEFT_1);
++6: source(LEFT_2);
++6: source(LEFT_3);
++6: move(40, 120.0, 40.0, INTERPOLATION_EASE_OUT); jump left_start;
+
+    interrupt ANIM_RIGHT;
+right_start:
+    source(RIGHT_0);
++6: source(RIGHT_1);
++6: source(RIGHT_2);
++6: source(RIGHT_3);
++6: jump right_start;
+}
+
+// Хітбокс
+script PlayerHitbox {
+    source(HITBOX);
+    alpha(0.0);
+
+    interrupt ANIM_UNFOCUSED;
+    fade(10, 0.0, INTERPOLATION_LINEAR);
+    stop;
+
+    interrupt ANIM_FOCUSED;
+    fade(10, 1.0, INTERPOLATION_LINEAR);
+    stop;
+}
