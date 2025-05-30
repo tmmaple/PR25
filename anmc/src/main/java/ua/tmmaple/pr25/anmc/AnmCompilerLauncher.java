@@ -3,17 +3,16 @@ package ua.tmmaple.pr25.anmc;
 import ua.tmmaple.pr25.graphics.Anm;
 
 import java.io.File;
-import java.io.FilenameFilter;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 public final class AnmCompilerLauncher {
-    private final String root;
-    private final File from;
-    private final String to;
+    private String from;
+    private String to;
 
-    private final FilenameFilter filter;
+    private final FileFilter filter;
 
     private final AnmLexer lexer;
     private final AnmParser parser;
@@ -22,30 +21,39 @@ public final class AnmCompilerLauncher {
     public static void main(String[] args) {
         System.out.println("ANM compiler for Team Maple ANM version " + Anm.ANM_VERSION);
         System.out.println("Copyright (c) 2025 Team Maple, Hasmile\n");
-        new AnmCompilerLauncher().run();
+        if (args.length == 0) {
+            System.out.println("Usage: anmc <from> [<to>]");
+            return;
+        }
+        String from = args[0];
+        String to = args.length > 1 ? args[1] : args[0];
+        System.exit(new AnmCompilerLauncher().run(from, to));
     }
 
     private AnmCompilerLauncher() {
-        filter = (dir, name) -> dir.isDirectory() || name.endsWith(".anmsrc");
+        filter = (dir) -> dir.isDirectory() || dir.getName().endsWith(".anmsrc");
         lexer = new AnmLexer();
         parser = new AnmParser();
         compiler = new AnmCompiler();
-        root = "source/anm/";
-        from = new File(root, "");
-        to = "assets/";
     }
 
-    private void run() {
-        if (!from.exists()) {
-            System.out.println(from.getAbsolutePath() + " does not exist");
-            return;
+    private int run(String from, String to) {
+        from = from.replace('\\', '/');
+        to = to.replace('\\', '/');
+        this.from = from;
+        this.to = to;
+        File f = new File( from);
+        if (!f.exists()) {
+            System.out.println(from + " does not exist");
+            return 1;
         }
         try {
-            compile(from);
+            compile(f);
         } catch (IOException e) {
             System.err.println("Unexpected IO exception happened: " + e + ". Exiting program...");
-            System.exit(1);
+            return 1;
         }
+        return 0;
     }
 
     private void compile(File file) throws IOException {
@@ -74,7 +82,7 @@ public final class AnmCompilerLauncher {
             System.out.println("Parser error: " + e + ". Skipping...");
             return;
         }
-        String outputName = file.getPath().replace(".anmsrc", ".anm").replace('\\', '/').replaceFirst(root, to);
+        String outputName = file.getPath().replace(".anmsrc", ".anm").replace('\\', '/').replaceFirst(from, to);
         try {
             compiler.compile(parser.getProgram(), new File(outputName));
         } catch (AnmCompilerException e) {

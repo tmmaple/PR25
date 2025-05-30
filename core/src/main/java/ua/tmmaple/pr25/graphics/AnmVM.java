@@ -195,6 +195,10 @@ public final class AnmVM {
         if (o.anm == null)
             return 1;
 
+        o.lastAbsolutePosition = o.absolutePosition();
+        o.lastAbsoluteAngle = o.absoluteAngle();
+        o.lastAbsoluteScale = o.absoluteScale();
+
         if (o.interrupt > 0) {
             o.previousPointer = o.pointer;
             o.previousTime = o.time;
