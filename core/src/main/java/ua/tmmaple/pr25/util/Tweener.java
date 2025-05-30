@@ -19,7 +19,7 @@ public abstract class Tweener<T> {
 
     private boolean running;
 
-    Tweener() {
+    public Tweener() {
         running = false;
     }
 
