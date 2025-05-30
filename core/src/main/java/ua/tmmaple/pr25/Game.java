@@ -4,8 +4,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.graphics.Anm;
-import ua.tmmaple.pr25.graphics.AnmGraphics;
-import ua.tmmaple.pr25.graphics.AnmVM;
+import ua.tmmaple.pr25.graphics.AnmVirtualMachine;
+import ua.tmmaple.pr25.graphics.GraphicManager;
 import ua.tmmaple.pr25.i18n.Language;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -17,44 +17,34 @@ public class Game extends ApplicationAdapter {
 
     private float accumulator;
 
-    private final AnmVM anmVM;
-
-    private final Flow flow;
-    private final Input input;
-    private final Assets assets;
-    private final God god;
-    private final Language language;
-
-    private AnmGraphics anmGraphics;
+    private AnmVirtualMachine anmVirtualMachine;
     private Anm anm;
 
     public Game() {
-        anmVM = new AnmVM();
+        GraphicManager.global = new GraphicManager();
+        Flow.global = new Flow();
 
-        flow = new Flow();
-
-        input = new Input();
-        assets = new Assets();
-        god = new God();
-        language = new Language();
+        Assets.global = new Assets();
+        Language.global = new Language();
+        Input.global = new Input();
+        God.global = new God();
 
         accumulator = UPDATE_DELTA;
     }
 
     @Override
     public void create() {
-        AnmVM.initialize(anmVM);
+        GraphicManager.initialize();
 
-        Flow.initialize(flow);
-        Input.register(input);
-        Assets.register(assets);
-        God.register(god);
-        Language.register(language);
+        Assets.register();
+        Language.register();
+        Input.register();
+        God.register();
 
-        anmGraphics = new AnmGraphics();
+        anmVirtualMachine = new AnmVirtualMachine();
         anm = new Anm(Gdx.files.internal("game/plr.anm"));
-        anmGraphics.loadAnm(anm);
-        anmGraphics.loadScript("PlayerSprite");
+        anmVirtualMachine.loadAnm(anm);
+        anmVirtualMachine.loadScript("PlayerSprite");
     }
 
     @Override
@@ -65,40 +55,37 @@ public class Game extends ApplicationAdapter {
         accumulator += delta;
         updating:
         while (accumulator >= UPDATE_DELTA) {
-            switch (flow.executeUpdate()) {
+            switch (Flow.global.executeUpdate()) {
                 case 1: Gdx.app.exit(); break;
                 case 2: break updating;
                 case -1: System.exit(-1); break;
             }
-            if (Input.wasKeyJustPressed(com.badlogic.gdx.Input.Keys.SPACE))
-                anmGraphics.interrupt((byte) 2);
-            anmGraphics.position.add(2.0f, 1.0f);
-            anmVM.execute(anmGraphics);
+            if (Input.global.wasKeyJustPressed(com.badlogic.gdx.Input.Keys.SPACE))
+                anmVirtualMachine.interrupt((byte) 2);
+            anmVirtualMachine.position.add(2.0f, 1.0f);
+            GraphicManager.global.execute(anmVirtualMachine);
             accumulator -= UPDATE_DELTA;
         }
-        delta = Gdx.graphics.getDeltaTime();
-        if (delta > 0.25f)
-            delta = 0.25f;
-        anmVM.update(delta, accumulator / UPDATE_DELTA);
-        anmVM.begin();
-        switch (flow.executeDraw()) {
+        GraphicManager.global.update(accumulator / UPDATE_DELTA);
+        GraphicManager.global.begin();
+        switch (Flow.global.executeDraw()) {
             case 1: Gdx.app.exit(); break;
             case 2: break;
             case -1: System.exit(-1); break;
         }
-        anmVM.draw(anmGraphics);
-        anmVM.end();
+        GraphicManager.global.draw(anmVirtualMachine);
+        GraphicManager.global.end();
     }
 
     @Override
     public void resize(int width, int height) {
-        anmVM.resize(width, height);
+        GraphicManager.global.resize(width, height);
     }
 
     @Override
     public void dispose() {
         anm.dispose();
-        Flow.shutdown();
-        AnmVM.shutdown();
+        Flow.global.shutdown();
+        GraphicManager.shutdown();
     }
 }

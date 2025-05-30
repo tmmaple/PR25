@@ -4,12 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Cursor;
-import com.badlogic.gdx.utils.Array;
 import ua.tmmaple.pr25.i18n.Language;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
 public final class God {
-    private static God instance;
+    public static God global;
 
     private Preferences prefs;
 
@@ -28,36 +27,33 @@ public final class God {
     private float musicVolume;
     private int language;
 
-    God() {
+    public God() {
         windowScale = 0;
         sfxVolume = 1.0f;
         musicVolume = 1.0f;
     }
 
-    public static void register(God instance) {
-        if (God.instance != null) throw new PR25RuntimeException("God is already initialized");
-        God.instance = instance;
-
-        Flow.FlowNode<God> node = new Flow.FlowNode<>(instance, God::update, God::added, God::removed);
-        Flow.addToUpdate(node, 998);
+    public static int register() {
+        Flow.FlowNode<God> node = new Flow.FlowNode<>(global, God::update, God::added, God::removed);
+        return Flow.global.addToUpdate(node, 998);
     }
 
-    private static int added(God instance) {
-        instance.prefs = Gdx.app.getPreferences("pr25_settings");
-        String language = instance.prefs.getString("language", "en");
-        instance.controls[0] = instance.prefs.getInteger("keyMoveUp", instance.controls[0]);
-        instance.controls[1] = instance.prefs.getInteger("keyMoveDown", instance.controls[1]);
-        instance.controls[2] = instance.prefs.getInteger("keyMoveLeft", instance.controls[2]);
-        instance.controls[3] = instance.prefs.getInteger("keyMoveRight", instance.controls[3]);
-        instance.controls[4] = instance.prefs.getInteger("keyFire", instance.controls[4]);
-        instance.controls[5] = instance.prefs.getInteger("keyBomb", instance.controls[5]);
-        instance.controls[6] = instance.prefs.getInteger("keyFocus", instance.controls[6]);
-        instance.windowScale = instance.prefs.getInteger("windowScale", 2);
-        instance.sfxVolume = instance.prefs.getFloat("sfxVolume", 1.0f);
-        instance.musicVolume = instance.prefs.getFloat("musicVolume", 1.0f);
-        if (language.equals("en")) instance.language = Language.LANGUAGE_ENGLISH;
-        else if (language.equals("uk")) instance.language = Language.LANGUAGE_UKRAINIAN;
-        instance.setWindowMode(instance.windowScale);
+    private static int added(God god) {
+        god.prefs = Gdx.app.getPreferences("pr25_settings");
+        String language = god.prefs.getString("language", "en");
+        god.controls[0] = god.prefs.getInteger("keyMoveUp", god.controls[0]);
+        god.controls[1] = god.prefs.getInteger("keyMoveDown", god.controls[1]);
+        god.controls[2] = god.prefs.getInteger("keyMoveLeft", god.controls[2]);
+        god.controls[3] = god.prefs.getInteger("keyMoveRight", god.controls[3]);
+        god.controls[4] = god.prefs.getInteger("keyFire", god.controls[4]);
+        god.controls[5] = god.prefs.getInteger("keyBomb", god.controls[5]);
+        god.controls[6] = god.prefs.getInteger("keyFocus", god.controls[6]);
+        god.windowScale = god.prefs.getInteger("windowScale", 2);
+        god.sfxVolume = god.prefs.getFloat("sfxVolume", 1.0f);
+        god.musicVolume = god.prefs.getFloat("musicVolume", 1.0f);
+        if (language.equals("en")) god.language = Language.LANGUAGE_ENGLISH;
+        else if (language.equals("uk")) god.language = Language.LANGUAGE_UKRAINIAN;
+        god.setWindowMode(god.windowScale);
         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.None);
 
         return 0;
@@ -80,13 +76,12 @@ public final class God {
         instance.prefs.putFloat("sfxVolume", instance.sfxVolume);
         instance.prefs.putFloat("musicVolume", instance.musicVolume);
         instance.prefs.flush();
-        God.instance = null;
         return 0;
     }
 
     public void setWindowMode(int scale) {
         scale = Math.min(scale, 6);
-        instance.windowScale = scale;
+        windowScale = scale;
         if (scale > 0) {
             switch (scale) {
                 case 1: Gdx.graphics.setWindowedMode(Game.BASE_WINDOW_WIDTH, Game.BASE_WINDOW_HEIGHT); break;
@@ -125,6 +120,4 @@ public final class God {
     public int language() {
         return language;
     }
-
-    public static God get() { return instance; }
 }

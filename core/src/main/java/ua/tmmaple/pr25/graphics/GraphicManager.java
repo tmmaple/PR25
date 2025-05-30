@@ -3,7 +3,6 @@ package ua.tmmaple.pr25.graphics;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -11,66 +10,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import ua.tmmaple.pr25.Game;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
-public final class AnmVM {
-    /* Системні інструкції */
-    public static final byte OP_NOP = 0x00;
-    public static final byte OP_DELETE = 0x01;
-    public static final byte OP_STOP = 0x02;
-    public static final byte OP_PAUSE = 0x03;
-    public static final byte OP_HIDE_PAUSE = 0x04;
-    public static final byte OP_INTERRUPT = 0x05;
-    public static final byte OP_SLEEP = 0x06;
-    public static final byte OP_RETURN = 0x07;
-    public static final byte OP_JUMP = 0x08;
-
-    /* Інструкції налаштування текстури */
-    public static final byte OP_SOURCE = 0x09;
-    public static final byte OP_UV_POSITION = 0x0A;
-    public static final byte OP_UV_SCALE = 0x0B;
-    public static final byte OP_UV_SCROLLING_X = 0x0C;
-    public static final byte OP_UV_SCROLLING_Y = 0x0D;
-    public static final byte OP_UV_MOVE = 0x0E;
-    public static final byte OP_UV_RESCALE = 0x0F;
-    public static final byte OP_UV_MODE = 0x10;
-
-    /* Інструкції налаштування рендерингу */
-    public static final byte OP_COLOR = 0x11;
-    public static final byte OP_ALPHA = 0x12;
-    public static final byte OP_CHANGE_COLOR = 0x13;
-    public static final byte OP_FADE = 0x14;
-    public static final byte OP_BLENDING = 0x15;
-    public static final byte OP_VISIBLE = 0x16;
-    public static final byte OP_FLIP_X = 0x17;
-    public static final byte OP_FLIP_Y = 0x18;
-
-    /* Інструкції переміщення */
-    public static final byte OP_POSITION = 0x19;
-    public static final byte OP_ANGLE = 0x1A;
-    public static final byte OP_SCALE = 0x1B;
-    public static final byte OP_MOVE = 0x1C;
-    public static final byte OP_ROTATE = 0x1D;
-    public static final byte OP_GROW = 0x1E;
-    public static final byte OP_AUTOROTATE = 0x1F;
-    public static final byte OP_ANGULAR_SPEED = 0x20;
-    public static final byte OP_ORIGIN_MODE = 0x21;
-    public static final byte OP_ANCHOR_MODE = 0x22;
-    public static final byte OP_ANCHOR_OFFSET = 0x23;
-
-    /* Константи */
-    public static final byte UV_NONE = 0;
-    public static final byte UV_REPEAT = 1;
-    public static final byte UV_MIRROR = 2;
-    public static final byte ORIGIN_PARENT = 0;
-    public static final byte ORIGIN_SURFACE = 1;
-    public static final byte ANCHOR_TOP_LEFT = 0;
-    public static final byte ANCHOR_TOP_MIDDLE = 1;
-    public static final byte ANCHOR_TOP_RIGHT = 2;
-    public static final byte ANCHOR_MIDDLE_LEFT = 3;
-    public static final byte ANCHOR_CENTER = 4;
-    public static final byte ANCHOR_MIDDLE_RIGHT = 5;
-    public static final byte ANCHOR_BOTTOM_LEFT = 6;
-    public static final byte ANCHOR_BOTTOM_MIDDLE = 7;
-    public static final byte ANCHOR_BOTTOM_RIGHT = 8;
+public final class GraphicManager {
 
     /* Таблиця розмірів інструкцій в байтах */
     public static final byte[] ANM_INSTRUCTION_SIZES = {
@@ -80,12 +20,11 @@ public final class AnmVM {
         11, 7, 11, 16, 12, 16, 4, 7, 4, 4, 11,
     };
 
-    private static AnmVM instance;
+    public static GraphicManager global;
 
     private SpriteBatch batch;
     private Viewport viewport;
 
-    private float delta;
     private float t;
 
     private boolean drawing;
@@ -93,40 +32,36 @@ public final class AnmVM {
 
     private Color backgroundColor;
 
-    public AnmVM() {
-        backgroundColor = new Color(0.05f, 0.05f, 0.05f, 1.0f);
+    public GraphicManager() {
+        backgroundColor = Color.BLACK;
     }
 
-    public static void initialize(AnmVM instance) {
-        if (AnmVM.instance != null) throw new PR25RuntimeException("AnmVM already initialized");
-
-        AnmVM.instance = instance;
-        instance.batch = new SpriteBatch();
-        instance.viewport = new FitViewport(Game.BASE_WINDOW_WIDTH, Game.BASE_WINDOW_HEIGHT);
-        instance.viewport.apply();
-        instance.surface = null;
+    public static void initialize() {
+        global.batch = new SpriteBatch();
+        global.viewport = new FitViewport(Game.BASE_WINDOW_WIDTH, Game.BASE_WINDOW_HEIGHT);
+        global.viewport.apply();
+        global.surface = null;
     }
 
     public static void shutdown() {
-        if (instance.surface != null)
-            instance.surface.fbo.end();
+        if (global.surface != null)
+            global.surface.fbo.end();
     }
 
     public void begin() {
-        if (drawing) throw new PR25RuntimeException("AnmVM already begun");
+        if (drawing) throw new PR25RuntimeException("GraphicManager already begun");
         ScreenUtils.clear(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
         batch.begin();
         drawing = true;
     }
 
     public void end() {
-        if (!drawing) throw new PR25RuntimeException("AnmVM did not begin");
+        if (!drawing) throw new PR25RuntimeException("GraphicManager did not begin");
         batch.end();
         drawing = false;
     }
 
-    public void update(float delta, float t) {
-        this.delta = delta;
+    public void update(float t) {
         this.t = t;
     }
 
@@ -134,16 +69,12 @@ public final class AnmVM {
         viewport.update(width, height, false);
     }
 
-    public static AnmVM get() {
-        return instance;
-    }
-
     public void setBackgroundColor(Color color) {
         backgroundColor = color;
     }
 
     public void nextSurface(Surface surface) {
-        if (!drawing) throw new PR25RuntimeException("AnmVM is not drawing");
+        if (!drawing) throw new PR25RuntimeException("GraphicManager is not drawing");
         if (this.surface == null) {
             this.surface = surface;
             surface.fbo.begin();
@@ -158,21 +89,21 @@ public final class AnmVM {
         batch.draw(texture, temp.x, temp.y, temp.width, temp.height);
     }
 
-    public void draw(AnmGraphics o) {
+    public void draw(AnmVirtualMachine o) {
         if (!o.absoluteVisible()) return;
         if (o.font != null && o.text != null && o.text.length() > 0)
             o.font.draw(batch, o.text, 60.0f, 60.0f);
         if (o.region != null) {
-            float flipX = (o.flags & AnmGraphics.ANM_FLAG_FLIP_X) != 0 ? -1.0f : 1.0f;
-            float flipY = (o.flags & AnmGraphics.ANM_FLAG_FLIP_Y) != 0 ? -1.0f : 1.0f;
+            float flipX = (o.flags & AnmVirtualMachine.ANM_FLAG_FLIP_X) != 0 ? -1.0f : 1.0f;
+            float flipY = (o.flags & AnmVirtualMachine.ANM_FLAG_FLIP_Y) != 0 ? -1.0f : 1.0f;
             Color c = o.absoluteColor();
             float a = o.absoluteAlpha();
             Vector2 pos = o.absolutePosition();
             float an = o.absoluteAngle();
             Vector2 off = o.absoluteAnchorOffset();
             Vector2 sc = o.absoluteScale();
-            if ((o.flags & AnmGraphics.ANM_FLAG_TELEPORT) != 0) {
-                o.flags &= ~AnmGraphics.ANM_FLAG_TELEPORT;
+            if ((o.flags & AnmVirtualMachine.ANM_FLAG_TELEPORT) != 0) {
+                o.flags &= ~AnmVirtualMachine.ANM_FLAG_TELEPORT;
                 o.lastAbsolutePosition = pos;
                 o.lastAbsoluteAngle = an;
                 o.lastAbsoluteScale = sc;
@@ -191,7 +122,7 @@ public final class AnmVM {
         }
     }
 
-    public int execute(AnmGraphics o) {
+    public int execute(AnmVirtualMachine o) {
         if (o.anm == null)
             return 1;
 
@@ -206,13 +137,13 @@ public final class AnmVM {
             o.pointer = o.scriptStart;
             boolean found = false;
             while (!found && o.pointer < o.scriptEnd) {
-                while (o.pointer < o.scriptEnd && parseOpcode(o) != OP_INTERRUPT)
+                while (o.pointer < o.scriptEnd && parseOpcode(o) != AnmVirtualMachine.ANM_OP_INTERRUPT)
                     skip(o);
                 if (o.pointer >= o.scriptEnd)
                     break;
                 int position = o.pointer;
                 skip(o, 3);
-                if (parseByte(o) == o.interrupt - 1) {
+                if (parseByte(o) == o.interrupt) {
                     o.pointer = position;
                     found = true;
                 }
@@ -228,25 +159,25 @@ public final class AnmVM {
         }
         while (o.pointer >= o.scriptStart && o.pointer < o.scriptEnd && o.time >= parseTime(o)) {
             switch (parseOpcode(o)) {
-                case OP_NOP:
-                case OP_INTERRUPT: skip(o); break;
-                case OP_DELETE: o.delete(); return 1;
-                case OP_STOP: o.anm = null; return 1;
-                case OP_PAUSE: o.pointer = -1; skip(o); break;
-                case OP_HIDE_PAUSE: {
+                case AnmVirtualMachine.ANM_OP_NOP:
+                case AnmVirtualMachine.ANM_OP_INTERRUPT: skip(o); break;
+                case AnmVirtualMachine.ANM_OP_DELETE: o.delete(); return 1;
+                case AnmVirtualMachine.ANM_OP_STOP: o.anm = null; return 1;
+                case AnmVirtualMachine.ANM_OP_PAUSE: o.pointer = -1; skip(o); break;
+                case AnmVirtualMachine.ANM_OP_HIDE_PAUSE: {
                     o.pointer = -1;
-                    o.flags &= ~AnmGraphics.ANM_FLAG_VISIBLE;
+                    o.flags &= ~AnmVirtualMachine.ANM_FLAG_VISIBLE;
                     skip(o);
                 } break;
-                case OP_SLEEP: {
+                case AnmVirtualMachine.ANM_OP_SLEEP: {
                     skip(o, 3);
                     o.time -= (short) parseInt(o);
                 } break;
-                case OP_RETURN: {
+                case AnmVirtualMachine.ANM_OP_RETURN: {
                     o.pointer = o.previousPointer;
                     o.time = o.previousTime;
                 } break;
-                case OP_JUMP: {
+                case AnmVirtualMachine.ANM_OP_JUMP: {
                     int pos = o.pointer;
                     skip(o, 3);
                     int diff = parseInt(o);
@@ -254,11 +185,11 @@ public final class AnmVM {
                     o.pointer += diff;
                     o.time = parseTime(o);
                 } break;
-                case OP_SOURCE: {
+                case AnmVirtualMachine.ANM_OP_SOURCE: {
                     skip(o, 3);
                     o.loadSource(parseByte(o));
                 } break;
-                case OP_UV_POSITION: {
+                case AnmVirtualMachine.ANM_OP_UV_POSITION: {
                     if (o.region == null) skip(o);
                     else {
                         skip(o, 3);
@@ -272,7 +203,7 @@ public final class AnmVM {
                         o.region.setV2(vDiff);
                     }
                 } break;
-                case OP_UV_SCALE: {
+                case AnmVirtualMachine.ANM_OP_UV_SCALE: {
                     if (o.region == null) skip(o);
                     else {
                         skip(o, 3);
@@ -280,31 +211,35 @@ public final class AnmVM {
                         float halfHeight = parseFloat(o) * 0.5f;
                         float midU = (o.region.getU() + o.region.getU2()) * 0.5f;
                         float midV = (o.region.getV() + o.region.getV2()) * 0.5f;
+                        o.region.setU(midU - halfWidth);
+                        o.region.setV(getV(midV, halfHeight));
+                        o.region.setU2(midU + halfWidth);
+                        o.region.setV2(midV + halfHeight);
                     }
                 } break;
-                case OP_UV_SCROLLING_X: skip(o, 3); o.uScrolling = parseFloat(o); break;
-                case OP_UV_SCROLLING_Y: skip(o, 3); o.vScrolling = parseFloat(o); break;
-                case OP_UV_MOVE:
-                case OP_UV_RESCALE: skip(o); break;
-                case OP_UV_MODE: {
+                case AnmVirtualMachine.ANM_OP_UV_SCROLLING_X: skip(o, 3); o.uScrolling = parseFloat(o); break;
+                case AnmVirtualMachine.ANM_OP_UV_SCROLLING_Y: skip(o, 3); o.vScrolling = parseFloat(o); break;
+                case AnmVirtualMachine.ANM_OP_UV_MOVE:
+                case AnmVirtualMachine.ANM_OP_UV_RESCALE: skip(o); break;
+                case AnmVirtualMachine.ANM_OP_UV_MODE: {
                     if (o.region == null) skip(o);
                     else {
                         skip(o, 3);
                         o.uvMode = parseByte(o);
                     }
                 } break;
-                case OP_COLOR: {
+                case AnmVirtualMachine.ANM_OP_COLOR: {
                     skip(o, 3);
                     float r = parseFloat(o);
                     float g = parseFloat(o);
                     float b = parseFloat(o);
                     o.color.set(r, g, b, 1.0f);
                 } break;
-                case OP_ALPHA: {
+                case AnmVirtualMachine.ANM_OP_ALPHA: {
                     skip(o, 3);
                     o.alpha = parseFloat(o);
                 } break;
-                case OP_CHANGE_COLOR: {
+                case AnmVirtualMachine.ANM_OP_CHANGE_COLOR: {
                     skip(o, 3);
                     int time = parseInt(o);
                     float r = parseFloat(o);
@@ -313,53 +248,53 @@ public final class AnmVM {
                     int type = parseByte(o);
                     o.colorInterpolator.start((byte) type, o.color.cpy(), new Color(r, g, b, 1.0f), (short) time);
                 } break;
-                case OP_FADE: {
+                case AnmVirtualMachine.ANM_OP_FADE: {
                     skip(o, 3);
                     int time = parseInt(o);
                     float a = parseFloat(o);
                     int type = parseByte(o);
                     o.alphaInterpolator.start((byte) type, o.alpha, a, (short) time);
                 } break;
-                case OP_BLENDING: {
+                case AnmVirtualMachine.ANM_OP_BLENDING: {
                     skip(o);
                 } break;
-                case OP_VISIBLE: {
+                case AnmVirtualMachine.ANM_OP_VISIBLE: {
                     skip(o, 3);
                     int value = parseByte(o);
                     if (value == 0)
-                        o.flags &= ~AnmGraphics.ANM_FLAG_VISIBLE;
+                        o.flags &= ~AnmVirtualMachine.ANM_FLAG_VISIBLE;
                     else
-                        o.flags |= AnmGraphics.ANM_FLAG_VISIBLE;
+                        o.flags |= AnmVirtualMachine.ANM_FLAG_VISIBLE;
                 } break;
-                case OP_FLIP_X: {
+                case AnmVirtualMachine.ANM_OP_FLIP_X: {
                     skip(o, 3);
                     int value = parseByte(o);
                     if (value == 0)
-                        o.flags &= ~AnmGraphics.ANM_FLAG_FLIP_X;
+                        o.flags &= ~AnmVirtualMachine.ANM_FLAG_FLIP_X;
                     else
-                        o.flags |= AnmGraphics.ANM_FLAG_FLIP_X;
+                        o.flags |= AnmVirtualMachine.ANM_FLAG_FLIP_X;
                 } break;
-                case OP_FLIP_Y: {
+                case AnmVirtualMachine.ANM_OP_FLIP_Y: {
                     skip(o, 3);
                     int value = parseByte(o);
                     if (value == 0)
-                        o.flags &= ~AnmGraphics.ANM_FLAG_FLIP_Y;
+                        o.flags &= ~AnmVirtualMachine.ANM_FLAG_FLIP_Y;
                     else
-                        o.flags |= AnmGraphics.ANM_FLAG_FLIP_Y;
+                        o.flags |= AnmVirtualMachine.ANM_FLAG_FLIP_Y;
                 } break;
-                case OP_POSITION: {
+                case AnmVirtualMachine.ANM_OP_POSITION: {
                     skip(o, 3);
                     o.anmPosition.set(parseFloat(o), parseFloat(o));
                 } break;
-                case OP_ANGLE: {
+                case AnmVirtualMachine.ANM_OP_ANGLE: {
                     skip(o, 3);
                     o.anmAngle = parseFloat(o);
                 } break;
-                case OP_SCALE: {
+                case AnmVirtualMachine.ANM_OP_SCALE: {
                     skip(o, 3);
                     o.anmScale.set(parseFloat(o), parseFloat(o));
                 } break;
-                case OP_MOVE: {
+                case AnmVirtualMachine.ANM_OP_MOVE: {
                     skip(o, 3);
                     int time = parseInt(o);
                     float x = parseFloat(o);
@@ -367,14 +302,14 @@ public final class AnmVM {
                     int type = parseByte(o);
                     o.positionInterpolator.start((byte) type, o.anmPosition, new Vector2(x, y), (short) time);
                 } break;
-                case OP_ROTATE: {
+                case AnmVirtualMachine.ANM_OP_ROTATE: {
                     skip(o, 3);
                     int time = parseInt(o);
                     float a = parseFloat(o);
                     int type = parseByte(o);
                     o.angleInterpolator.start((byte) type, o.anmAngle, a, (short) time);
                 } break;
-                case OP_GROW: {
+                case AnmVirtualMachine.ANM_OP_GROW: {
                     skip(o, 3);
                     int time = parseInt(o);
                     float w = parseFloat(o);
@@ -382,27 +317,27 @@ public final class AnmVM {
                     int type = parseByte(o);
                     o.positionInterpolator.start((byte) type, o.anmScale, new Vector2(w, h), (short) time);
                 } break;
-                case OP_AUTOROTATE: {
+                case AnmVirtualMachine.ANM_OP_AUTOROTATE: {
                     skip(o, 3);
                     int value = parseByte(o);
                     if (value == 0)
-                        o.flags &= ~AnmGraphics.ANM_FLAG_AUTOROTATE;
+                        o.flags &= ~AnmVirtualMachine.ANM_FLAG_AUTOROTATE;
                     else
-                        o.flags |= AnmGraphics.ANM_FLAG_AUTOROTATE;
+                        o.flags |= AnmVirtualMachine.ANM_FLAG_AUTOROTATE;
                 } break;
-                case OP_ANGULAR_SPEED: {
+                case AnmVirtualMachine.ANM_OP_ANGULAR_SPEED: {
                     skip(o, 3);
                     o.angularSpeed = parseFloat(o);
                 } break;
-                case OP_ORIGIN_MODE: {
+                case AnmVirtualMachine.ANM_OP_ORIGIN_MODE: {
                     skip(o, 3);
                     o.originMode = parseByte(o);
                 } break;
-                case OP_ANCHOR_MODE: {
+                case AnmVirtualMachine.ANM_OP_ANCHOR_MODE: {
                     skip(o, 3);
                     o.anchorMode = parseByte(o);
                 } break;
-                case OP_ANCHOR_OFFSET: {
+                case AnmVirtualMachine.ANM_OP_ANCHOR_OFFSET: {
                     skip(o, 3);
                     o.anchorOffset.set(parseFloat(o), parseFloat(o));
                 } break;
@@ -440,13 +375,17 @@ public final class AnmVM {
         return 0;
     }
 
-    private int parseByte(AnmGraphics o) {
+    private static float getV(float midV, float halfHeight) {
+        return midV - halfHeight;
+    }
+
+    private int parseByte(AnmVirtualMachine o) {
         if (o.anm == null) throw new PR25RuntimeException("No ANM script");
         if (o.pointer >= o.scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
         return o.anm.bytecode.get(o.pointer++);
     }
 
-    private short parseShort(AnmGraphics o) {
+    private short parseShort(AnmVirtualMachine o) {
         if (o.anm == null) throw new PR25RuntimeException("No ANM script");
         if (o.pointer >= o.scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
         short s = o.anm.bytecode.getShort(o.pointer);
@@ -454,7 +393,7 @@ public final class AnmVM {
         return s;
     }
 
-    private int parseInt(AnmGraphics o) {
+    private int parseInt(AnmVirtualMachine o) {
         if (o.anm == null) throw new PR25RuntimeException("No ANM script");
         if (o.pointer >= o.scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
         int i = o.anm.bytecode.getInt(o.pointer);
@@ -462,7 +401,7 @@ public final class AnmVM {
         return i;
     }
 
-    private float parseFloat(AnmGraphics o) {
+    private float parseFloat(AnmVirtualMachine o) {
         if (o.anm == null) throw new PR25RuntimeException("No ANM script");
         if (o.pointer >= o.scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
         float f = o.anm.bytecode.getFloat(o.pointer);
@@ -470,7 +409,7 @@ public final class AnmVM {
         return f;
     }
 
-    private int parseOpcode(AnmGraphics o) {
+    private int parseOpcode(AnmVirtualMachine o) {
         if (o.anm == null) throw new PR25RuntimeException("No ANM script");
         if (o.pointer >= o.scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
         int opcode = o.anm.bytecode.get(o.pointer);
@@ -478,19 +417,19 @@ public final class AnmVM {
         return o.anm.bytecode.get(o.pointer);
     }
 
-    private short parseTime(AnmGraphics o) {
+    private short parseTime(AnmVirtualMachine o) {
         if (o.anm == null) throw new PR25RuntimeException("No ANM script");
         if (o.pointer >= o.scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
         return o.anm.bytecode.getShort(o.pointer + 1);
     }
 
-    private void skip(AnmGraphics o, int n) {
+    private void skip(AnmVirtualMachine o, int n) {
         if (o.anm == null) throw new PR25RuntimeException("No ANM script");
         if (o.pointer >= o.scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
         o.pointer += n;
     }
 
-    private void skip(AnmGraphics o) {
+    private void skip(AnmVirtualMachine o) {
         if (o.anm == null) throw new PR25RuntimeException("No ANM script");
         if (o.pointer >= o.scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
         int opcode = o.anm.bytecode.get(o.pointer);

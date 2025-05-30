@@ -19,21 +19,21 @@ public final class Text implements CharSequence {
 
     @Override
     public int length() {
-        return (loc ? Language.get(key) : key).length();
+        return (loc ? Language.global.get(key) : key).length();
     }
 
     @Override
     public char charAt(int index) {
-        return (loc ? Language.get(key) : key).charAt(index);
+        return (loc ? Language.global.get(key) : key).charAt(index);
     }
 
     @Override
     public CharSequence subSequence(int start, int end) {
-        return (loc ? Language.get(key) : key).subSequence(start, end);
+        return (loc ? Language.global.get(key) : key).subSequence(start, end);
     }
 
     @Override
     public String toString() {
-        return (loc ? Language.get(key) : key);
+        return (loc ? Language.global.get(key) : key);
     }
 }
