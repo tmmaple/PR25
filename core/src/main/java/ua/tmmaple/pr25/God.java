@@ -3,6 +3,7 @@ package ua.tmmaple.pr25;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Preferences;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.utils.Array;
 import ua.tmmaple.pr25.i18n.Language;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
@@ -57,6 +58,7 @@ public final class God {
         if (language.equals("en")) instance.language = Language.LANGUAGE_ENGLISH;
         else if (language.equals("uk")) instance.language = Language.LANGUAGE_UKRAINIAN;
         instance.setWindowMode(instance.windowScale);
+        Gdx.graphics.setSystemCursor(Cursor.SystemCursor.None);
 
         return 0;
     }
