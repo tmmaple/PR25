@@ -164,6 +164,15 @@ public final class God {
         return input[control];
     }
 
+    public void setSfxVolume(float volume) {
+        sfxVolume = volume < 0.0f ? 0.0f : Math.min(volume, 1.0f);
+    }
+
+    public void setMusicVolume(float volume) {
+        musicVolume = volume < 0.0f ? 0.0f : Math.min(volume, 1.0f);
+        Audio.global.update();
+    }
+
     public int windowScale() {
         return windowScale;
     }
