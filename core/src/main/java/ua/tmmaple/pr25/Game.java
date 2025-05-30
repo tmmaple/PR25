@@ -3,7 +3,6 @@ package ua.tmmaple.pr25;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import ua.tmmaple.pr25.assets.Assets;
-import ua.tmmaple.pr25.assets.Bgm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
 public class Game extends ApplicationAdapter {
@@ -13,8 +12,6 @@ public class Game extends ApplicationAdapter {
     public static final float UPDATE_DELTA = 1.0f / 60.0f;
 
     private float accumulator;
-
-    Bgm bgm;
 
     @Override
     public void create() {
