@@ -282,22 +282,28 @@ public final class GraphicManager {
                     default: wrap = region.getTexture().getUWrap(); break;
                 }
                 region.getTexture().setWrap(wrap, wrap);
-                if ((flags & Anm.ANM_FLAG_TELEPORT) != 0) {
-                    flags &= ~Anm.ANM_FLAG_TELEPORT;
-                    lastAbsolutePosition = pos;
-                    lastAbsoluteAngle = an;
-                    lastAbsoluteScale = sc;
+                Vector2 finalPos = lastAbsolutePosition.cpy();
+                float finalAn = lastAbsoluteAngle;
+                Vector2 finalSc = lastAbsoluteScale.cpy();
+                if ((flags & Anm.ANM_FLAG_TELEPORT) == 0) {
+                    finalPos.lerp(pos, t);
+                    finalAn += (lastAbsoluteAngle - an) * t;
+                    finalSc.lerp(sc, t);
                 } else {
-                    lastAbsolutePosition.lerp(pos, t);
-                    lastAbsoluteAngle += (lastAbsoluteAngle - an) * t;
-                    lastAbsoluteScale.lerp(sc, t);
+                    finalPos.set(pos);
+                    finalAn = an;
+                    finalSc.set(sc);
                 }
+                lastAbsolutePosition = pos;
+                lastAbsoluteAngle = an;
+                lastAbsoluteScale = sc;
                 batch.setColor(c.r, c.g, c.b, a);
                 batch.draw(region,
-                    lastAbsolutePosition.x, lastAbsolutePosition.y,
+                    finalPos.x, finalPos.y,
                     off.x, off.y,
-                    region.getRegionWidth() * flipX, region.getRegionHeight() * flipY,
-                    lastAbsoluteScale.x, lastAbsoluteScale.y, lastAbsoluteAngle
+                    region.getRegionWidth(), region.getRegionHeight(),
+                    finalSc.x * flipX, finalSc.y * flipY,
+                    finalAn
                 );
             }
         }
