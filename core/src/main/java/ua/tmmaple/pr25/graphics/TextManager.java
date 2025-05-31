@@ -95,7 +95,7 @@ public final class TextManager {
         }
 
         /**
-         * Встановлює шрифт відмалювання
+         * Встановлює шрифт відмалювання.
          * @throws PR25RuntimeException якщо шрифта не існує
          */
         public void setFont(byte font) {
