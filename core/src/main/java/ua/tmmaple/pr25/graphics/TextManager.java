@@ -7,6 +7,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
+/**
+ * Керує відмалюванням тексту на екран.
+ * @author uwuhasmile
+ */
 public final class TextManager {
     public static TextManager global;
 
@@ -18,6 +22,10 @@ public final class TextManager {
         drawing = false;
     }
 
+    /**
+     * Передзавантажує всі шрифти в пам'ять.
+     * @author uwuhasmile
+     */
     public void initialize() {
         fonts[0] = new BitmapFont(Gdx.files.internal("fonts/ui24.fnt"), Gdx.files.internal("fonts/ui24.png"), false);
         fonts[1] = new BitmapFont(Gdx.files.internal("fonts/ui24.fnt"), Gdx.files.internal("fonts/ui24Flat.png"), false);
@@ -27,16 +35,31 @@ public final class TextManager {
         fonts[5] = new BitmapFont(Gdx.files.internal("fonts/digits.fnt"));
     }
 
+    /**
+     * Вивантажує всі шрифти з пам'яті.
+     * @author uwuhasmile
+     */
     public void shutdown() {
         for (BitmapFont font : fonts)
             if (font != null) font.dispose();
     }
 
+    /**
+     * Переходить в режим малювання.
+     * Має викликатись тоді, коли {@link ua.tmmaple.pr25.graphics.GraphicManager} переходить в режим малювання.
+     * @throws PR25RuntimeException якщо вже в режимі малювання
+     * @author uwuhasmile
+     */
     public void begin() {
         if (drawing) throw new PR25RuntimeException("TextManager already begun");
         drawing = true;
     }
 
+    /**
+     * Відмальовує текст з певними налаштуваннями.
+     * @throws PR25RuntimeException якщо не в режимі малювання
+     * @author uwuhasmile
+     */
     public void draw(CharSequence text, TextSettings settings) {
         if (!drawing) throw new PR25RuntimeException("TextManager did not begin");
         if (text == null || text.length() == 0) return;
@@ -54,11 +77,21 @@ public final class TextManager {
         font.draw(GraphicManager.global.batch, text, pos.x, pos.y, start, end, settings.targetWidth, settings.hAlign, settings.wrap);
     }
 
+    /**
+     * Виходить з режиму малювання.
+     * Має викликатись тоді, коли {@link ua.tmmaple.pr25.graphics.GraphicManager} переходить в режим відмалювання.
+     * @throws PR25RuntimeException якщо не в режимі малювання
+     * @author uwuhasmile
+     */
     public void end() {
         if (!drawing) throw new PR25RuntimeException("TextManager did not begin");
         drawing = false;
     }
 
+    /**
+     * Шаблон налаштувань тексту.
+     * @author uwuhasmile
+     */
     public class TextSettings {
         private byte font;
 
@@ -83,6 +116,10 @@ public final class TextManager {
             wrap = true;
         }
 
+        /**
+         * Встановлює шрифт відмалювання
+         * @throws PR25RuntimeException якщо шрифта не існує
+         */
         public void setFont(byte font) {
             if (font < 0 || font >= fonts.length) throw new PR25RuntimeException("Invalid font number");
             this.font = font;
