@@ -253,6 +253,8 @@ public final class GraphicManager {
             positionInterpolator = new Tweener.Vector2Tweener();
             angleInterpolator = new Tweener.FloatTweener();
             scaleInterpolator = new Tweener.Vector2Tweener();
+
+            toDefaults();
         }
 
         /**
@@ -590,7 +592,14 @@ public final class GraphicManager {
             interrupt = 0;
             previousPointer = scriptStart;
             previousTime = -1;
+            toDefaults();
+        }
 
+        /**
+         * Відновлює налаштування за замовчуванням.
+         * @author uwuhasmile
+         */
+        public void toDefaults() {
             flags = Anm.ANM_FLAG_VISIBLE | Anm.ANM_FLAG_TELEPORT;
             uScrolling = 0.0f;
             vScrolling = 0.0f;
