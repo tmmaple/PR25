@@ -88,7 +88,6 @@ public final class GraphicManager {
     }
 
     public final class AnmVirtualMachine {
-
         // Tweener.Vector2Tweener uvPositionInterpolator;
         // Tweener.Vector2Tweener uvScaleInterpolator;
         final Tweener.ColorTweener colorInterpolator;
