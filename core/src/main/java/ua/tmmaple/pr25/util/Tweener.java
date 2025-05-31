@@ -3,6 +3,11 @@ package ua.tmmaple.pr25.util;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * Анімація зміни між двома значеннями.
+ * Має оновлюватись власноруч у системах чи власних об'єктах.
+ * @author uwuhasmile
+ */
 public abstract class Tweener<T> {
     public static final byte INTERPOLATION_LINEAR = 0;
     public static final byte INTERPOLATION_EASE_IN = 1;
@@ -23,6 +28,14 @@ public abstract class Tweener<T> {
         running = false;
     }
 
+    /**
+     * Запускає анімацію.
+     * @param type тип інтерполяції
+     * @param a початкове значення
+     * @param b кінцеве значення
+     * @param t час інтерполяції, в тіках
+     * @author uwuhasmile
+     */
     public final void start(byte type, T a, T b, short t) {
         value = a;
 
@@ -35,10 +48,18 @@ public abstract class Tweener<T> {
         running = true;
     }
 
+    /**
+     * Зупиняє анімацію
+     * @author uwuhasmile
+     */
     public final void end() {
         running = false;
     }
 
+    /**
+     * Оновлює анімацію на один тік
+     * @author uwuhasmile
+     */
     public final void update() {
         if (!isRunning()) return;
         ++curr;
@@ -64,6 +85,10 @@ public abstract class Tweener<T> {
         }
     }
 
+    /**
+     * Встановлює значення анімації
+     * @param alpha позиція від 0 до 1
+     */
     protected abstract void setValue(float alpha);
 
     public final boolean isRunning() {
@@ -74,6 +99,10 @@ public abstract class Tweener<T> {
         return value;
     }
 
+    /**
+     * Анімація зміни між двома значеннями float.
+     * @author uwuhasmile
+     */
     public static class FloatTweener extends Tweener<Float> {
         @Override
         protected void setValue(float alpha) {
@@ -81,6 +110,10 @@ public abstract class Tweener<T> {
         }
     }
 
+    /**
+     * Анімація зміни між двома двовимірними векторами.
+     * @author uwuhasmile
+     */
     public static class Vector2Tweener extends Tweener<Vector2> {
         @Override
         protected void setValue(float alpha) {
@@ -88,6 +121,10 @@ public abstract class Tweener<T> {
         }
     }
 
+    /**
+     * Анімація зміни між двома кольорами.
+     * @author uwuhasmile
+     */
     public static class ColorTweener extends Tweener<Color> {
         @Override
         protected void setValue(float alpha) {
