@@ -183,7 +183,7 @@ public final class God {
     }
 
     /**
-     * Встановлює мову
+     * Встановлює мову.
      * @param language 0 - англійська, 1 - українська
      * @author uwuhasmile
      */
