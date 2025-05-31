@@ -12,6 +12,9 @@ import ua.tmmaple.pr25.util.PR25RuntimeException;
 
 import java.util.Locale;
 
+/**
+ * Налаштування гри та її поточний стан
+ */
 public final class God {
     public static God global;
 
@@ -70,11 +73,20 @@ public final class God {
         musicVolume = 1.0f;
     }
 
+    /**
+     * Реєструє global в список оновлення
+     * @author uwuhasmile
+     */
     public static int register() {
         Flow.FlowNode<God> node = new Flow.FlowNode<>(global, God::update, God::added, God::removed);
         return Flow.global.addToUpdate(node, 998);
     }
 
+    /**
+     * Ініціалізує екземпляр God після реєстрації в список оновлень.
+     * В ініціалізацію входить завантаження та застосування налаштувань.
+     * @author uwuhasmile
+     */
     private static int added(God god) {
         I18NBundle.setExceptionOnMissingKey(false);
         god.prefs = Gdx.app.getPreferences("pr25_settings");
@@ -97,11 +109,19 @@ public final class God {
         return 0;
     }
 
+    /**
+     * Оновлює екземпляр God.
+     * @author uwuhasmile
+     */
     private static int update(God god) {
         god.updateControls();
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * Оновлює стан клавіш керування.
+     * @author uwuhasmile
+     */
     private void updateControls() {
         for (int i = 0; i < controls.length; ++i) {
             boolean pressed = Gdx.input.isKeyPressed(controls[i]);
@@ -119,6 +139,10 @@ public final class God {
         }
     }
 
+    /**
+     * Зберігає параметри після видалення зі списку оновлення.
+     * @author uwuhasmile
+     */
     private static int removed(God god) {
         god.prefs.putString("language", god.language == LANGUAGE_ENGLISH ? "en" : "uk");
         god.prefs.putInteger("keyMoveUp", god.controls[0]);
@@ -135,6 +159,12 @@ public final class God {
         return 0;
     }
 
+    /**
+     * Встановлює режим вікна.
+     * Якщо scale дорівнює 0, то гра переходить в повноекранний режим.
+     * @param scale розмір вікна в межах [0, 6]
+     * @author uwuhasmile
+     */
     public void setWindowMode(int scale) {
         scale = Math.min(scale, 6);
         windowScale = scale;
@@ -153,6 +183,11 @@ public final class God {
         }
     }
 
+    /**
+     * Встановлює мову
+     * @param language 0 - англійська, 1 - українська
+     * @author uwuhasmile
+     */
     public void setLanguage(int language) {
         if (language < 0 || language >= LANGUAGES.length)
             language = LANGUAGE_ENGLISH;
@@ -160,32 +195,60 @@ public final class God {
         i18n = I18NBundle.createBundle(i18nHandle, LANGUAGES[language]);
     }
 
+    /**
+     * @return стан дії вводу, вказаної в control
+     * @author uwuhasmile
+     */
     public byte inputState(int control) {
         if (control < 0 || control >= controls.length) throw new PR25RuntimeException("Control " + control + " doesn't exist");
         return input[control];
     }
 
+    /**
+     * @param volume нова гучність звукових ефектів
+     * @author uwuhasmile
+     */
     public void setSfxVolume(float volume) {
         sfxVolume = volume < 0.0f ? 0.0f : Math.min(volume, 1.0f);
     }
 
+    /**
+     * @param volume нова гучність музики
+     * @author uwuhasmile
+     */
     public void setMusicVolume(float volume) {
         musicVolume = volume < 0.0f ? 0.0f : Math.min(volume, 1.0f);
         Audio.global.update();
     }
 
+    /**
+     * @return поточний розмір вікна, 0 - повноекранний режим
+     * @author uwuhasmile
+     */
     public int windowScale() {
         return windowScale;
     }
 
+    /**
+     * @return поточна гучність звукових ефектів
+     * @author uwuhasmile
+     */
     public float sfxVolume() {
         return sfxVolume;
     }
 
+    /**
+     * @return поточна гучність музики
+     * @author uwuhasmile
+     */
     public float musicVolume() {
         return musicVolume;
     }
 
+    /**
+     * @return поточна мова
+     * @author uwuhasmile
+     */
     public int language() {
         return language;
     }
