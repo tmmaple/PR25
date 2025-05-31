@@ -7,7 +7,6 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.utils.I18NBundle;
-import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
 import java.util.Locale;
@@ -218,7 +217,6 @@ public final class God {
      */
     public void setMusicVolume(float volume) {
         musicVolume = volume < 0.0f ? 0.0f : Math.min(volume, 1.0f);
-        Audio.global.update();
     }
 
     /**
