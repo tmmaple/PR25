@@ -16,6 +16,9 @@ import java.util.HashMap;
 public final class Audio {
     public static Audio global;
 
+    private float fade;
+    private float fadeStep;
+
     private final HashMap<String, Sound> sounds;
     private Bgm bgm;
 
@@ -61,6 +64,8 @@ public final class Audio {
         bgm.setVolume(God.global.musicVolume());
         bgm.completionListener = m -> { bgm.completionListener = null; bgm = null; };
         bgm.play(loop);
+        fade = 1.0f;
+        fadeStep = 0.0f;
     }
 
     /**
@@ -71,13 +76,25 @@ public final class Audio {
         bgm.pause();
     }
 
+    public void fadeMusic(float t) {
+        if (bgm == null) return;
+        fade = 1.0f;
+        fadeStep = 1.0f / t;
+    }
+
     /**
      * Оновлює гучність музики до актуальних параметрів, якщо вона грає.
      * @author uwuhasmile
      */
-    public void update() {
-        if (bgm != null)
-            bgm.setVolume(God.global.musicVolume());
+    public void update(float delta) {
+        if (bgm != null && bgm.isPlaying()) {
+            bgm.setVolume(God.global.musicVolume() * fade);
+            if (fadeStep > 0.0f) {
+                fade -= delta * fadeStep;
+                if (fade <= 0.0f)
+                    stopMusic();
+            }
+        }
     }
 
     /**
@@ -87,6 +104,8 @@ public final class Audio {
     public void stopMusic() {
         bgm.stop();
         bgm.completionListener = null;
+        fade = 0.0f;
+        fadeStep = 0.0f;
     }
 
     /**

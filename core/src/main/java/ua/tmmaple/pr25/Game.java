@@ -54,6 +54,7 @@ public class Game extends ApplicationAdapter {
             }
             accumulator -= UPDATE_DELTA;
         }
+        Audio.global.update(accumulator);
         GraphicManager.global.update(accumulator / UPDATE_DELTA);
         GraphicManager.global.begin();
         TextManager.global.begin();
