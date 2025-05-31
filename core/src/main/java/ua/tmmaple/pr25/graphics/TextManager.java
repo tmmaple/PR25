@@ -40,6 +40,7 @@ public final class TextManager {
      * @author uwuhasmile
      */
     public void shutdown() {
+        if (drawing) end();
         for (BitmapFont font : fonts)
             if (font != null) font.dispose();
     }
