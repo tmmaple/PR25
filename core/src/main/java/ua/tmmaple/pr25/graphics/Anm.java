@@ -15,6 +15,10 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+/**
+ * Набір скриптів для використання {@link ua.tmmaple.pr25.graphics.GraphicManager.AnmVirtualMachine}.
+ * @author uwuhasmile
+ */
 public final class Anm implements Disposable {
     public static final byte[] ANM_MAGIC = { '%', 'A', 'N', 'M' };
     public static final byte ANM_VERSION =  0x01;
@@ -117,18 +121,31 @@ public final class Anm implements Disposable {
         fromData(data);
     }
 
+    /**
+     * @return регіон текстури за id, або null, якщо такого id не існує
+     * @author uwuhasmile
+     */
     public TextureRegion getSource(int id) {
         if (id < 0 || id >= sources.length)
             return null;
         return new TextureRegion(sources[id]);
     }
 
+    /**
+     * @return скрипт за id
+     * @throws PR25RuntimeException якщо скрипта не існує
+     * @author uwuhasmile
+     */
     public AnmScript getScript(String id) {
         for (AnmScript script : scripts)
             if (script.name.equals(id)) return script;
         throw new PR25RuntimeException("No script found with name " + id);
     }
 
+    /**
+     * Генерує з прочитаних даних про шляхи до текстур та джерела.
+     * @author uwuhasmile
+     */
     private void fromData(AnmData data) {
         imports = new Texture[data.imports()];
         for (int i = 0; i < data.imports(); ++i)
@@ -150,6 +167,10 @@ public final class Anm implements Disposable {
                 i.dispose();
     }
 
+    /**
+     * Скрипт ANM, що містить назву, позицію першої інструкції в байтах, та позицію кінця скрипту в байтах.
+     * @author uwuhasmile
+     */
     public static class AnmScript {
         public final String name;
         public final int start;
@@ -162,6 +183,10 @@ public final class Anm implements Disposable {
         }
     }
 
+    /**
+     * Метадані для завантаження ANM - шляхи текстур, дані про регіони, та скрипти.
+     * @author uwuhasmile
+     */
     public static final class AnmData {
         private String[] imports;
         private AnmSource[] sources;
@@ -183,28 +208,55 @@ public final class Anm implements Disposable {
             parse();
         }
 
+        /**
+         * @return кількість імпортованих текстур
+         * @author uwuhasmile
+         */
         public int imports() {
             return imports == null ? 0 : imports.length;
         }
 
+        /**
+         * @return кількість регіонів текстур
+         * @author uwuhasmile
+         */
         public int sources() {
             return sources == null ? 0 : sources.length;
         }
 
+        /**
+         * @return скрипти
+         * @author uwuhasmile
+         */
         public AnmScript[] scripts() {
             return scripts;
         }
 
+        /**
+         * @return шлях до текстури за i
+         * @throws PR25RuntimeException якщо текстури не існує
+         * @author uwuhasmile
+         */
         public String getImport(int i) {
             if (i < 0 || i >= imports.length) throw new PR25RuntimeException("Invalid index: " + i);
             return imports[i];
         }
 
+        /**
+         * @return шлях до регіону текстури за i
+         * @throws PR25RuntimeException якщо регіону не існує
+         * @author uwuhasmile
+         */
         public AnmSource getSource(int i) {
             if (i < 0 || i >= sources.length) throw new PR25RuntimeException("Invalid index: " + i);
             return sources[i];
         }
 
+        /**
+         * Читає дані ANM у вигляді байтів
+         * @throws PR25RuntimeException якщо сталась помилка читання, або дані некоректні
+         * @author uwuhasmile
+         */
         private void parse() {
             readHeader();
             readImports();
@@ -217,6 +269,11 @@ public final class Anm implements Disposable {
             }
         }
 
+        /**
+         * Читає заголовок.
+         * @throws PR25RuntimeException якщо неправильне магічне число або версія
+         * @author uwuhasmile
+         */
         private void readHeader() {
             try {
                 byte[] magic = new byte[4];
@@ -230,6 +287,11 @@ public final class Anm implements Disposable {
             position += 5;
         }
 
+        /**
+         * Читає шляхи до текстур.
+         * @throws PR25RuntimeException якщо сталась помилка читання
+         * @author uwuhasmile
+         */
         private void readImports() {
             try {
                 position += 1;
@@ -249,6 +311,11 @@ public final class Anm implements Disposable {
             }
         }
 
+        /**
+         * Читає регіони.
+         * @throws PR25RuntimeException якщо сталась помилка читання
+         * @author uwuhasmile
+         */
         private void readSources() {
             try {
                 int count = stream.readUnsignedByte();
@@ -269,6 +336,11 @@ public final class Anm implements Disposable {
             }
         }
 
+        /**
+         * Читає скрипти.
+         * @throws PR25RuntimeException якщо сталась помилка читання, або заголовок скрипта має неправильні дані
+         * @author uwuhasmile
+         */
         private void readScripts() {
             try {
                 int count = stream.readUnsignedByte();
@@ -294,6 +366,11 @@ public final class Anm implements Disposable {
             }
         }
 
+        /**
+         * Регіон текстури ANM.
+         * Містить ідентифікатор текстури, позицію та розмір регіону.
+         * @author uwuhasmile
+         */
         public static class AnmSource {
             public final int i;
             public final int x;
