@@ -14,6 +14,10 @@ import ua.tmmaple.pr25.Game;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 import ua.tmmaple.pr25.util.Tweener;
 
+/**
+ * Керує малюванням графіки.
+ * @author uwuhasmile
+ */
 public final class GraphicManager {
     public static GraphicManager global;
 
@@ -33,15 +37,30 @@ public final class GraphicManager {
         viewport = new FitViewport(Game.BASE_WINDOW_WIDTH, Game.BASE_WINDOW_HEIGHT);
     }
 
+    /**
+     * Ініціалізує та вмикає вьюпорт.
+     * @author uwuhasmile
+     */
     public void initialize() {
         viewport.apply();
     }
 
+    /**
+     * Вимикає.
+     * Якщо використовується якась поверхня, то вона завершує своє малювання.
+     * @author uwuhasmile
+     */
     public void shutdown() {
         if (surface != null)
             surface.end();
     }
 
+    /**
+     * Переходить в режим малювання.
+     * Виклик обов'язковий для того, щоб можна було почати малювати на екран.
+     * @throws PR25RuntimeException якщо вже в режимі малювання
+     * @author uwuhasmile
+     */
     public void begin() {
         if (drawing) throw new PR25RuntimeException("GraphicManager already begun");
         ScreenUtils.clear(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
@@ -49,20 +68,39 @@ public final class GraphicManager {
         drawing = true;
     }
 
+    /**
+     * Виходить з режиму малювання.
+     * @throws PR25RuntimeException якщо не в режимі малювання
+     * @author uwuhasmile
+     */
     public void end() {
         if (!drawing) throw new PR25RuntimeException("GraphicManager did not begin");
         batch.end();
         drawing = false;
     }
 
+    /**
+     * Оновлює внутрішнє значення альфи для плавного переходу між різними тіками.
+     * Потрібно, бо тіки необов'язково синхронізовані з кількістю кадрів в секунду.
+     * @author uwuhasmile
+     */
     public void update(float t) {
         this.t = t;
     }
 
+    /**
+     * Встановлює колір фону.
+     * @author uwuhasmile
+     */
     public void setBackgroundColor(Color color) {
         backgroundColor = color;
     }
 
+    /**
+     * Поверхня, на яку відбувається відмалювання.
+     * Розмір поверхні може відрізнятись від розміру вьюпорта.
+     * @author uwuhasmile
+     */
     public final class Surface {
         private final FrameBuffer fbo;
 
@@ -70,6 +108,12 @@ public final class GraphicManager {
             fbo = new FrameBuffer(format, width, height, false);
         }
 
+        /**
+         * Застосовує поверхню до менеджера.
+         * Після виклику, все буде відмальовуватись на цю поверхню.
+         * @throws PR25RuntimeException якщо не в режимі малювання, або ця поверхня вже використовується
+         * @author uwuhasmile
+         */
         public void use() {
             if (!drawing) throw new PR25RuntimeException("Can't use a surface before drawing");
             if (surface != null) {
@@ -80,6 +124,12 @@ public final class GraphicManager {
             surface = this;
         }
 
+        /**
+         * Застосовує поверхню до менеджера, але при цьому одразу відмальовує минулу поверхню.
+         * Після виклику, все буде відмальовуватись на цю поверхню.
+         * @throws PR25RuntimeException якщо не в режимі малювання, або ця поверхня вже використовується
+         * @author uwuhasmile
+         */
         public void chain(float x, float y, float width, float height) {
             if (!drawing) throw new PR25RuntimeException("Can't use a surface before drawing");
             if (surface != null) {
@@ -91,22 +141,41 @@ public final class GraphicManager {
             surface = this;
         }
 
+        /**
+         * Закінчує використання поверхні.
+         * Після виклику, все буде малюватись у вьюпорт.
+         * @throws PR25RuntimeException якщо поверхня і так не використовується
+         * @author uwuhasmile
+         */
         public void end() {
             if (surface != this) throw new PR25RuntimeException("Can't end surface that is unused");
             fbo.end();
             surface = null;
         }
 
+        /**
+         * @return Текстура з всім, що було відмальовано.
+         * @author uwuhasmile
+         */
         public TextureRegion get() {
             TextureRegion region = new TextureRegion(fbo.getColorBufferTexture());
             region.flip(false, true);
             return region;
         }
 
+        /**
+         * Малює поверхню в певній позиції та розмірі.
+         * Поверхня може відмалюватись на саму себе.
+         * @author uwuhasmile
+         */
         public void draw(float x, float y, float width, float height) {
             batch.draw(get(), x, y, width, height);
         }
 
+        /**
+         * Видаляє поверхню.
+         * @author uwuhasmile
+         */
         public void dispose() {
             fbo.dispose();
             if (surface == this)
@@ -114,6 +183,10 @@ public final class GraphicManager {
         }
     }
 
+    /**
+     * Графічний об'єкт з власним виконуваним кодом.
+     * @author uwuhasmile
+     */
     public final class AnmVirtualMachine {
         // Tweener.Vector2Tweener uvPositionInterpolator;
         // Tweener.Vector2Tweener uvScaleInterpolator;
@@ -179,6 +252,13 @@ public final class GraphicManager {
             scaleInterpolator = new Tweener.Vector2Tweener();
         }
 
+        /**
+         * Відмальовує об'єкт на екран.
+         * Зазвичай, позиція буде інтерпольована між двома тіками.
+         * Проте, якщо об'єкт був позначений як той, що телепортувався, то відмалювання буде одразу в позиції.
+         * @throws PR25RuntimeException якщо не в режимі малювання
+         * @author uwuhasmile
+         */
         public void draw() {
             if (!drawing) throw new PR25RuntimeException("GraphicManager is not drawing");
             if (!absoluteVisible()) return;
@@ -219,6 +299,13 @@ public final class GraphicManager {
             }
         }
 
+        /**
+         * Виконує скрипт, призначений до об'єкта та оновлює анімації інтерполяції.
+         * Виконання відбувається доти, поки не дійде або до інструкції з більшою часовою відміткою, або до останньої інструкції.
+         * При доходженні до останньої інструкції, скрипт скидається.
+         * @throws PR25RuntimeException якщо в режимі малювання
+         * @author uwuhasmile
+         */
         public int execute() {
             if (drawing) throw new PR25RuntimeException("Can't execute script when drawing");
             if (anm == null)
@@ -473,10 +560,19 @@ public final class GraphicManager {
             return 0;
         }
 
+        /**
+         * Завантажує ANM ресурс.
+         * @author uwuhasmile
+         */
         public void loadAnm(Anm anm) {
             this.anm = anm;
         }
 
+        /**
+         * Завантажує скрипт з ANM-ресурсу.
+         * @throws PR25RuntimeException якщо не виставлений ANM-ресурс
+         * @author uwuhasmile
+         */
         public void loadScript(String script) {
             if (anm == null) throw new PR25RuntimeException("ANM is null, no scripts");
             Anm.AnmScript anmScript = anm.getScript(script);
@@ -506,31 +602,63 @@ public final class GraphicManager {
             lastAbsoluteScale = new Vector2(scale);
         }
 
+        /**
+         * Завантажує текстуру id з ANM-ресурсу.
+         * @throws PR25RuntimeException якщо не виставлений ANM-ресурс
+         * @author uwuhasmile
+         */
         public void loadSource(int id) {
             if (anm == null) throw new PR25RuntimeException("ANM is null, no sources");
             region = anm.getSource(id);
         }
 
+        /**
+         * Власноруч завантажує певну текстуру. Може бути корисно для відмалювання поверхні.
+         * @author uwuhasmile
+         */
         public void loadTexture(Texture texture) {
             this.region = new TextureRegion(texture);
         }
 
+        /**
+         * Власноруч завантажує певну текстуру. Може бути корисно для відмалювання поверхні.
+         * @author uwuhasmile
+         */
         public void loadTexture(TextureRegion region) {
             this.region = new TextureRegion(region);
         }
 
+        /**
+         * Встановлює interrupt для віртуальної машини.
+         * Якщо більше за 0, то на наступний тік віртуальна машина спробує знайти та перейти до нього.
+         * Потрібно, наприклад, для зміни анімацій.
+         * @author uwuhasmile
+         */
         public void interrupt(byte interrupt) {
             this.interrupt = interrupt;
         }
 
+        /**
+         * Скидає interrupt.
+         * @author uwuhasmile
+         */
         public void resetInterrupt() {
             interrupt = 0;
         }
 
+        /**
+         * Позначає як телепортовану.
+         * Якщо була така позначка, то наступного кадру не буде інтерполяції між тіками.
+         * @author uwuhasmile
+         */
         public void teleport() {
             flags |= Anm.ANM_FLAG_TELEPORT;
         }
 
+        /**
+         * Повністю зупиняє виконання скрипта.
+         * @author uwuhasmile
+         */
         public void delete() {
             // uvPositionInterpolator.end();
             // uvScaleInterpolator.end();
@@ -549,6 +677,10 @@ public final class GraphicManager {
             region = null;
         }
 
+        /**
+         * @return видимість відносно батьків
+         * @author uwuhasmile
+         */
         public boolean absoluteVisible() {
             AnmVirtualMachine o = this;
             boolean result = true;
@@ -560,6 +692,10 @@ public final class GraphicManager {
             return result;
         }
 
+        /**
+         * @return колір відносно батьків
+         * @author uwuhasmile
+         */
         public Color absoluteColor() {
             AnmVirtualMachine o = this;
             Color result = Color.WHITE;
@@ -570,6 +706,10 @@ public final class GraphicManager {
             return result;
         }
 
+        /**
+         * @return прозорість відносно батьків
+         * @author uwuhasmile
+         */
         public float absoluteAlpha() {
             AnmVirtualMachine o = this;
             float result = 1.0f;
@@ -580,6 +720,10 @@ public final class GraphicManager {
             return result;
         }
 
+        /**
+         * @return позиція відносно батьків
+         * @author uwuhasmile
+         */
         public Vector2 absolutePosition() {
             AnmVirtualMachine o = this;
             Vector2 result = new Vector2();
@@ -591,6 +735,10 @@ public final class GraphicManager {
             return result;
         }
 
+        /**
+         * @return кут повороту відносно батьків
+         * @author uwuhasmile
+         */
         public float absoluteAngle() {
             AnmVirtualMachine o = this;
             float result = 0.0f;
@@ -602,6 +750,10 @@ public final class GraphicManager {
             return result;
         }
 
+        /**
+         * @return розмір відносно батьків
+         * @author uwuhasmile
+         */
         public Vector2 absoluteScale() {
             AnmVirtualMachine o = this;
             Vector2 result = new Vector2(1.0f, 1.0f);
@@ -613,6 +765,10 @@ public final class GraphicManager {
             return result;
         }
 
+        /**
+         * @return остаточна позиція якірної точки
+         * @author uwuhasmile
+         */
         public Vector2 absoluteAnchorOffset() {
             int width = region.getRegionWidth();
             int height = region.getRegionHeight();
@@ -631,6 +787,11 @@ public final class GraphicManager {
             return result;
         }
 
+        /**
+         * Пропускає поточну інструкцію.
+         * @throws PR25RuntimeException якщо не виставлений ANM-ресурс, скрипт вже було завершено, або невірний код інструкції
+         * @author uwuhasmile
+         */
         private void skip() {
             if (anm == null) throw new PR25RuntimeException("No ANM script");
             if (pointer >= scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
@@ -639,18 +800,34 @@ public final class GraphicManager {
             pointer += Anm.ANM_INSTRUCTION_SIZES[opcode];
         }
 
+        /**
+         * Пропускає поточну інструкцію до аргументу.
+         * Фактично, пропускає 3 байти (1 байт - код інструкції, 2 байти - часовий мітка)
+         * @throws PR25RuntimeException якщо не виставлений ANM-ресурс або скрипт вже було завершено
+         * @author uwuhasmile
+         */
         private void skipToArgs() {
             if (anm == null) throw new PR25RuntimeException("No ANM script");
             if (pointer >= scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
             pointer += 3;
         }
 
+        /**
+         * @return часова мітка інструкції
+         * @throws PR25RuntimeException якщо не виставлений ANM-ресурс або скрипт вже було завершено
+         * @author uwuhasmile
+         */
         private short parseTime() {
             if (anm == null) throw new PR25RuntimeException("No ANM script");
             if (pointer >= scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
             return anm.bytecode.getShort(pointer + 1);
         }
 
+        /**
+         * @return код інструкції
+         * @throws PR25RuntimeException якщо не виставлений ANM-ресурс, скрипт вже було завершено, або код не відповідає дійсній інструкції
+         * @author uwuhasmile
+         */
         private int parseOpcode() {
             if (anm == null) throw new PR25RuntimeException("No ANM script");
             if (pointer >= scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
@@ -659,6 +836,11 @@ public final class GraphicManager {
             return anm.bytecode.get(pointer);
         }
 
+        /**
+         * Повертає float-значення та переходить до наступного аргументу.
+         * @throws PR25RuntimeException якщо не виставлений ANM-ресурс або скрипт вже було завершено
+         * @author uwuhasmile
+         */
         private float parseFloat() {
             if (anm == null) throw new PR25RuntimeException("No ANM script");
             if (pointer >= scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
@@ -667,6 +849,11 @@ public final class GraphicManager {
             return f;
         }
 
+        /**
+         * Повертає int-значення та переходить до наступного аргументу.
+         * @throws PR25RuntimeException якщо не виставлений ANM-ресурс або скрипт вже було завершено
+         * @author uwuhasmile
+         */
         private int parseInt() {
             if (anm == null) throw new PR25RuntimeException("No ANM script");
             if (pointer >= scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
@@ -675,6 +862,11 @@ public final class GraphicManager {
             return i;
         }
 
+        /**
+         * Повертає byte-значення та переходить до наступного аргументу.
+         * @throws PR25RuntimeException якщо не виставлений ANM-ресурс або скрипт вже було завершено
+         * @author uwuhasmile
+         */
         private int parseByte() {
             if (anm == null) throw new PR25RuntimeException("No ANM script");
             if (pointer >= scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
