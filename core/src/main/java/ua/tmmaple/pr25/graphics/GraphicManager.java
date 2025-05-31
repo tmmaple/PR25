@@ -39,7 +39,7 @@ public final class GraphicManager {
 
     public void shutdown() {
         if (surface != null)
-            surface.dispose();
+            surface.end();
     }
 
     public void begin() {
