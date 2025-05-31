@@ -51,8 +51,7 @@ public final class GraphicManager {
      * @author uwuhasmile
      */
     public void shutdown() {
-        if (surface != null)
-            surface.end();
+        if (drawing) end();
     }
 
     /**
@@ -75,6 +74,8 @@ public final class GraphicManager {
      */
     public void end() {
         if (!drawing) throw new PR25RuntimeException("GraphicManager did not begin");
+        if (surface != null)
+            surface.end();
         batch.end();
         drawing = false;
     }
