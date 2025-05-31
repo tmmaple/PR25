@@ -9,6 +9,11 @@ import ua.tmmaple.pr25.util.PR25RuntimeException;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+/**
+ * Музичний трек.
+ * Обгортка над {@link com.badlogic.gdx.audio.Music}, але може повторюватись з певної позиції.
+ * @author uwuhasmile
+ */
 public class Bgm implements Disposable {
     private float loopPoint;
 
@@ -34,6 +39,11 @@ public class Bgm implements Disposable {
         parse(file);
     }
 
+    /**
+     * Програє трек.
+     * @param looping чи повторювати трек після програвання
+     * @author uwuhasmile
+     */
     public void play(boolean looping) {
         this.looping = looping;
         backing.play();
@@ -49,27 +59,52 @@ public class Bgm implements Disposable {
         backing.setLooping(false);
     }
 
+    /**
+     * Ставить програвання на паузу.
+     * @author uwuhasmile
+     */
     public void pause() {
         backing.pause();
     }
 
+    /**
+     * Продовжу програвання.
+     * @author uwuhasmile
+     */
     public void resume() {
         backing.play();
     }
 
+    /**
+     * Зупиняє програвання.
+     * @author uwuhasmile
+     */
     public void stop() {
         backing.stop();
         backing.setOnCompletionListener(null);
     }
 
+    /**
+     * Встановлює гучність.
+     * @author uwuhasmile
+     */
     public void setVolume(float volume) {
         backing.setVolume(volume);
     }
 
+    /**
+     * @return чи програється трек на даний момент
+     * @author uwuhasmile
+     */
     public boolean isPlaying() {
         return backing.isPlaying();
     }
 
+    /**
+     * Читає з файлу .bgm.
+     * В файлі на першому рядку обов'язково має бути ім'я аудіофайлу, на другому позиція повторення в секундах.
+     * @author uwuhasmile
+     */
     private void parse(FileHandle file) {
         try (BufferedReader r = file.reader(256)) {
             String line = r.readLine();
