@@ -7,6 +7,10 @@ import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 import ua.tmmaple.pr25.graphics.TextManager;
 
+/**
+ * Клас гри libGDX, де відбувається головний цикл.
+ * @author uwuhasmile
+ */
 public class Game extends ApplicationAdapter {
     public static final int BASE_WINDOW_WIDTH = 640;
     public static final int BASE_WINDOW_HEIGHT = 480;
