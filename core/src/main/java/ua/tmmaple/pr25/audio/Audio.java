@@ -77,6 +77,15 @@ public final class Audio {
             bgm.pause();
     }
 
+    /**
+     * Продовжує трек після паузи.
+     * @author uwuhasmile
+     */
+    public void resumeMusic() {
+        if (bgm != null && !bgm.isPlaying())
+            bgm.resume();
+    }
+
     public void fadeMusic(float t) {
         if (bgm == null) return;
         fade = 1.0f;
