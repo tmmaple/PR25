@@ -29,7 +29,7 @@ public final class GraphicManager {
     private boolean drawing;
     private Surface surface;
 
-    private Color backgroundColor;
+    public final Color backgroundColor;
 
     public GraphicManager() {
         batch = new SpriteBatch();
@@ -87,14 +87,6 @@ public final class GraphicManager {
      */
     public void update(float t) {
         this.t = t;
-    }
-
-    /**
-     * Встановлює колір фону.
-     * @author uwuhasmile
-     */
-    public void setBackgroundColor(Color color) {
-        backgroundColor = color;
     }
 
     /**
@@ -201,9 +193,9 @@ public final class GraphicManager {
 
         public AnmVirtualMachine parent;
 
-        public Vector2 position;
+        public final Vector2 position;
         public float angle;
-        public Vector2 scale;
+        public final Vector2 scale;
 
         private int flags;
 
@@ -220,20 +212,20 @@ public final class GraphicManager {
         private float vScrolling;
         private int uvMode;
 
-        private Color color;
+        private final Color color;
         private float alpha;
 
-        private Vector2 anmPosition;
+        private final Vector2 anmPosition;
         private float anmAngle;
-        private Vector2 anmScale;
+        private final Vector2 anmScale;
         private float angularSpeed;
         private int originMode;
         private int anchorMode;
-        private Vector2 anchorOffset;
+        private final Vector2 anchorOffset;
 
-        private Vector2 lastAbsolutePosition;
+        private final Vector2 lastAbsolutePosition;
         private float lastAbsoluteAngle;
-        private Vector2 lastAbsoluteScale;
+        private final Vector2 lastAbsoluteScale;
 
         private Anm anm;
         private TextureRegion region;
@@ -253,6 +245,9 @@ public final class GraphicManager {
             positionInterpolator = new Tweener.Vector2Tweener();
             angleInterpolator = new Tweener.FloatTweener();
             scaleInterpolator = new Tweener.Vector2Tweener();
+
+            lastAbsolutePosition = new Vector2();
+            lastAbsoluteScale = new Vector2();
 
             toDefaults();
         }
@@ -296,9 +291,9 @@ public final class GraphicManager {
                     finalAn = an;
                     finalSc.set(sc);
                 }
-                lastAbsolutePosition = pos;
+                lastAbsolutePosition.set(pos);
                 lastAbsoluteAngle = an;
-                lastAbsoluteScale = sc;
+                lastAbsoluteScale.set(sc);
                 batch.setColor(c.r, c.g, c.b, a);
                 batch.draw(region,
                     finalPos.x, finalPos.y,
@@ -321,10 +316,6 @@ public final class GraphicManager {
             if (drawing) throw new PR25RuntimeException("Can't execute script when drawing");
             if (anm == null)
                 return 1;
-
-            lastAbsolutePosition = absolutePosition();
-            lastAbsoluteAngle = absoluteAngle();
-            lastAbsoluteScale = absoluteScale();
 
             if (interrupt > 0) {
                 previousPointer = pointer;
@@ -545,7 +536,7 @@ public final class GraphicManager {
             }
             if (colorInterpolator.isRunning()) {
                 colorInterpolator.update();
-                color = colorInterpolator.value();
+                color.set(colorInterpolator.value());
             }
             if (alphaInterpolator.isRunning()) {
                 alphaInterpolator.update();
@@ -553,7 +544,7 @@ public final class GraphicManager {
             }
             if (positionInterpolator.isRunning()) {
                 positionInterpolator.update();
-                anmPosition = positionInterpolator.value();
+                anmPosition.set(positionInterpolator.value());
             }
             if (angleInterpolator.isRunning()) {
                 angleInterpolator.update();
@@ -562,7 +553,7 @@ public final class GraphicManager {
                 anmAngle += angularSpeed;
             if (scaleInterpolator.isRunning()) {
                 scaleInterpolator.update();
-                anmScale = scaleInterpolator.value();
+                anmScale.set(scaleInterpolator.value());
             }
 
             ++time;
@@ -613,9 +604,9 @@ public final class GraphicManager {
             anchorMode = Anm.ANM_ANCHOR_CENTER;
             anchorOffset.set(0.0f, 0.0f);
 
-            lastAbsolutePosition = new Vector2(position);
+            lastAbsolutePosition.set(position);
             lastAbsoluteAngle = angle;
-            lastAbsoluteScale = new Vector2(scale);
+            lastAbsoluteScale.set(scale);
         }
 
         /**
