@@ -1,10 +1,10 @@
-package ua.tmmaple.pr25;
+package ua.tmmaple.pr25.audio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
+import ua.tmmaple.pr25.God;
 import ua.tmmaple.pr25.assets.Assets;
-import ua.tmmaple.pr25.assets.Bgm;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
 import java.util.HashMap;

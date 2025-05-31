@@ -3,6 +3,7 @@ package ua.tmmaple.pr25;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import ua.tmmaple.pr25.assets.Assets;
+import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 import ua.tmmaple.pr25.graphics.TextManager;
 
