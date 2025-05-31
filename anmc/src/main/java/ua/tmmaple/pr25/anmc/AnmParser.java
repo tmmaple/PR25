@@ -1,6 +1,6 @@
 package ua.tmmaple.pr25.anmc;
 
-import ua.tmmaple.pr25.graphics.GraphicManager;
+import ua.tmmaple.pr25.graphics.Anm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,11 +92,11 @@ public final class AnmParser {
             else if (match(AnmToken.TOKEN_KEYWORD)) {
                 AnmToken token = previous();
                 if (token.iValue == AnmToken.KEYWORD_INTERRUPT && match(AnmToken.TOKEN_ID, AnmToken.TOKEN_INTEGER) && match(AnmToken.TOKEN_SEMICOLON))
-                    byteOffset += AnmInstructionDecl.size(GraphicManager.AnmVirtualMachine.ANM_OP_INTERRUPT);
+                    byteOffset += AnmInstructionDecl.size(Anm.ANM_OP_INTERRUPT);
                 else if (token.iValue == AnmToken.KEYWORD_SLEEP && match(AnmToken.TOKEN_INTEGER, AnmToken.TOKEN_ID) && match(AnmToken.TOKEN_SEMICOLON))
-                    byteOffset += AnmInstructionDecl.size(GraphicManager.AnmVirtualMachine.ANM_OP_SLEEP);
+                    byteOffset += AnmInstructionDecl.size(Anm.ANM_OP_SLEEP);
                 else if (token.iValue == AnmToken.KEYWORD_JUMP && match(AnmToken.TOKEN_ID) && match(AnmToken.TOKEN_SEMICOLON))
-                    byteOffset += AnmInstructionDecl.size(GraphicManager.AnmVirtualMachine.ANM_OP_JUMP);
+                    byteOffset += AnmInstructionDecl.size(Anm.ANM_OP_JUMP);
                 else if (AnmInstructionDecl.byKeyword(token.iValue) != 0 && match(AnmToken.TOKEN_SEMICOLON)) byteOffset += AnmInstructionDecl.sizeByKeyword(token.iValue);
                 else throw new AnmParserException("Unexpected token " + token);
             } else if (match(AnmToken.TOKEN_ID)) {
@@ -147,24 +147,24 @@ public final class AnmParser {
                 token = previous();
                 int label = findLabel(token.sValue);
                 if (label == -1) throw new AnmParserException("Label '" + token.sValue + "' not found");
-                instruction = new AnmIM.AnmInstruction(time, GraphicManager.AnmVirtualMachine.ANM_OP_JUMP, byteOffset, AnmIM.AnmValue.byteOffset(label));
-                byteOffset += AnmInstructionDecl.size(GraphicManager.AnmVirtualMachine.ANM_OP_JUMP);
+                instruction = new AnmIM.AnmInstruction(time, Anm.ANM_OP_JUMP, byteOffset, AnmIM.AnmValue.byteOffset(label));
+                byteOffset += AnmInstructionDecl.size(Anm.ANM_OP_JUMP);
                 if (!match(AnmToken.TOKEN_SEMICOLON)) throw new AnmParserException("Expected ; got " + token);
             } break;
             case AnmToken.KEYWORD_SLEEP: {
                 AnmIM.AnmValue arg = parseArgument(AnmIM.VALUE_TYPE_INTEGER);
                 if (arg.type == AnmIM.VALUE_TYPE_FLOAT || arg.type == AnmIM.VALUE_TYPE_BYTE_OFFSET)
                     throw new AnmParserException("Invalid argument type: expected integer");
-                instruction = new AnmIM.AnmInstruction(time, GraphicManager.AnmVirtualMachine.ANM_OP_SLEEP, byteOffset, arg);
-                byteOffset += AnmInstructionDecl.size(GraphicManager.AnmVirtualMachine.ANM_OP_SLEEP);
+                instruction = new AnmIM.AnmInstruction(time, Anm.ANM_OP_SLEEP, byteOffset, arg);
+                byteOffset += AnmInstructionDecl.size(Anm.ANM_OP_SLEEP);
                 if (!match(AnmToken.TOKEN_SEMICOLON)) throw new AnmParserException("Expected ; got " + token);
             } break;
             case AnmToken.KEYWORD_INTERRUPT: {
                 AnmIM.AnmValue arg = parseArgument(AnmIM.VALUE_TYPE_BYTE);
                 if (arg.type == AnmIM.VALUE_TYPE_FLOAT || arg.type == AnmIM.VALUE_TYPE_BYTE_OFFSET)
                     throw new AnmParserException("Invalid argument type: expected integer");
-                instruction = new AnmIM.AnmInstruction(time, GraphicManager.AnmVirtualMachine.ANM_OP_INTERRUPT, byteOffset, arg);
-                byteOffset += AnmInstructionDecl.size(GraphicManager.AnmVirtualMachine.ANM_OP_INTERRUPT);
+                instruction = new AnmIM.AnmInstruction(time, Anm.ANM_OP_INTERRUPT, byteOffset, arg);
+                byteOffset += AnmInstructionDecl.size(Anm.ANM_OP_INTERRUPT);
                 if (!match(AnmToken.TOKEN_SEMICOLON)) throw new AnmParserException("Expected ; got " + token);
             } break;
             default: {
