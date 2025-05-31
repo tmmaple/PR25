@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
+import ua.tmmaple.pr25.util.PR25RuntimeException;
 
 public final class TextManager {
     public static TextManager global;
@@ -32,12 +33,12 @@ public final class TextManager {
     }
 
     public void begin() {
-        if (drawing) throw new IllegalStateException("TextManager already begun");
+        if (drawing) throw new PR25RuntimeException("TextManager already begun");
         drawing = true;
     }
 
     public void draw(CharSequence text, TextSettings settings) {
-        if (!drawing) throw new IllegalStateException("TextManager did not begin");
+        if (!drawing) throw new PR25RuntimeException("TextManager did not begin");
         if (text == null || text.length() == 0) return;
         BitmapFont font = fonts[settings.font];
         Color color = settings.color.cpy();
@@ -54,7 +55,7 @@ public final class TextManager {
     }
 
     public void end() {
-        if (!drawing) throw new IllegalStateException("TextManager did not begin");
+        if (!drawing) throw new PR25RuntimeException("TextManager did not begin");
         drawing = false;
     }
 
@@ -83,7 +84,7 @@ public final class TextManager {
         }
 
         public void setFont(byte font) {
-            if (font < 0 || font >= fonts.length) throw new IllegalArgumentException("Invalid font number");
+            if (font < 0 || font >= fonts.length) throw new PR25RuntimeException("Invalid font number");
             this.font = font;
         }
     }
