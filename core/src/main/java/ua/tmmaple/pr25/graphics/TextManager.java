@@ -49,7 +49,7 @@ public final class TextManager {
         if (settings.parent != null) {
             Color parentColor = settings.parent.absoluteColor();
             color.mul(parentColor.r, parentColor.g, parentColor.b, settings.parent.absoluteAlpha());
-            pos.add(settings.parent.lastAbsolutePosition);
+            pos.add(settings.parent.absolutePosition());
         }
         font.setColor(color);
         int start = Math.max(settings.start, 0);
@@ -65,7 +65,7 @@ public final class TextManager {
     public class TextSettings {
         private byte font;
 
-        public AnmVirtualMachine parent;
+        public GraphicManager.AnmVirtualMachine parent;
 
         public Color color;
         public Vector2 position;
