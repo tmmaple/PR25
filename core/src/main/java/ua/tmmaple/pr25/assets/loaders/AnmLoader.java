@@ -10,11 +10,10 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
-import ua.tmmaple.pr25.assets.AnmData;
 import ua.tmmaple.pr25.graphics.Anm;
 
 public final class AnmLoader extends AsynchronousAssetLoader<Anm, AnmLoader.AnmParameter> {
-    private AnmData data;
+    private Anm.AnmData data;
 
     public AnmLoader(FileHandleResolver resolver) {
         super(resolver);
@@ -22,7 +21,7 @@ public final class AnmLoader extends AsynchronousAssetLoader<Anm, AnmLoader.AnmP
 
     @Override
     public void loadAsync(AssetManager manager, String fileName, FileHandle file, AnmParameter parameter) {
-        if (data == null) data = new AnmData(file);
+        if (data == null) data = new Anm.AnmData(file);
     }
 
     @Override
@@ -37,7 +36,7 @@ public final class AnmLoader extends AsynchronousAssetLoader<Anm, AnmLoader.AnmP
         if (data.sources() > 0) {
             sources = new TextureRegion[data.sources()];
             for (int i = 0; i < imports.length; ++i) {
-                AnmData.AnmSource source = data.getSource(i);
+                Anm.AnmData.AnmSource source = data.getSource(i);
                 sources[i] = new TextureRegion(imports[source.i], source.x, source.y, source.width, source.height);
             }
         }
@@ -51,7 +50,7 @@ public final class AnmLoader extends AsynchronousAssetLoader<Anm, AnmLoader.AnmP
     @Override
     public Array<AssetDescriptor> getDependencies(String fileName, FileHandle file, AnmParameter parameter) {
         Array<AssetDescriptor> deps = new Array<>();
-        if (data == null) data = new AnmData(file);
+        if (data == null) data = new Anm.AnmData(file);
         for (int i = 0; i < data.imports(); ++i) {
             String importPath = data.getImport(i);
             FileHandle resolved = resolve(importPath);
