@@ -265,166 +265,8 @@ public final class GraphicManager {
             }
         }
 
-        public void loadAnm(Anm anm) {
-            this.anm = anm;
-        }
-
-        public void loadScript(String script) {
-            if (anm == null) throw new PR25RuntimeException("ANM is null, no scripts");
-            Anm.AnmScript anmScript = anm.getScript(script);
-            time = -1;
-            scriptStart = anmScript.start;
-            scriptEnd = anmScript.end;
-            pointer = anmScript.start;
-            interrupt = 0;
-            previousPointer = scriptStart;
-            previousTime = -1;
-
-            flags = ANM_FLAG_VISIBLE | ANM_FLAG_TELEPORT;
-            uScrolling = 0.0f;
-            vScrolling = 0.0f;
-            color.set(Color.WHITE);
-            alpha = 1.0f;
-            anmPosition.set(0.0f, 0.0f);
-            anmAngle = 0.0f;
-            anmScale.set(1.0f, 1.0f);
-            angularSpeed = 0.0f;
-            originMode = ANM_ORIGIN_PARENT;
-            anchorMode = ANM_ANCHOR_CENTER;
-            anchorOffset.set(0.0f, 0.0f);
-
-            lastAbsolutePosition = new Vector2(position);
-            lastAbsoluteAngle = 0.0f;
-            lastAbsoluteScale = new Vector2(scale);
-        }
-
-        public void loadSource(int id) {
-            if (anm == null) throw new PR25RuntimeException("ANM is null, no sources");
-            region = anm.getSource(id);
-        }
-
-        public void loadTexture(Texture texture) {
-            this.region = new TextureRegion(texture);
-        }
-
-        public void loadTexture(TextureRegion region) {
-            this.region = new TextureRegion(region);
-        }
-
-        public void interrupt(byte interrupt) {
-            this.interrupt = interrupt;
-        }
-
-        public void resetInterrupt() {
-            interrupt = 0;
-        }
-
-        public void teleport() {
-            flags |= ANM_FLAG_TELEPORT;
-        }
-
-        public void delete() {
-            // uvPositionInterpolator.end();
-            // uvScaleInterpolator.end();
-            colorInterpolator.end();
-            alphaInterpolator.end();
-            positionInterpolator.end();
-            angleInterpolator.end();
-            scaleInterpolator.end();
-            flags = 0;
-            time = -1;
-            scriptStart = 0;
-            scriptEnd = 0;
-            pointer = 0;
-            interrupt = 0;
-            anm = null;
-            region = null;
-        }
-
-        public boolean absoluteVisible() {
-            AnmVirtualMachine o = this;
-            boolean result = true;
-            while (o != null && result) {
-                if ((o.flags & ANM_FLAG_VISIBLE) == 0) result = false;
-                else if (o.alpha == 0.0f) result = false;
-                else o = o.parent;
-            }
-            return result;
-        }
-
-        public Color absoluteColor() {
-            AnmVirtualMachine o = this;
-            Color result = Color.WHITE;
-            while (o != null) {
-                result.mul(o.color);
-                o = o.parent;
-            }
-            return result;
-        }
-
-        public float absoluteAlpha() {
-            AnmVirtualMachine o = this;
-            float result = 1.0f;
-            while (o != null) {
-                result *= o.alpha;
-                o = o.parent;
-            }
-            return result;
-        }
-
-        public Vector2 absolutePosition() {
-            AnmVirtualMachine o = this;
-            Vector2 result = new Vector2();
-            while (o != null) {
-                if (o.originMode == ANM_ORIGIN_PARENT) result.add(o.position);
-                result.add(o.anmPosition);
-                o = o.parent;
-            }
-            return result;
-        }
-
-        public float absoluteAngle() {
-            AnmVirtualMachine o = this;
-            float result = 0.0f;
-            while (o != null) {
-                if ((o.flags & ANM_FLAG_AUTOROTATE) != 0) result += o.angle;
-                result += o.anmAngle;
-                o = o.parent;
-            }
-            return result;
-        }
-
-        public Vector2 absoluteScale() {
-            AnmVirtualMachine o = this;
-            Vector2 result = new Vector2(1.0f, 1.0f);
-            while (o != null) {
-                if (o.originMode == ANM_ORIGIN_PARENT) result.scl(o.scale);
-                result.scl(o.anmScale);
-                o = o.parent;
-            }
-            return result;
-        }
-
-        public Vector2 absoluteAnchorOffset() {
-            int width = region.getRegionWidth();
-            int height = region.getRegionHeight();
-            Vector2 result = anchorOffset.cpy();
-            switch (anchorMode) {
-                case ANM_ANCHOR_TOP_LEFT: result.set(0.0f, 0.0f); break;
-                case ANM_ANCHOR_TOP_MIDDLE: result.set(-width * 0.5f, 0.0f); break;
-                case ANM_ANCHOR_TOP_RIGHT: result.set(-width, 0.0f); break;
-                case ANM_ANCHOR_MIDDLE_LEFT: result.set(0.0f, -height * 0.5f); break;
-                case ANM_ANCHOR_CENTER: result.set(-width * 0.5f, -height * 0.5f); break;
-                case ANM_ANCHOR_MIDDLE_RIGHT: result.set(-width, -height * 0.5f); break;
-                case ANM_ANCHOR_BOTTOM_LEFT: result.set(0.0f, -height); break;
-                case ANM_ANCHOR_BOTTOM_MIDDLE: result.set(-width * 0.5f, -height); break;
-                case ANM_ANCHOR_BOTTOM_RIGHT: result.set(-width, -height); break;
-            }
-            return result;
-        }
-
         public int execute() {
-            GraphicManager mgr = GraphicManager.this;
+            if (drawing) throw new PR25RuntimeException("Can't execute script when drawing");
             if (anm == null)
                 return 1;
 
@@ -675,6 +517,164 @@ public final class GraphicManager {
 
             ++time;
             return 0;
+        }
+
+        public void loadAnm(Anm anm) {
+            this.anm = anm;
+        }
+
+        public void loadScript(String script) {
+            if (anm == null) throw new PR25RuntimeException("ANM is null, no scripts");
+            Anm.AnmScript anmScript = anm.getScript(script);
+            time = -1;
+            scriptStart = anmScript.start;
+            scriptEnd = anmScript.end;
+            pointer = anmScript.start;
+            interrupt = 0;
+            previousPointer = scriptStart;
+            previousTime = -1;
+
+            flags = ANM_FLAG_VISIBLE | ANM_FLAG_TELEPORT;
+            uScrolling = 0.0f;
+            vScrolling = 0.0f;
+            color.set(Color.WHITE);
+            alpha = 1.0f;
+            anmPosition.set(0.0f, 0.0f);
+            anmAngle = 0.0f;
+            anmScale.set(1.0f, 1.0f);
+            angularSpeed = 0.0f;
+            originMode = ANM_ORIGIN_PARENT;
+            anchorMode = ANM_ANCHOR_CENTER;
+            anchorOffset.set(0.0f, 0.0f);
+
+            lastAbsolutePosition = new Vector2(position);
+            lastAbsoluteAngle = 0.0f;
+            lastAbsoluteScale = new Vector2(scale);
+        }
+
+        public void loadSource(int id) {
+            if (anm == null) throw new PR25RuntimeException("ANM is null, no sources");
+            region = anm.getSource(id);
+        }
+
+        public void loadTexture(Texture texture) {
+            this.region = new TextureRegion(texture);
+        }
+
+        public void loadTexture(TextureRegion region) {
+            this.region = new TextureRegion(region);
+        }
+
+        public void interrupt(byte interrupt) {
+            this.interrupt = interrupt;
+        }
+
+        public void resetInterrupt() {
+            interrupt = 0;
+        }
+
+        public void teleport() {
+            flags |= ANM_FLAG_TELEPORT;
+        }
+
+        public void delete() {
+            // uvPositionInterpolator.end();
+            // uvScaleInterpolator.end();
+            colorInterpolator.end();
+            alphaInterpolator.end();
+            positionInterpolator.end();
+            angleInterpolator.end();
+            scaleInterpolator.end();
+            flags = 0;
+            time = -1;
+            scriptStart = 0;
+            scriptEnd = 0;
+            pointer = 0;
+            interrupt = 0;
+            anm = null;
+            region = null;
+        }
+
+        public boolean absoluteVisible() {
+            AnmVirtualMachine o = this;
+            boolean result = true;
+            while (o != null && result) {
+                if ((o.flags & ANM_FLAG_VISIBLE) == 0) result = false;
+                else if (o.alpha == 0.0f) result = false;
+                else o = o.parent;
+            }
+            return result;
+        }
+
+        public Color absoluteColor() {
+            AnmVirtualMachine o = this;
+            Color result = Color.WHITE;
+            while (o != null) {
+                result.mul(o.color);
+                o = o.parent;
+            }
+            return result;
+        }
+
+        public float absoluteAlpha() {
+            AnmVirtualMachine o = this;
+            float result = 1.0f;
+            while (o != null) {
+                result *= o.alpha;
+                o = o.parent;
+            }
+            return result;
+        }
+
+        public Vector2 absolutePosition() {
+            AnmVirtualMachine o = this;
+            Vector2 result = new Vector2();
+            while (o != null) {
+                if (o.originMode == ANM_ORIGIN_PARENT) result.add(o.position);
+                result.add(o.anmPosition);
+                o = o.parent;
+            }
+            return result;
+        }
+
+        public float absoluteAngle() {
+            AnmVirtualMachine o = this;
+            float result = 0.0f;
+            while (o != null) {
+                if ((o.flags & ANM_FLAG_AUTOROTATE) != 0) result += o.angle;
+                result += o.anmAngle;
+                o = o.parent;
+            }
+            return result;
+        }
+
+        public Vector2 absoluteScale() {
+            AnmVirtualMachine o = this;
+            Vector2 result = new Vector2(1.0f, 1.0f);
+            while (o != null) {
+                if (o.originMode == ANM_ORIGIN_PARENT) result.scl(o.scale);
+                result.scl(o.anmScale);
+                o = o.parent;
+            }
+            return result;
+        }
+
+        public Vector2 absoluteAnchorOffset() {
+            int width = region.getRegionWidth();
+            int height = region.getRegionHeight();
+            Vector2 result = anchorOffset.cpy();
+            switch (anchorMode) {
+                case ANM_ANCHOR_TOP_LEFT: result.set(0.0f, 0.0f); break;
+                case ANM_ANCHOR_TOP_MIDDLE: result.set(-width * 0.5f, 0.0f); break;
+                case ANM_ANCHOR_TOP_RIGHT: result.set(-width, 0.0f); break;
+                case ANM_ANCHOR_MIDDLE_LEFT: result.set(0.0f, -height * 0.5f); break;
+                case ANM_ANCHOR_CENTER: result.set(-width * 0.5f, -height * 0.5f); break;
+                case ANM_ANCHOR_MIDDLE_RIGHT: result.set(-width, -height * 0.5f); break;
+                case ANM_ANCHOR_BOTTOM_LEFT: result.set(0.0f, -height); break;
+                case ANM_ANCHOR_BOTTOM_MIDDLE: result.set(-width * 0.5f, -height); break;
+                case ANM_ANCHOR_BOTTOM_RIGHT: result.set(-width, -height); break;
+            }
+            return result;
         }
 
         private void skip() {
