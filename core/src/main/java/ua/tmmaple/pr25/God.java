@@ -15,8 +15,6 @@ import java.util.Locale;
 public final class God {
     public static God global;
 
-    private Preferences prefs;
-
     public static final int LANGUAGE_ENGLISH = 0;
     public static final int LANGUAGE_UKRAINIAN = 1;
 
@@ -62,6 +60,8 @@ public final class God {
     private FileHandle i18nHandle;
     private I18NBundle i18n;
     private int language;
+
+    private Preferences prefs;
 
     public God() {
         i18nHandle = Gdx.files.internal("i18n/content");
