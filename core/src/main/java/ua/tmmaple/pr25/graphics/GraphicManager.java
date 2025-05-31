@@ -158,6 +158,7 @@ public final class GraphicManager {
          * @author uwuhasmile
          */
         public TextureRegion get() {
+            if (!drawing) throw new PR25RuntimeException("Can't use a surface before drawing");
             TextureRegion region = new TextureRegion(fbo.getColorBufferTexture());
             region.flip(false, true);
             return region;
@@ -169,6 +170,7 @@ public final class GraphicManager {
          * @author uwuhasmile
          */
         public void draw(float x, float y, float width, float height) {
+            if (!drawing) throw new PR25RuntimeException("Can't use a surface before drawing");
             batch.draw(get(), x, y, width, height);
         }
 
