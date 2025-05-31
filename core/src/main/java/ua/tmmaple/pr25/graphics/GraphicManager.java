@@ -1,9 +1,11 @@
 package ua.tmmaple.pr25.graphics;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -67,20 +69,53 @@ public final class GraphicManager {
         backgroundColor = color;
     }
 
-    public void nextSurface(Surface surface) {
-        if (!drawing) throw new PR25RuntimeException("GraphicManager is not drawing");
-        if (this.surface == null) {
-            this.surface = surface;
-            surface.fbo.begin();
-            return;
+    public final class Surface {
+        private final FrameBuffer fbo;
+
+        public Surface(Pixmap.Format format, int width, int height) {
+            fbo = new FrameBuffer(format, width, height, false);
         }
-        Texture texture = this.surface.fbo.getColorBufferTexture();
-        Surface temp = this.surface;
-        temp.fbo.end();
-        this.surface = surface;
-        if (surface != null)
-            surface.fbo.begin();
-        batch.draw(texture, temp.x, temp.y, temp.width, temp.height);
+
+        public void use() {
+            if (!drawing) throw new PR25RuntimeException("Can't use a surface before drawing");
+            if (surface != null) {
+                if (surface == this) throw new PR25RuntimeException("This surface is already used");
+                surface.end();
+            }
+            fbo.begin();
+            surface = this;
+        }
+
+        public void chain(float x, float y, float width, float height) {
+            if (!drawing) throw new PR25RuntimeException("Can't use a surface before drawing");
+            if (surface != null) {
+                if (surface == this) throw new PR25RuntimeException("This surface is already used");
+                surface.end();
+            }
+            fbo.begin();
+            if (surface != null) surface.draw(x, y, width, height);
+            surface = this;
+        }
+
+        public void end() {
+            if (surface != this) throw new PR25RuntimeException("Can't end surface that is unused");
+            fbo.end();
+            surface = null;
+        }
+
+        public TextureRegion get() {
+            TextureRegion region = new TextureRegion(fbo.getColorBufferTexture());
+            region.flip(false, true);
+            return region;
+        }
+
+        public void draw(float x, float y, float width, float height) {
+            batch.draw(get(), x, y, width, height);
+        }
+
+        public void dispose() {
+            fbo.dispose();
+        }
     }
 
     public final class AnmVirtualMachine {
