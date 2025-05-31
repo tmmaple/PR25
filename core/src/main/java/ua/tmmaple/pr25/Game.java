@@ -64,7 +64,7 @@ public class Game extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
-        GraphicManager.global.resize(width, height);
+        GraphicManager.global.viewport.update(width, height);
     }
 
     @Override

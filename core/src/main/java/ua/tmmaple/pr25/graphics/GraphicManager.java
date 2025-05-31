@@ -18,7 +18,7 @@ public final class GraphicManager {
     public static GraphicManager global;
 
     final SpriteBatch batch;
-    private Viewport viewport;
+    public final Viewport viewport;
 
     private float t;
 
@@ -30,17 +30,16 @@ public final class GraphicManager {
     public GraphicManager() {
         batch = new SpriteBatch();
         backgroundColor = Color.BLACK;
+        viewport = new FitViewport(Game.BASE_WINDOW_WIDTH, Game.BASE_WINDOW_HEIGHT);
     }
 
     public void initialize() {
-        viewport = new FitViewport(Game.BASE_WINDOW_WIDTH, Game.BASE_WINDOW_HEIGHT);
         viewport.apply();
-        surface = null;
     }
 
     public void shutdown() {
         if (surface != null)
-            surface.fbo.end();
+            surface.dispose();
     }
 
     public void begin() {
@@ -58,10 +57,6 @@ public final class GraphicManager {
 
     public void update(float t) {
         this.t = t;
-    }
-
-    public void resize(int width, int height) {
-        viewport.update(width, height, false);
     }
 
     public void setBackgroundColor(Color color) {
@@ -114,6 +109,8 @@ public final class GraphicManager {
 
         public void dispose() {
             fbo.dispose();
+            if (surface == this)
+                surface = null;
         }
     }
 
