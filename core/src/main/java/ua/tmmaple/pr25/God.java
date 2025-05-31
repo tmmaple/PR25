@@ -13,7 +13,7 @@ import ua.tmmaple.pr25.util.PR25RuntimeException;
 import java.util.Locale;
 
 /**
- * Налаштування гри та її поточний стан
+ * Налаштування гри та її поточний стан.
  */
 public final class God {
     public static God global;
@@ -74,7 +74,7 @@ public final class God {
     }
 
     /**
-     * Реєструє global в список оновлення
+     * Реєструє global в список оновлення.
      * @author uwuhasmile
      */
     public static int register() {
