@@ -31,10 +31,6 @@ public final class TextManager {
             if (font != null) font.dispose();
     }
 
-    public TextSettings create() {
-        return new TextSettings();
-    }
-
     public void begin() {
         if (drawing) throw new IllegalStateException("TextManager already begun");
         drawing = true;
@@ -75,7 +71,7 @@ public final class TextManager {
         public int hAlign;
         public boolean wrap;
 
-        private TextSettings() {
+        public TextSettings() {
             parent = null;
             font = 0;
             color = Color.WHITE;
