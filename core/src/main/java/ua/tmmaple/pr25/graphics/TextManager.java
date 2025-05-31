@@ -56,28 +56,6 @@ public final class TextManager {
     }
 
     /**
-     * Відмальовує текст з певними налаштуваннями.
-     * @throws PR25RuntimeException якщо не в режимі малювання
-     * @author uwuhasmile
-     */
-    public void draw(CharSequence text, TextSettings settings) {
-        if (!drawing) throw new PR25RuntimeException("TextManager did not begin");
-        if (text == null || text.length() == 0) return;
-        BitmapFont font = fonts[settings.font];
-        Color color = settings.color.cpy();
-        Vector2 pos = settings.position.cpy();
-        if (settings.parent != null) {
-            Color parentColor = settings.parent.absoluteColor();
-            color.mul(parentColor.r, parentColor.g, parentColor.b, settings.parent.absoluteAlpha());
-            pos.add(settings.parent.absolutePosition());
-        }
-        font.setColor(color);
-        int start = Math.max(settings.start, 0);
-        int end = Math.min(settings.end, text.length());
-        font.draw(GraphicManager.global.batch, text, pos.x, pos.y, start, end, settings.targetWidth, settings.hAlign, settings.wrap);
-    }
-
-    /**
      * Виходить з режиму малювання.
      * Має викликатись тоді, коли {@link ua.tmmaple.pr25.graphics.GraphicManager} переходить в режим відмалювання.
      * @throws PR25RuntimeException якщо не в режимі малювання
@@ -123,6 +101,28 @@ public final class TextManager {
         public void setFont(byte font) {
             if (font < 0 || font >= fonts.length) throw new PR25RuntimeException("Invalid font number");
             this.font = font;
+        }
+
+        /**
+         * Відмальовує текст з певними налаштуваннями.
+         * @throws PR25RuntimeException якщо не в режимі малювання
+         * @author uwuhasmile
+         */
+        public void draw(CharSequence text) {
+            if (!drawing) throw new PR25RuntimeException("TextManager did not begin");
+            if (text == null || text.length() == 0) return;
+            BitmapFont font = fonts[this.font];
+            Color color = this.color.cpy();
+            Vector2 pos = position.cpy();
+            if (parent != null) {
+                Color parentColor = parent.absoluteColor();
+                color.mul(parentColor.r, parentColor.g, parentColor.b, parent.absoluteAlpha());
+                pos.add(parent.absolutePosition());
+            }
+            font.setColor(color);
+            int start = Math.max(this.start, 0);
+            int end = Math.min(this.end, text.length());
+            font.draw(GraphicManager.global.batch, text, pos.x, pos.y, start, end, targetWidth, hAlign, wrap);
         }
     }
 }
