@@ -599,7 +599,7 @@ public final class GraphicManager {
             anchorOffset.set(0.0f, 0.0f);
 
             lastAbsolutePosition = new Vector2(position);
-            lastAbsoluteAngle = 0.0f;
+            lastAbsoluteAngle = angle;
             lastAbsoluteScale = new Vector2(scale);
         }
 
