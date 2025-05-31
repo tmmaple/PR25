@@ -15,7 +15,6 @@ import ua.tmmaple.pr25.util.PR25RuntimeException;
 import ua.tmmaple.pr25.util.Tweener;
 
 public final class GraphicManager {
-
     public static GraphicManager global;
 
     final SpriteBatch batch;
