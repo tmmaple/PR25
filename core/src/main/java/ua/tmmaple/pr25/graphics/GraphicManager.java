@@ -368,9 +368,7 @@ public final class GraphicManager {
                     case Anm.ANM_OP_JUMP: {
                         int pos = pointer;
                         skipToArgs();
-                        int diff = parseInt();
-                        pointer = pos;
-                        pointer += diff;
+                        pointer = pos + parseInt();
                         time = parseTime();
                     } break;
                     case Anm.ANM_OP_SOURCE: {
