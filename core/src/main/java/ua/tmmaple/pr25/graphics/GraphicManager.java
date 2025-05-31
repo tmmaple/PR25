@@ -83,10 +83,6 @@ public final class GraphicManager {
         batch.draw(texture, temp.x, temp.y, temp.width, temp.height);
     }
 
-    private static float getV(float midV, float halfHeight) {
-        return midV - halfHeight;
-    }
-
     public final class AnmVirtualMachine {
         // Tweener.Vector2Tweener uvPositionInterpolator;
         // Tweener.Vector2Tweener uvScaleInterpolator;
