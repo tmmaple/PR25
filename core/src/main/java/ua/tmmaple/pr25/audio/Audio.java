@@ -73,7 +73,8 @@ public final class Audio {
      * @author uwuhasmile
      */
     public void pauseMusic() {
-        bgm.pause();
+        if (bgm != null && bgm.isPlaying())
+            bgm.pause();
     }
 
     public void fadeMusic(float t) {
