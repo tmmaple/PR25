@@ -7,6 +7,7 @@ import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.Logger;
 import ua.tmmaple.pr25.assets.loaders.AnmLoader;
 import ua.tmmaple.pr25.assets.loaders.BgmLoader;
+import ua.tmmaple.pr25.audio.Bgm;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 

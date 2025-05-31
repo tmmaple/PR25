@@ -1,4 +1,4 @@
-package ua.tmmaple.pr25.assets;
+package ua.tmmaple.pr25.audio;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;

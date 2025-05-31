@@ -7,7 +7,7 @@ import com.badlogic.gdx.assets.loaders.AsynchronousAssetLoader;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Array;
-import ua.tmmaple.pr25.assets.Bgm;
+import ua.tmmaple.pr25.audio.Bgm;
 
 public final class BgmLoader extends AsynchronousAssetLoader<Bgm, BgmLoader.BgmParam> {
     private Bgm bgm;
