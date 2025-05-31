@@ -8,7 +8,7 @@ import com.badlogic.gdx.Gdx;
  */
 public final class Logger {
     /**
-     * Виводить інформацію
+     * Виводить інформацію.
      * @author uwuhasmile
      */
     public static void info(String msg) {
@@ -16,7 +16,7 @@ public final class Logger {
     }
 
     /**
-     * Виводить інформацію з тегом класу
+     * Виводить інформацію з тегом класу.
      * @author uwuhasmile
      */
     public static void info(Class<?> cl, String msg) {
@@ -24,7 +24,7 @@ public final class Logger {
     }
 
     /**
-     * Виводить інформацію з власним тегом
+     * Виводить інформацію з власним тегом.
      * @author uwuhasmile
      */
     public static void info(String tag, String msg) {
@@ -32,7 +32,7 @@ public final class Logger {
     }
 
     /**
-     * Виводить помилку
+     * Виводить помилку.
      * @author uwuhasmile
      */
     public static void error(String msg) {
@@ -40,7 +40,7 @@ public final class Logger {
     }
 
     /**
-     * Виводить помилку з тегом класу
+     * Виводить помилку з тегом класу.
      * @author uwuhasmile
      */
     public static void error(Class<?> cl, String msg) {
@@ -48,7 +48,7 @@ public final class Logger {
     }
 
     /**
-     * Виводить помилку з власним тегом
+     * Виводить помилку з власним тегом.
      * @author uwuhasmile
      */
     public static void error(String tag, String msg) {
@@ -56,7 +56,7 @@ public final class Logger {
     }
 
     /**
-     * Виводить повідомлення для дебагу
+     * Виводить повідомлення для дебагу.
      * @author uwuhasmile
      */
     public static void debug(String msg) {
@@ -64,7 +64,7 @@ public final class Logger {
     }
 
     /**
-     * Виводить повідомлення для дебагу з тегом класу
+     * Виводить повідомлення для дебагу з тегом класу.
      * @author uwuhasmile
      */
     public static void debug(Class<?> cl, String msg) {
@@ -72,7 +72,7 @@ public final class Logger {
     }
 
     /**
-     * Виводить повідомлення для дебагу з власним тегом
+     * Виводить повідомлення для дебагу з власним тегом.
      * @author uwuhasmile
      */
     public static void debug(String tag, String msg) {
