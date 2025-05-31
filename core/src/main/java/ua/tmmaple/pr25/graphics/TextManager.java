@@ -76,8 +76,8 @@ public final class TextManager {
 
         public GraphicManager.AnmVirtualMachine parent;
 
-        public Color color;
-        public Vector2 position;
+        public final Color color;
+        public final Vector2 position;
         public float targetWidth;
         public int start;
         public int end;
@@ -88,6 +88,7 @@ public final class TextManager {
             parent = null;
             font = 0;
             color = Color.WHITE;
+            position = new Vector2();
             targetWidth = 64.0f;
             start = 0;
             end = Integer.MAX_VALUE;
