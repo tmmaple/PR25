@@ -13,13 +13,6 @@ import ua.tmmaple.pr25.util.PR25RuntimeException;
 import ua.tmmaple.pr25.util.Tweener;
 
 public final class GraphicManager {
-    /* Таблиця розмірів інструкцій в байтах */
-    public static final byte[] ANM_INSTRUCTION_SIZES = {
-        3, 3, 3, 3, 3, 4, 7, 3, 7,
-        4, 11, 11, 7, 7, 16, 16, 4,
-        15, 7, 20, 12, 4, 4, 4, 4,
-        11, 7, 11, 16, 12, 16, 4, 7, 4, 4, 11,
-    };
 
     public static GraphicManager global;
 
@@ -95,71 +88,6 @@ public final class GraphicManager {
     }
 
     public final class AnmVirtualMachine {
-        public static final int ANM_FLAG_VISIBLE = 1 << 0;
-        public static final int ANM_FLAG_FLIP_X = 1 << 1;
-        public static final int ANM_FLAG_FLIP_Y = 1 << 2;
-        public static final int ANM_FLAG_AUTOROTATE = 1 << 3;
-        public static final int ANM_FLAG_TELEPORT = 1 << 4;
-
-        /* Системні інструкції */
-        public static final byte ANM_OP_NOP = 0x00;
-        public static final byte ANM_OP_DELETE = 0x01;
-        public static final byte ANM_OP_STOP = 0x02;
-        public static final byte ANM_OP_PAUSE = 0x03;
-        public static final byte ANM_OP_HIDE_PAUSE = 0x04;
-        public static final byte ANM_OP_INTERRUPT = 0x05;
-        public static final byte ANM_OP_SLEEP = 0x06;
-        public static final byte ANM_OP_RETURN = 0x07;
-        public static final byte ANM_OP_JUMP = 0x08;
-
-        /* Інструкції налаштування текстури */
-        public static final byte ANM_OP_SOURCE = 0x09;
-        public static final byte ANM_OP_UV_POSITION = 0x0A;
-        public static final byte ANM_OP_UV_SCALE = 0x0B;
-        public static final byte ANM_OP_UV_SCROLLING_X = 0x0C;
-        public static final byte ANM_OP_UV_SCROLLING_Y = 0x0D;
-        public static final byte ANM_OP_UV_MOVE = 0x0E;
-        public static final byte ANM_OP_UV_RESCALE = 0x0F;
-        public static final byte ANM_OP_UV_MODE = 0x10;
-
-        /* Інструкції налаштування рендерингу */
-        public static final byte ANM_OP_COLOR = 0x11;
-        public static final byte ANM_OP_ALPHA = 0x12;
-        public static final byte ANM_OP_CHANGE_COLOR = 0x13;
-        public static final byte ANM_OP_FADE = 0x14;
-        public static final byte ANM_OP_BLENDING = 0x15;
-        public static final byte ANM_OP_VISIBLE = 0x16;
-        public static final byte ANM_OP_FLIP_X = 0x17;
-        public static final byte ANM_OP_FLIP_Y = 0x18;
-
-        /* Інструкції переміщення */
-        public static final byte ANM_OP_POSITION = 0x19;
-        public static final byte ANM_OP_ANGLE = 0x1A;
-        public static final byte ANM_OP_SCALE = 0x1B;
-        public static final byte ANM_OP_MOVE = 0x1C;
-        public static final byte ANM_OP_ROTATE = 0x1D;
-        public static final byte ANM_OP_GROW = 0x1E;
-        public static final byte ANM_OP_AUTOROTATE = 0x1F;
-        public static final byte ANM_OP_ANGULAR_SPEED = 0x20;
-        public static final byte ANM_OP_ORIGIN_MODE = 0x21;
-        public static final byte ANM_OP_ANCHOR_MODE = 0x22;
-        public static final byte ANM_OP_ANCHOR_OFFSET = 0x23;
-
-        /* Константи */
-        public static final byte ANM_UV_NONE = 0;
-        public static final byte ANM_UV_REPEAT = 1;
-        public static final byte ANM_UV_MIRROR = 2;
-        public static final byte ANM_ORIGIN_PARENT = 0;
-        public static final byte ANM_ORIGIN_SURFACE = 1;
-        public static final byte ANM_ANCHOR_TOP_LEFT = 0;
-        public static final byte ANM_ANCHOR_TOP_MIDDLE = 1;
-        public static final byte ANM_ANCHOR_TOP_RIGHT = 2;
-        public static final byte ANM_ANCHOR_MIDDLE_LEFT = 3;
-        public static final byte ANM_ANCHOR_CENTER = 4;
-        public static final byte ANM_ANCHOR_MIDDLE_RIGHT = 5;
-        public static final byte ANM_ANCHOR_BOTTOM_LEFT = 6;
-        public static final byte ANM_ANCHOR_BOTTOM_MIDDLE = 7;
-        public static final byte ANM_ANCHOR_BOTTOM_RIGHT = 8;
 
         // Tweener.Vector2Tweener uvPositionInterpolator;
         // Tweener.Vector2Tweener uvScaleInterpolator;
@@ -229,8 +157,8 @@ public final class GraphicManager {
             if (!drawing) throw new PR25RuntimeException("GraphicManager is not drawing");
             if (!absoluteVisible()) return;
             if (region != null) {
-                float flipX = (flags & ANM_FLAG_FLIP_X) != 0 ? -1.0f : 1.0f;
-                float flipY = (flags & ANM_FLAG_FLIP_Y) != 0 ? -1.0f : 1.0f;
+                float flipX = (flags & Anm.ANM_FLAG_FLIP_X) != 0 ? -1.0f : 1.0f;
+                float flipY = (flags & Anm.ANM_FLAG_FLIP_Y) != 0 ? -1.0f : 1.0f;
                 Color c = absoluteColor();
                 float a = absoluteAlpha();
                 Vector2 pos = absolutePosition();
@@ -239,14 +167,14 @@ public final class GraphicManager {
                 Vector2 sc = absoluteScale();
                 Texture.TextureWrap wrap;
                 switch (uvMode) {
-                    case ANM_UV_NONE: wrap = Texture.TextureWrap.ClampToEdge; break;
-                    case ANM_UV_REPEAT: wrap = Texture.TextureWrap.Repeat; break;
-                    case ANM_UV_MIRROR: wrap = Texture.TextureWrap.MirroredRepeat; break;
+                    case Anm.ANM_UV_NONE: wrap = Texture.TextureWrap.ClampToEdge; break;
+                    case Anm.ANM_UV_REPEAT: wrap = Texture.TextureWrap.Repeat; break;
+                    case Anm.ANM_UV_MIRROR: wrap = Texture.TextureWrap.MirroredRepeat; break;
                     default: wrap = region.getTexture().getUWrap(); break;
                 }
                 region.getTexture().setWrap(wrap, wrap);
-                if ((flags & ANM_FLAG_TELEPORT) != 0) {
-                    flags &= ~ANM_FLAG_TELEPORT;
+                if ((flags & Anm.ANM_FLAG_TELEPORT) != 0) {
+                    flags &= ~Anm.ANM_FLAG_TELEPORT;
                     lastAbsolutePosition = pos;
                     lastAbsoluteAngle = an;
                     lastAbsoluteScale = sc;
@@ -281,7 +209,7 @@ public final class GraphicManager {
                 pointer = scriptStart;
                 boolean found = false;
                 while (!found && pointer < scriptEnd) {
-                    while (pointer < scriptEnd && parseOpcode() != ANM_OP_INTERRUPT)
+                    while (pointer < scriptEnd && parseOpcode() != Anm.ANM_OP_INTERRUPT)
                         skip();
                     if (pointer >= scriptEnd)
                         break;
@@ -303,25 +231,25 @@ public final class GraphicManager {
             }
             while (pointer >= scriptStart && pointer < scriptEnd && time >= parseTime()) {
                 switch (parseOpcode()) {
-                    case ANM_OP_NOP:
-                    case ANM_OP_INTERRUPT: skip(); break;
-                    case ANM_OP_DELETE: delete(); return 1;
-                    case ANM_OP_STOP: anm = null; return 1;
-                    case ANM_OP_PAUSE: pointer = -1; skip(); break;
-                    case ANM_OP_HIDE_PAUSE: {
+                    case Anm.ANM_OP_NOP:
+                    case Anm.ANM_OP_INTERRUPT: skip(); break;
+                    case Anm.ANM_OP_DELETE: delete(); return 1;
+                    case Anm.ANM_OP_STOP: anm = null; return 1;
+                    case Anm.ANM_OP_PAUSE: pointer = -1; skip(); break;
+                    case Anm.ANM_OP_HIDE_PAUSE: {
                         pointer = -1;
-                        flags &= ~ANM_FLAG_VISIBLE;
+                        flags &= ~Anm.ANM_FLAG_VISIBLE;
                         skip();
                     } break;
-                    case ANM_OP_SLEEP: {
+                    case Anm.ANM_OP_SLEEP: {
                         skipToArgs();
                         time -= (short) parseInt();
                     } break;
-                    case ANM_OP_RETURN: {
+                    case Anm.ANM_OP_RETURN: {
                         pointer = previousPointer;
                         time = previousTime;
                     } break;
-                    case ANM_OP_JUMP: {
+                    case Anm.ANM_OP_JUMP: {
                         int pos = pointer;
                         skipToArgs();
                         int diff = parseInt();
@@ -329,11 +257,11 @@ public final class GraphicManager {
                         pointer += diff;
                         time = parseTime();
                     } break;
-                    case ANM_OP_SOURCE: {
+                    case Anm.ANM_OP_SOURCE: {
                         skipToArgs();
                         loadSource(parseByte());
                     } break;
-                    case ANM_OP_UV_POSITION: {
+                    case Anm.ANM_OP_UV_POSITION: {
                         if (region == null) skip();
                         else {
                             skipToArgs();
@@ -347,7 +275,7 @@ public final class GraphicManager {
                             region.setV2(vDiff);
                         }
                     } break;
-                    case ANM_OP_UV_SCALE: {
+                    case Anm.ANM_OP_UV_SCALE: {
                         if (region == null) skip();
                         else {
                             skipToArgs();
@@ -361,29 +289,29 @@ public final class GraphicManager {
                             region.setV2(midV + halfHeight);
                         }
                     } break;
-                    case ANM_OP_UV_SCROLLING_X: skipToArgs(); uScrolling = parseFloat(); break;
-                    case ANM_OP_UV_SCROLLING_Y: skipToArgs(); vScrolling = parseFloat(); break;
-                    case ANM_OP_UV_MOVE:
-                    case ANM_OP_UV_RESCALE: skip(); break;
-                    case ANM_OP_UV_MODE: {
+                    case Anm.ANM_OP_UV_SCROLLING_X: skipToArgs(); uScrolling = parseFloat(); break;
+                    case Anm.ANM_OP_UV_SCROLLING_Y: skipToArgs(); vScrolling = parseFloat(); break;
+                    case Anm.ANM_OP_UV_MOVE:
+                    case Anm.ANM_OP_UV_RESCALE: skip(); break;
+                    case Anm.ANM_OP_UV_MODE: {
                         if (region == null) skip();
                         else {
                             skipToArgs();
                             uvMode = parseByte();
                         }
                     } break;
-                    case ANM_OP_COLOR: {
+                    case Anm.ANM_OP_COLOR: {
                         skipToArgs();
                         float r = parseFloat();
                         float g = parseFloat();
                         float b = parseFloat();
                         color.set(r, g, b, 1.0f);
                     } break;
-                    case ANM_OP_ALPHA: {
+                    case Anm.ANM_OP_ALPHA: {
                         skipToArgs();
                         alpha = parseFloat();
                     } break;
-                    case ANM_OP_CHANGE_COLOR: {
+                    case Anm.ANM_OP_CHANGE_COLOR: {
                         skipToArgs();
                         int time = parseInt();
                         float r = parseFloat();
@@ -392,53 +320,53 @@ public final class GraphicManager {
                         int type = parseByte();
                         colorInterpolator.start((byte) type, color.cpy(), new Color(r, g, b, 1.0f), (short) time);
                     } break;
-                    case ANM_OP_FADE: {
+                    case Anm.ANM_OP_FADE: {
                         skipToArgs();
                         int time = parseInt();
                         float a = parseFloat();
                         int type = parseByte();
                         alphaInterpolator.start((byte) type, alpha, a, (short) time);
                     } break;
-                    case ANM_OP_BLENDING: {
+                    case Anm.ANM_OP_BLENDING: {
                         skip();
                     } break;
-                    case ANM_OP_VISIBLE: {
+                    case Anm.ANM_OP_VISIBLE: {
                         skipToArgs();
                         int value = parseByte();
                         if (value == 0)
-                            flags &= ~ANM_FLAG_VISIBLE;
+                            flags &= ~Anm.ANM_FLAG_VISIBLE;
                         else
-                            flags |= ANM_FLAG_VISIBLE;
+                            flags |= Anm.ANM_FLAG_VISIBLE;
                     } break;
-                    case ANM_OP_FLIP_X: {
+                    case Anm.ANM_OP_FLIP_X: {
                         skipToArgs();
                         int value = parseByte();
                         if (value == 0)
-                            flags &= ~ANM_FLAG_FLIP_X;
+                            flags &= ~Anm.ANM_FLAG_FLIP_X;
                         else
-                            flags |= ANM_FLAG_FLIP_X;
+                            flags |= Anm.ANM_FLAG_FLIP_X;
                     } break;
-                    case ANM_OP_FLIP_Y: {
+                    case Anm.ANM_OP_FLIP_Y: {
                         skipToArgs();
                         int value = parseByte();
                         if (value == 0)
-                            flags &= ~ANM_FLAG_FLIP_Y;
+                            flags &= ~Anm.ANM_FLAG_FLIP_Y;
                         else
-                            flags |= ANM_FLAG_FLIP_Y;
+                            flags |= Anm.ANM_FLAG_FLIP_Y;
                     } break;
-                    case ANM_OP_POSITION: {
+                    case Anm.ANM_OP_POSITION: {
                         skipToArgs();
                         anmPosition.set(parseFloat(), parseFloat());
                     } break;
-                    case ANM_OP_ANGLE: {
+                    case Anm.ANM_OP_ANGLE: {
                         skipToArgs();
                         anmAngle = parseFloat();
                     } break;
-                    case ANM_OP_SCALE: {
+                    case Anm.ANM_OP_SCALE: {
                         skipToArgs();
                         anmScale.set(parseFloat(), parseFloat());
                     } break;
-                    case ANM_OP_MOVE: {
+                    case Anm.ANM_OP_MOVE: {
                         skipToArgs();
                         int time = parseInt();
                         float x = parseFloat();
@@ -446,14 +374,14 @@ public final class GraphicManager {
                         int type = parseByte();
                         positionInterpolator.start((byte) type, anmPosition, new Vector2(x, y), (short) time);
                     } break;
-                    case ANM_OP_ROTATE: {
+                    case Anm.ANM_OP_ROTATE: {
                         skipToArgs();
                         int time = parseInt();
                         float a = parseFloat();
                         int type = parseByte();
                         angleInterpolator.start((byte) type, anmAngle, a, (short) time);
                     } break;
-                    case ANM_OP_GROW: {
+                    case Anm.ANM_OP_GROW: {
                         skipToArgs();
                         int time = parseInt();
                         float w = parseFloat();
@@ -461,27 +389,27 @@ public final class GraphicManager {
                         int type = parseByte();
                         positionInterpolator.start((byte) type, anmScale, new Vector2(w, h), (short) time);
                     } break;
-                    case ANM_OP_AUTOROTATE: {
+                    case Anm.ANM_OP_AUTOROTATE: {
                         skipToArgs();
                         int value = parseByte();
                         if (value == 0)
-                            flags &= ~ANM_FLAG_AUTOROTATE;
+                            flags &= ~Anm.ANM_FLAG_AUTOROTATE;
                         else
-                            flags |= ANM_FLAG_AUTOROTATE;
+                            flags |= Anm.ANM_FLAG_AUTOROTATE;
                     } break;
-                    case ANM_OP_ANGULAR_SPEED: {
+                    case Anm.ANM_OP_ANGULAR_SPEED: {
                         skipToArgs();
                         angularSpeed = parseFloat();
                     } break;
-                    case ANM_OP_ORIGIN_MODE: {
+                    case Anm.ANM_OP_ORIGIN_MODE: {
                         skipToArgs();
                         originMode = parseByte();
                     } break;
-                    case ANM_OP_ANCHOR_MODE: {
+                    case Anm.ANM_OP_ANCHOR_MODE: {
                         skipToArgs();
                         anchorMode = parseByte();
                     } break;
-                    case ANM_OP_ANCHOR_OFFSET: {
+                    case Anm.ANM_OP_ANCHOR_OFFSET: {
                         skipToArgs();
                         anchorOffset.set(parseFloat(), parseFloat());
                     } break;
@@ -534,7 +462,7 @@ public final class GraphicManager {
             previousPointer = scriptStart;
             previousTime = -1;
 
-            flags = ANM_FLAG_VISIBLE | ANM_FLAG_TELEPORT;
+            flags = Anm.ANM_FLAG_VISIBLE | Anm.ANM_FLAG_TELEPORT;
             uScrolling = 0.0f;
             vScrolling = 0.0f;
             color.set(Color.WHITE);
@@ -543,8 +471,8 @@ public final class GraphicManager {
             anmAngle = 0.0f;
             anmScale.set(1.0f, 1.0f);
             angularSpeed = 0.0f;
-            originMode = ANM_ORIGIN_PARENT;
-            anchorMode = ANM_ANCHOR_CENTER;
+            originMode = Anm.ANM_ORIGIN_PARENT;
+            anchorMode = Anm.ANM_ANCHOR_CENTER;
             anchorOffset.set(0.0f, 0.0f);
 
             lastAbsolutePosition = new Vector2(position);
@@ -574,7 +502,7 @@ public final class GraphicManager {
         }
 
         public void teleport() {
-            flags |= ANM_FLAG_TELEPORT;
+            flags |= Anm.ANM_FLAG_TELEPORT;
         }
 
         public void delete() {
@@ -599,7 +527,7 @@ public final class GraphicManager {
             AnmVirtualMachine o = this;
             boolean result = true;
             while (o != null && result) {
-                if ((o.flags & ANM_FLAG_VISIBLE) == 0) result = false;
+                if ((o.flags & Anm.ANM_FLAG_VISIBLE) == 0) result = false;
                 else if (o.alpha == 0.0f) result = false;
                 else o = o.parent;
             }
@@ -630,7 +558,7 @@ public final class GraphicManager {
             AnmVirtualMachine o = this;
             Vector2 result = new Vector2();
             while (o != null) {
-                if (o.originMode == ANM_ORIGIN_PARENT) result.add(o.position);
+                if (o.originMode == Anm.ANM_ORIGIN_PARENT) result.add(o.position);
                 result.add(o.anmPosition);
                 o = o.parent;
             }
@@ -641,7 +569,7 @@ public final class GraphicManager {
             AnmVirtualMachine o = this;
             float result = 0.0f;
             while (o != null) {
-                if ((o.flags & ANM_FLAG_AUTOROTATE) != 0) result += o.angle;
+                if ((o.flags & Anm.ANM_FLAG_AUTOROTATE) != 0) result += o.angle;
                 result += o.anmAngle;
                 o = o.parent;
             }
@@ -652,7 +580,7 @@ public final class GraphicManager {
             AnmVirtualMachine o = this;
             Vector2 result = new Vector2(1.0f, 1.0f);
             while (o != null) {
-                if (o.originMode == ANM_ORIGIN_PARENT) result.scl(o.scale);
+                if (o.originMode == Anm.ANM_ORIGIN_PARENT) result.scl(o.scale);
                 result.scl(o.anmScale);
                 o = o.parent;
             }
@@ -664,15 +592,15 @@ public final class GraphicManager {
             int height = region.getRegionHeight();
             Vector2 result = anchorOffset.cpy();
             switch (anchorMode) {
-                case ANM_ANCHOR_TOP_LEFT: result.set(0.0f, 0.0f); break;
-                case ANM_ANCHOR_TOP_MIDDLE: result.set(-width * 0.5f, 0.0f); break;
-                case ANM_ANCHOR_TOP_RIGHT: result.set(-width, 0.0f); break;
-                case ANM_ANCHOR_MIDDLE_LEFT: result.set(0.0f, -height * 0.5f); break;
-                case ANM_ANCHOR_CENTER: result.set(-width * 0.5f, -height * 0.5f); break;
-                case ANM_ANCHOR_MIDDLE_RIGHT: result.set(-width, -height * 0.5f); break;
-                case ANM_ANCHOR_BOTTOM_LEFT: result.set(0.0f, -height); break;
-                case ANM_ANCHOR_BOTTOM_MIDDLE: result.set(-width * 0.5f, -height); break;
-                case ANM_ANCHOR_BOTTOM_RIGHT: result.set(-width, -height); break;
+                case Anm.ANM_ANCHOR_TOP_LEFT: result.set(0.0f, 0.0f); break;
+                case Anm.ANM_ANCHOR_TOP_MIDDLE: result.set(-width * 0.5f, 0.0f); break;
+                case Anm.ANM_ANCHOR_TOP_RIGHT: result.set(-width, 0.0f); break;
+                case Anm.ANM_ANCHOR_MIDDLE_LEFT: result.set(0.0f, -height * 0.5f); break;
+                case Anm.ANM_ANCHOR_CENTER: result.set(-width * 0.5f, -height * 0.5f); break;
+                case Anm.ANM_ANCHOR_MIDDLE_RIGHT: result.set(-width, -height * 0.5f); break;
+                case Anm.ANM_ANCHOR_BOTTOM_LEFT: result.set(0.0f, -height); break;
+                case Anm.ANM_ANCHOR_BOTTOM_MIDDLE: result.set(-width * 0.5f, -height); break;
+                case Anm.ANM_ANCHOR_BOTTOM_RIGHT: result.set(-width, -height); break;
             }
             return result;
         }
@@ -681,8 +609,8 @@ public final class GraphicManager {
             if (anm == null) throw new PR25RuntimeException("No ANM script");
             if (pointer >= scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
             int opcode = anm.bytecode.get(pointer);
-            if (opcode < 0 || opcode >= ANM_INSTRUCTION_SIZES.length) throw new PR25RuntimeException("Invalid opcode " + opcode);
-            pointer += ANM_INSTRUCTION_SIZES[opcode];
+            if (opcode < 0 || opcode >= Anm.ANM_INSTRUCTION_SIZES.length) throw new PR25RuntimeException("Invalid opcode " + opcode);
+            pointer += Anm.ANM_INSTRUCTION_SIZES[opcode];
         }
 
         private void skipToArgs() {
@@ -701,7 +629,7 @@ public final class GraphicManager {
             if (anm == null) throw new PR25RuntimeException("No ANM script");
             if (pointer >= scriptEnd) throw new PR25RuntimeException("End of ANM script was reached");
             int opcode = anm.bytecode.get(pointer);
-            if (opcode < 0 || opcode >= ANM_INSTRUCTION_SIZES.length) throw new PR25RuntimeException("Invalid opcode " + opcode);
+            if (opcode < 0 || opcode >= Anm.ANM_INSTRUCTION_SIZES.length) throw new PR25RuntimeException("Invalid opcode " + opcode);
             return anm.bytecode.get(pointer);
         }
 
