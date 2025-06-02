@@ -184,10 +184,11 @@ public final class GraphicManager {
      */
     public final class AnmVirtualMachine {
         private static final int ANM_FLAG_VISIBLE = 1 << 0;
-        private static final int ANM_FLAG_FLIP_X = 1 << 1;
-        private static final int ANM_FLAG_FLIP_Y = 1 << 2;
-        private static final int ANM_FLAG_AUTOROTATE = 1 << 3;
-        private static final int ANM_FLAG_TELEPORT = 1 << 4;
+        private static final int ANM_FLAG_EXECUTE = 1 << 1;
+        private static final int ANM_FLAG_FLIP_X = 1 << 2;
+        private static final int ANM_FLAG_FLIP_Y = 1 << 3;
+        private static final int ANM_FLAG_AUTOROTATE = 1 << 4;
+        private static final int ANM_FLAG_TELEPORT = 1 << 5;
 
         // Tweener.Vector2Tweener uvPositionInterpolator;
         // Tweener.Vector2Tweener uvScaleInterpolator;
@@ -321,6 +322,9 @@ public final class GraphicManager {
         public int execute() {
             if (drawing) throw new PR25RuntimeException("Can't execute script when drawing");
             if (anm == null)
+                return 1;
+
+            if ((flags & ANM_FLAG_EXECUTE) == 0)
                 return 1;
 
             if (interrupt > 0) {
@@ -582,14 +586,20 @@ public final class GraphicManager {
         public void loadScript(String script) {
             if (anm == null) throw new PR25RuntimeException("ANM is null, no scripts");
             Anm.AnmScript anmScript = anm.getScript(script);
-            time = -1;
             scriptStart = anmScript.start;
             scriptEnd = anmScript.end;
             pointer = anmScript.start;
-            interrupt = 0;
-            previousPointer = scriptStart;
-            previousTime = -1;
             toDefaults();
+        }
+
+        /**
+         * Завантажує скрипт з ANM-ресурсу та програє його.
+         * @throws PR25RuntimeException якщо не виставлений ANM-ресурс
+         * @author uwuhasmile
+         */
+        public void loadScriptAndPlay(String script) {
+            loadScript(script);
+            play();
         }
 
         /**
@@ -613,6 +623,23 @@ public final class GraphicManager {
             lastAbsolutePosition.set(position);
             lastAbsoluteAngle = angle;
             lastAbsoluteScale.set(scale);
+        }
+
+        /**
+         * Починає програвання скрипту з першої інструкції.
+         * @throws PR25RuntimeException якщо нема інструкції
+         * @author uwuhasmile
+         */
+        public void play() {
+            if (anm == null) throw new PR25RuntimeException("ANM is null, can't play");
+            if (scriptStart == scriptEnd) throw new PR25RuntimeException("No script is loaded, can't play");
+            pointer = scriptStart;
+            time = 0;
+            interrupt = 0;
+            previousPointer = scriptStart;
+            previousTime = -1;
+            toDefaults();
+            flags |= ANM_FLAG_EXECUTE;
         }
 
         /**
@@ -681,7 +708,7 @@ public final class GraphicManager {
             angleInterpolator.end();
             scaleInterpolator.end();
             flags = 0;
-            time = -1;
+            time = 0;
             scriptStart = 0;
             scriptEnd = 0;
             pointer = 0;
