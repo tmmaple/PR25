@@ -22,11 +22,6 @@ import java.util.Arrays;
 public final class Anm implements Disposable {
     public static final byte[] ANM_MAGIC = { '%', 'A', 'N', 'M' };
     public static final byte ANM_VERSION =  0x01;
-    public static final int ANM_FLAG_VISIBLE = 1 << 0;
-    public static final int ANM_FLAG_FLIP_X = 1 << 1;
-    public static final int ANM_FLAG_FLIP_Y = 1 << 2;
-    public static final int ANM_FLAG_AUTOROTATE = 1 << 3;
-    public static final int ANM_FLAG_TELEPORT = 1 << 4;
     /* Системні інструкції */
     public static final byte ANM_OP_NOP = 0x00;
     public static final byte ANM_OP_DELETE = 0x01;
