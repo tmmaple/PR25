@@ -183,6 +183,12 @@ public final class GraphicManager {
      * @author uwuhasmile
      */
     public final class AnmVirtualMachine {
+        private static final int ANM_FLAG_VISIBLE = 1 << 0;
+        private static final int ANM_FLAG_FLIP_X = 1 << 1;
+        private static final int ANM_FLAG_FLIP_Y = 1 << 2;
+        private static final int ANM_FLAG_AUTOROTATE = 1 << 3;
+        private static final int ANM_FLAG_TELEPORT = 1 << 4;
+
         // Tweener.Vector2Tweener uvPositionInterpolator;
         // Tweener.Vector2Tweener uvScaleInterpolator;
         final Tweener.ColorTweener colorInterpolator;
@@ -263,8 +269,8 @@ public final class GraphicManager {
             if (!drawing) throw new PR25RuntimeException("GraphicManager is not drawing");
             if (!absoluteVisible()) return;
             if (region != null) {
-                float flipX = (flags & Anm.ANM_FLAG_FLIP_X) != 0 ? -1.0f : 1.0f;
-                float flipY = (flags & Anm.ANM_FLAG_FLIP_Y) != 0 ? -1.0f : 1.0f;
+                float flipX = (flags & ANM_FLAG_FLIP_X) != 0 ? -1.0f : 1.0f;
+                float flipY = (flags & ANM_FLAG_FLIP_Y) != 0 ? -1.0f : 1.0f;
                 Color c = absoluteColor();
                 float a = absoluteAlpha();
                 Vector2 pos = absolutePosition();
@@ -282,7 +288,7 @@ public final class GraphicManager {
                 Vector2 finalPos = lastAbsolutePosition.cpy();
                 float finalAn = lastAbsoluteAngle;
                 Vector2 finalSc = lastAbsoluteScale.cpy();
-                if ((flags & Anm.ANM_FLAG_TELEPORT) == 0) {
+                if ((flags & ANM_FLAG_TELEPORT) == 0) {
                     finalPos.lerp(pos, t);
                     finalAn += (lastAbsoluteAngle - an) * t;
                     finalSc.lerp(sc, t);
@@ -353,7 +359,7 @@ public final class GraphicManager {
                     case Anm.ANM_OP_PAUSE: pointer = -1; skip(); break;
                     case Anm.ANM_OP_HIDE_PAUSE: {
                         pointer = -1;
-                        flags &= ~Anm.ANM_FLAG_VISIBLE;
+                        flags &= ~ANM_FLAG_VISIBLE;
                         skip();
                     } break;
                     case Anm.ANM_OP_SLEEP: {
@@ -447,25 +453,25 @@ public final class GraphicManager {
                         skipToArgs();
                         int value = parseByte();
                         if (value == 0)
-                            flags &= ~Anm.ANM_FLAG_VISIBLE;
+                            flags &= ~ANM_FLAG_VISIBLE;
                         else
-                            flags |= Anm.ANM_FLAG_VISIBLE;
+                            flags |= ANM_FLAG_VISIBLE;
                     } break;
                     case Anm.ANM_OP_FLIP_X: {
                         skipToArgs();
                         int value = parseByte();
                         if (value == 0)
-                            flags &= ~Anm.ANM_FLAG_FLIP_X;
+                            flags &= ~ANM_FLAG_FLIP_X;
                         else
-                            flags |= Anm.ANM_FLAG_FLIP_X;
+                            flags |= ANM_FLAG_FLIP_X;
                     } break;
                     case Anm.ANM_OP_FLIP_Y: {
                         skipToArgs();
                         int value = parseByte();
                         if (value == 0)
-                            flags &= ~Anm.ANM_FLAG_FLIP_Y;
+                            flags &= ~ANM_FLAG_FLIP_Y;
                         else
-                            flags |= Anm.ANM_FLAG_FLIP_Y;
+                            flags |= ANM_FLAG_FLIP_Y;
                     } break;
                     case Anm.ANM_OP_POSITION: {
                         skipToArgs();
@@ -506,9 +512,9 @@ public final class GraphicManager {
                         skipToArgs();
                         int value = parseByte();
                         if (value == 0)
-                            flags &= ~Anm.ANM_FLAG_AUTOROTATE;
+                            flags &= ~ANM_FLAG_AUTOROTATE;
                         else
-                            flags |= Anm.ANM_FLAG_AUTOROTATE;
+                            flags |= ANM_FLAG_AUTOROTATE;
                     } break;
                     case Anm.ANM_OP_ANGULAR_SPEED: {
                         skipToArgs();
@@ -591,7 +597,7 @@ public final class GraphicManager {
          * @author uwuhasmile
          */
         public void toDefaults() {
-            flags = Anm.ANM_FLAG_VISIBLE | Anm.ANM_FLAG_TELEPORT;
+            flags = ANM_FLAG_VISIBLE | ANM_FLAG_TELEPORT;
             uScrolling = 0.0f;
             vScrolling = 0.0f;
             color.set(Color.WHITE);
@@ -659,7 +665,7 @@ public final class GraphicManager {
          * @author uwuhasmile
          */
         public void teleport() {
-            flags |= Anm.ANM_FLAG_TELEPORT;
+            flags |= ANM_FLAG_TELEPORT;
         }
 
         /**
@@ -692,7 +698,7 @@ public final class GraphicManager {
             AnmVirtualMachine o = this;
             boolean result = true;
             while (o != null && result) {
-                if ((o.flags & Anm.ANM_FLAG_VISIBLE) == 0) result = false;
+                if ((o.flags & ANM_FLAG_VISIBLE) == 0) result = false;
                 else if (o.alpha == 0.0f) result = false;
                 else o = o.parent;
             }
@@ -750,7 +756,7 @@ public final class GraphicManager {
             AnmVirtualMachine o = this;
             float result = 0.0f;
             while (o != null) {
-                if ((o.flags & Anm.ANM_FLAG_AUTOROTATE) != 0) result += o.angle;
+                if ((o.flags & ANM_FLAG_AUTOROTATE) != 0) result += o.angle;
                 result += o.anmAngle;
                 o = o.parent;
             }
