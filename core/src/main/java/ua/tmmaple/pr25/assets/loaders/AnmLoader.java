@@ -35,7 +35,7 @@ public final class AnmLoader extends AsynchronousAssetLoader<Anm, AnmLoader.AnmP
         TextureRegion[] sources = null;
         if (data.sources() > 0) {
             sources = new TextureRegion[data.sources()];
-            for (int i = 0; i < imports.length; ++i) {
+            for (int i = 0; i < sources.length; ++i) {
                 Anm.AnmData.AnmSource source = data.getSource(i);
                 sources[i] = new TextureRegion(imports[source.i], source.x, source.y, source.width, source.height);
             }
