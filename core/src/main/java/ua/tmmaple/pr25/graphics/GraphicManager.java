@@ -278,6 +278,11 @@ public final class GraphicManager {
                 float an = absoluteAngle();
                 Vector2 off = absoluteAnchorOffset();
                 Vector2 sc = absoluteScale();
+
+                lastAbsolutePosition.set(pos);
+                lastAbsoluteAngle = an;
+                lastAbsoluteScale.set(sc);
+
                 Texture.TextureWrap wrap;
                 switch (uvMode) {
                     case Anm.ANM_UV_NONE: wrap = Texture.TextureWrap.ClampToEdge; break;
@@ -294,17 +299,16 @@ public final class GraphicManager {
                     finalAn += (lastAbsoluteAngle - an) * t;
                     finalSc.lerp(sc, t);
                 } else {
+                    flags &= ~ANM_FLAG_TELEPORT;
                     finalPos.set(pos);
                     finalAn = an;
                     finalSc.set(sc);
                 }
-                lastAbsolutePosition.set(pos);
-                lastAbsoluteAngle = an;
-                lastAbsoluteScale.set(sc);
+                finalPos.add(off);
                 batch.setColor(c.r, c.g, c.b, a);
                 batch.draw(region,
                     finalPos.x, finalPos.y,
-                    off.x, off.y,
+                    -off.x, -off.y,
                     region.getRegionWidth(), region.getRegionHeight(),
                     finalSc.x * flipX, finalSc.y * flipY,
                     finalAn
@@ -814,15 +818,15 @@ public final class GraphicManager {
             int height = region.getRegionHeight();
             Vector2 result = anchorOffset.cpy();
             switch (anchorMode) {
-                case Anm.ANM_ANCHOR_TOP_LEFT: result.set(0.0f, 0.0f); break;
-                case Anm.ANM_ANCHOR_TOP_MIDDLE: result.set(-width * 0.5f, 0.0f); break;
-                case Anm.ANM_ANCHOR_TOP_RIGHT: result.set(-width, 0.0f); break;
+                case Anm.ANM_ANCHOR_TOP_LEFT: result.set(0.0f, -height); break;
+                case Anm.ANM_ANCHOR_TOP_MIDDLE: result.set(-width * 0.5f, -height); break;
+                case Anm.ANM_ANCHOR_TOP_RIGHT: result.set(-width, -height); break;
                 case Anm.ANM_ANCHOR_MIDDLE_LEFT: result.set(0.0f, -height * 0.5f); break;
                 case Anm.ANM_ANCHOR_CENTER: result.set(-width * 0.5f, -height * 0.5f); break;
                 case Anm.ANM_ANCHOR_MIDDLE_RIGHT: result.set(-width, -height * 0.5f); break;
-                case Anm.ANM_ANCHOR_BOTTOM_LEFT: result.set(0.0f, -height); break;
-                case Anm.ANM_ANCHOR_BOTTOM_MIDDLE: result.set(-width * 0.5f, -height); break;
-                case Anm.ANM_ANCHOR_BOTTOM_RIGHT: result.set(-width, -height); break;
+                case Anm.ANM_ANCHOR_BOTTOM_LEFT: result.set(0.0f, 0.0f); break;
+                case Anm.ANM_ANCHOR_BOTTOM_MIDDLE: result.set(-width * 0.5f, 0.0f); break;
+                case Anm.ANM_ANCHOR_BOTTOM_RIGHT: result.set(-width, 0.0f); break;
             }
             return result;
         }
