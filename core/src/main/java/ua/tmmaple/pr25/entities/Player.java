@@ -48,11 +48,19 @@ public class Player {
 
     private int update(){
         plr.execute();
+        if (God.global.inputState(God.INPUT_MOVE_UP)==God.INPUT_STATE_JUST_PRESSED){
+            sprite.interrupt((byte) 1);
+        }
+        if (God.global.inputState(God.INPUT_MOVE_LEFT)==God.INPUT_STATE_JUST_PRESSED){
+            sprite.interrupt((byte) 2);
+        }
+        if (God.global.inputState(God.INPUT_MOVE_RIGHT)==God.INPUT_STATE_JUST_PRESSED){
+            sprite.interrupt((byte) 3);
+        }
         if (God.global.inputState(God.INPUT_MOVE_UP)==God.INPUT_STATE_PRESSED){
             if (plr.position.y < Game.BASE_WINDOW_HEIGHT-26) {
                 plr.position.add(0, 3);
             }
-            sprite.interrupt((byte) 1);
         }
         if (God.global.inputState(God.INPUT_MOVE_DOWN)==God.INPUT_STATE_PRESSED){
             if (plr.position.y > 26) {
@@ -63,13 +71,11 @@ public class Player {
             if (plr.position.x > 21) {
                 plr.position.add(-3, 0);
             }
-            sprite.interrupt((byte)2);
         }
         if (God.global.inputState(God.INPUT_MOVE_RIGHT)==God.INPUT_STATE_PRESSED){
             if (plr.position.x < Game.BASE_WINDOW_WIDTH-21) {
                 plr.position.add(3, 0);
             }
-            sprite.interrupt((byte)3);
         }
         if (God.global.inputState(God.INPUT_FIRE)==God.INPUT_STATE_PRESSED){
             if (smallBulletCooldown==0){
