@@ -4,6 +4,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.audio.Audio;
+import ua.tmmaple.pr25.entities.Player;
+import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 import ua.tmmaple.pr25.graphics.TextManager;
 
@@ -18,6 +20,8 @@ public class Game extends ApplicationAdapter {
     public static final float UPDATE_DELTA = 1.0f / 60.0f;
 
     private float accumulator;
+
+    Player plr;
 
     @Override
     public void create() {
@@ -37,6 +41,10 @@ public class Game extends ApplicationAdapter {
 
         Assets.register();
         God.register();
+
+        Assets.global.load(Anm.class,"game/plr.anm");
+        Flow.global.executeUpdate();
+        plr = new Player();
     }
 
     @Override
