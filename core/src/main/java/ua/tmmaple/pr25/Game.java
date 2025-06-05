@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.audio.Audio;
+import ua.tmmaple.pr25.entities.BulletManager;
 import ua.tmmaple.pr25.entities.Player;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
@@ -32,6 +33,7 @@ public class Game extends ApplicationAdapter {
 
         Assets.global = new Assets();
         God.global = new God();
+        BulletManager.global = new BulletManager();
 
         accumulator = UPDATE_DELTA;
 
@@ -41,9 +43,9 @@ public class Game extends ApplicationAdapter {
 
         Assets.register();
         God.register();
-
         Assets.global.load(Anm.class,"game/plr.anm");
         Flow.global.executeUpdate();
+        BulletManager.register();
         plr = new Player();
     }
 
