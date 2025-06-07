@@ -64,7 +64,7 @@
 script Player {
     interrupt ANIM_VINCIBLE;
     visible(true);
-    stop;
+    pause;
 
     interrupt ANIM_INVINCIBLE;
 blinking_start:
