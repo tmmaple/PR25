@@ -84,16 +84,19 @@ public class BulletManager {
     private static int draw(BulletManager bulletManager) {
         for (PlayersBullet bullet : bulletManager.plrSmallBullets) {
             if (bullet.active) {
+                bullet.sprite.position.set(bullet.position);
                 bullet.sprite.draw();
             }
         }
         for (PlayersBullet bullet : bulletManager.plrBigBullets) {
             if (bullet.active) {
+                bullet.sprite.position.set(bullet.position);
                 bullet.sprite.draw();
             }
         }
         for (EnemyBullet bullet : bulletManager.enemyBullets) {
             if (bullet.active) {
+                bullet.sprite.position.set(bullet.position);
                 bullet.sprite.draw();
             }
         }
@@ -110,7 +113,7 @@ public class BulletManager {
         while (i < max && bulletPool[i].active) i++;
         if (i<max-1){
             bulletPool[i].active = true;
-            bulletPool[i].sprite.position.set(pos);
+            bulletPool[i].position.set(pos);
         }
     }
 
@@ -122,7 +125,7 @@ public class BulletManager {
             bulletPool[i].active = true;
             bulletPool[i].speed.rotateRad(angle);
             bulletPool[i].sprite.angle = angle;
-            bulletPool[i].sprite.position.set(pos);
+            bulletPool[i].position.set(pos);
         }
     }
 
@@ -139,7 +142,7 @@ public class BulletManager {
 
         private void checkCollision() {
             //TODO Колізії з ворогами
-            if (sprite.position.y > Game.BASE_WINDOW_HEIGHT) {
+            if (position.y > Game.BASE_WINDOW_HEIGHT) {
                 toPool();
             }
         }
@@ -157,7 +160,7 @@ public class BulletManager {
 
         private void checkCollision() {
             //TODO Колізії з гравцем
-            if (sprite.position.y < 0 || sprite.position.y > Game.BASE_WINDOW_HEIGHT || sprite.position.x < 0 || sprite.position.x > Game.BASE_WINDOW_WIDTH) {
+            if (position.y < 0 || position.y > Game.BASE_WINDOW_HEIGHT || position.x < 0 || position.x > Game.BASE_WINDOW_WIDTH) {
                 toPool();
             }
         }
@@ -166,6 +169,7 @@ public class BulletManager {
 
     abstract class Bullet {
         GraphicManager.AnmVirtualMachine sprite;
+        Vector2 position;
         boolean active;
         final Vector2 defaultSpeed;
         Vector2 speed;
@@ -177,6 +181,7 @@ public class BulletManager {
             sprite = GraphicManager.global.new AnmVirtualMachine();
             sprite.loadAnm(source);
             sprite.loadSource(textureID);
+            this.position = new Vector2();
             this.active = false;
             this.speed = new Vector2(speedX, speedY);
             this.acceleration = new Vector2(accelerationX, accelerationY);
@@ -186,7 +191,7 @@ public class BulletManager {
         }
 
         protected void move() {
-            sprite.position.add(speed);
+            position.add(speed);
             speed.add(acceleration);
         }
 
