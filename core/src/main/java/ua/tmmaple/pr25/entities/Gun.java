@@ -27,11 +27,11 @@ public class Gun {
 
     public void shoot() {
         if (timer == 0){
-            float directionAngle = (float) Math.atan2(direction.y-owner.sprite.position.y, direction.x-owner.sprite.position.x);
+            float directionAngle = (float) Math.atan2(direction.y-owner.position.y, direction.x-owner.position.x);
             float min = directionAngle-range/2;
             float max = directionAngle + range/2;
             for (float angle = min; angle <= max; angle += turnAngle) {
-                BulletManager.global.createEnemyBullet(bullets, owner.sprite.position, angle);
+                BulletManager.global.createEnemyBullet(bullets, owner.position, angle);
             }
             if (iterationsLeft == 0){
                 iterationsLeft = iterations;

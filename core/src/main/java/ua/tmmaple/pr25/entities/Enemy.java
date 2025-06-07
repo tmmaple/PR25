@@ -1,5 +1,6 @@
 package ua.tmmaple.pr25.entities;
 
+import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.graphics.Anm;
@@ -8,14 +9,15 @@ import ua.tmmaple.pr25.graphics.GraphicManager;
 //Поки це просто болванка для тесту gun
 public class Enemy {
     GraphicManager.AnmVirtualMachine sprite;
+    Vector2 position;
     Gun gun;
     boolean isAttacking;
     int attackCooldown;
     public Enemy(){
+        position = new Vector2(300, 300);
         sprite = GraphicManager.global.new AnmVirtualMachine();
         sprite.loadAnm(Assets.global.get(Anm.class,"game/plr.anm"));
         sprite.loadScriptAndPlay("PlayerSprite");
-        sprite.position.set(300, 300);
         isAttacking = false;
         attackCooldown = 100;
         gun = new Gun(this, BulletManager.global.enemyBullets, 180, 0.3f, 10, 5);
@@ -38,6 +40,7 @@ public class Enemy {
         return 0;
     }
     private int draw(){
+        sprite.position.set(position);
         sprite.draw();
         return 0;
     }
