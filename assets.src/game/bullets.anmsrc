@@ -1,0 +1,114 @@
+#import "game/bullets.png"
+
+#source(0, 0, 0, 8, 8)
+#define BULLET_8x8_RED 0
+#source(0, 8, 0, 8, 8)
+#define BULLET_8x8_ORANGE 1
+#source(0, 16, 0, 8, 8)
+#define BULLET_8x8_YELLOW 2
+#source(0, 24, 0, 8, 8)
+#define BULLET_8x8_GREEN 3
+#source(0, 32, 0, 8, 8)
+#define BULLET_8x8_BLUE 4
+#source(0, 40, 0, 8, 8)
+#define BULLET_8x8_PURPLE 5
+#source(0, 48, 0, 8, 8)
+#define BULLET_8x8_WHITE 6
+#source(0, 56, 0, 4, 8)
+#define BULLET_4x8_RED 7
+#source(0, 60, 0, 4, 8)
+#define BULLET_4x8_ORANGE 8
+#source(0, 64, 0, 4, 8)
+#define BULLET_4x8_YELLOW 9
+#source(0, 68, 0, 4, 8)
+#define BULLET_4x8_GREEN 10
+#source(0, 72, 0, 4, 8)
+#define BULLET_4x8_BLUE 11
+#source(0, 76, 0, 4, 8)
+#define BULLET_4x8_PURPLE 12
+#source(0, 80, 0, 4, 8)
+#define BULLET_4x8_WHITE 13
+
+script Bullet_8x8Red {
+	source(BULLET_8x8_RED);
+	pause;
+}
+
+script Bullet_8x8Orange {
+	source(BULLET_8x8_ORANGE);
+	pause;
+}
+
+script Bullet_8x8Yellow {
+	source(BULLET_8x8_YELLOW);
+	pause;
+}
+
+script Bullet_8x8Green {
+	source(BULLET_8x8_GREEN);
+	pause;
+}
+
+script Bullet_8x8Blue {
+	source(BULLET_8x8_BLUE);
+	pause;
+}
+
+script Bullet_8x8Purple {
+	source(BULLET_8x8_PURPLE);
+	pause;
+}
+
+script Bullet_8x8White {
+	source(BULLET_8x8_WHITE);
+	pause;
+}
+
+script Bullet_4x8Red {
+	source(BULLET_4x8_RED);
+	autorotate(true);
+	angle(-1.57079632679);
+	pause;
+}
+
+script Bullet_4x8Orange {
+	source(BULLET_4x8_ORANGE);
+	autorotate(true);
+	angle(-1.57079632679);
+	pause;
+}
+
+script Bullet_4x8Yellow {
+	source(BULLET_4x8_YELLOW);
+	autorotate(true);
+	angle(-1.57079632679);
+	pause;
+}
+
+script Bullet_4x8Green {
+	source(BULLET_4x8_GREEN);
+	autorotate(true);
+	angle(-1.57079632679);
+	pause;
+}
+
+script Bullet_4x8Blue {
+	source(BULLET_4x8_BLUE);
+	autorotate(true);
+	angle(-1.57079632679);
+	pause;
+}
+
+script Bullet_4x8Purple {
+	source(BULLET_4x8_PURPLE);
+	autorotate(true);
+	angle(-1.57079632679);
+	pause;
+}
+
+script Bullet_4x8White {
+	source(BULLET_4x8_WHITE);
+	autorotate(true);
+	angle(-1.57079632679);
+	pause;
+}
