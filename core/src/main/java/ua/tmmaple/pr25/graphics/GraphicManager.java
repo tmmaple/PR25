@@ -328,9 +328,6 @@ public final class GraphicManager {
             if (anm == null)
                 return 1;
 
-            if ((flags & ANM_FLAG_EXECUTE) == 0)
-                return 1;
-
             if (interrupt > 0) {
                 previousPointer = pointer;
                 previousTime = time;
@@ -359,189 +356,236 @@ public final class GraphicManager {
                 }
                 interrupt = 0;
             }
-            while (pointer >= scriptStart && pointer < scriptEnd && time >= parseTime()) {
-                switch (parseOpcode()) {
-                    case Anm.ANM_OP_NOP:
-                    case Anm.ANM_OP_INTERRUPT: skip(); break;
-                    case Anm.ANM_OP_DELETE: delete(); return 1;
-                    case Anm.ANM_OP_STOP: anm = null; return 1;
-                    case Anm.ANM_OP_PAUSE: flags &= ~ANM_FLAG_EXECUTE; skip(); break;
-                    case Anm.ANM_OP_HIDE_PAUSE: {
-                        flags &= ~(ANM_FLAG_EXECUTE | ANM_FLAG_VISIBLE);
-                        skip();
-                    } break;
-                    case Anm.ANM_OP_SLEEP: {
-                        skipToArgs();
-                        time -= (short) parseInt();
-                    } break;
-                    case Anm.ANM_OP_RETURN: {
-                        pointer = previousPointer;
-                        time = previousTime;
-                    } break;
-                    case Anm.ANM_OP_JUMP: {
-                        int pos = pointer;
-                        skipToArgs();
-                        pointer = pos + parseInt();
-                        time = parseTime();
-                    } break;
-                    case Anm.ANM_OP_SOURCE: {
-                        skipToArgs();
-                        loadSource(parseByte());
-                    } break;
-                    case Anm.ANM_OP_UV_POSITION: {
-                        if (region == null) skip();
-                        else {
-                            skipToArgs();
-                            float uDiff = region.getU2() - region.getU();
-                            float vDiff = region.getV2() - region.getV();
-                            float u = parseFloat();
-                            float v = parseFloat();
-                            region.setU(u);
-                            region.setV(v);
-                            region.setU2(uDiff);
-                            region.setV2(vDiff);
+
+            if ((flags & ANM_FLAG_EXECUTE) != 0) {
+                while (pointer >= scriptStart && pointer < scriptEnd && time >= parseTime()) {
+                    switch (parseOpcode()) {
+                        case Anm.ANM_OP_NOP:
+                        case Anm.ANM_OP_INTERRUPT:
+                            skip();
+                            break;
+                        case Anm.ANM_OP_DELETE:
+                            delete();
+                            return 1;
+                        case Anm.ANM_OP_STOP:
+                            anm = null;
+                            return 1;
+                        case Anm.ANM_OP_PAUSE:
+                            flags &= ~ANM_FLAG_EXECUTE;
+                            skip();
+                            break;
+                        case Anm.ANM_OP_HIDE_PAUSE: {
+                            flags &= ~(ANM_FLAG_EXECUTE | ANM_FLAG_VISIBLE);
+                            skip();
                         }
-                    } break;
-                    case Anm.ANM_OP_UV_SCALE: {
-                        if (region == null) skip();
-                        else {
-                            skipToArgs();
-                            float halfWidth = parseFloat() * 0.5f;
-                            float halfHeight = parseFloat() * 0.5f;
-                            float midU = (region.getU() + region.getU2()) * 0.5f;
-                            float midV = (region.getV() + region.getV2()) * 0.5f;
-                            region.setU(midU - halfWidth);
-                            region.setV(midV - halfHeight);
-                            region.setU2(midU + halfWidth);
-                            region.setV2(midV + halfHeight);
-                        }
-                    } break;
-                    case Anm.ANM_OP_UV_SCROLLING_X: skipToArgs(); uScrolling = parseFloat(); break;
-                    case Anm.ANM_OP_UV_SCROLLING_Y: skipToArgs(); vScrolling = parseFloat(); break;
-                    case Anm.ANM_OP_UV_MOVE:
-                    case Anm.ANM_OP_UV_RESCALE: skip(); break;
-                    case Anm.ANM_OP_UV_MODE: {
-                        if (region == null) skip();
-                        else {
-                            skipToArgs();
-                            uvMode = parseByte();
-                        }
-                    } break;
-                    case Anm.ANM_OP_COLOR: {
-                        skipToArgs();
-                        float r = parseFloat();
-                        float g = parseFloat();
-                        float b = parseFloat();
-                        color.set(r, g, b, 1.0f);
-                    } break;
-                    case Anm.ANM_OP_ALPHA: {
-                        skipToArgs();
-                        alpha = parseFloat();
-                    } break;
-                    case Anm.ANM_OP_CHANGE_COLOR: {
-                        skipToArgs();
-                        int time = parseInt();
-                        float r = parseFloat();
-                        float g = parseFloat();
-                        float b = parseFloat();
-                        int type = parseByte();
-                        colorInterpolator.start((byte) type, color.cpy(), new Color(r, g, b, 1.0f), (short) time);
-                    } break;
-                    case Anm.ANM_OP_FADE: {
-                        skipToArgs();
-                        int time = parseInt();
-                        float a = parseFloat();
-                        int type = parseByte();
-                        alphaInterpolator.start((byte) type, alpha, a, (short) time);
-                    } break;
-                    case Anm.ANM_OP_BLENDING: {
-                        skip();
-                    } break;
-                    case Anm.ANM_OP_VISIBLE: {
-                        skipToArgs();
-                        int value = parseByte();
-                        if (value == 0)
-                            flags &= ~ANM_FLAG_VISIBLE;
-                        else
-                            flags |= ANM_FLAG_VISIBLE;
-                    } break;
-                    case Anm.ANM_OP_FLIP_X: {
-                        skipToArgs();
-                        int value = parseByte();
-                        if (value == 0)
-                            flags &= ~ANM_FLAG_FLIP_X;
-                        else
-                            flags |= ANM_FLAG_FLIP_X;
-                    } break;
-                    case Anm.ANM_OP_FLIP_Y: {
-                        skipToArgs();
-                        int value = parseByte();
-                        if (value == 0)
-                            flags &= ~ANM_FLAG_FLIP_Y;
-                        else
-                            flags |= ANM_FLAG_FLIP_Y;
-                    } break;
-                    case Anm.ANM_OP_POSITION: {
-                        skipToArgs();
-                        anmPosition.set(parseFloat(), parseFloat());
-                    } break;
-                    case Anm.ANM_OP_ANGLE: {
-                        skipToArgs();
-                        anmAngle = parseFloat();
-                    } break;
-                    case Anm.ANM_OP_SCALE: {
-                        skipToArgs();
-                        anmScale.set(parseFloat(), parseFloat());
-                    } break;
-                    case Anm.ANM_OP_MOVE: {
-                        skipToArgs();
-                        int time = parseInt();
-                        float x = parseFloat();
-                        float y = parseFloat();
-                        int type = parseByte();
-                        positionInterpolator.start((byte) type, anmPosition, new Vector2(x, y), (short) time);
-                    } break;
-                    case Anm.ANM_OP_ROTATE: {
-                        skipToArgs();
-                        int time = parseInt();
-                        float a = parseFloat();
-                        int type = parseByte();
-                        angleInterpolator.start((byte) type, anmAngle, a, (short) time);
-                    } break;
-                    case Anm.ANM_OP_GROW: {
-                        skipToArgs();
-                        int time = parseInt();
-                        float w = parseFloat();
-                        float h = parseFloat();
-                        int type = parseByte();
-                        positionInterpolator.start((byte) type, anmScale, new Vector2(w, h), (short) time);
-                    } break;
-                    case Anm.ANM_OP_AUTOROTATE: {
-                        skipToArgs();
-                        int value = parseByte();
-                        if (value == 0)
-                            flags &= ~ANM_FLAG_AUTOROTATE;
-                        else
-                            flags |= ANM_FLAG_AUTOROTATE;
-                    } break;
-                    case Anm.ANM_OP_ANGULAR_SPEED: {
-                        skipToArgs();
-                        angularSpeed = parseFloat();
-                    } break;
-                    case Anm.ANM_OP_ORIGIN_MODE: {
-                        skipToArgs();
-                        originMode = parseByte();
-                    } break;
-                    case Anm.ANM_OP_ANCHOR_MODE: {
-                        skipToArgs();
-                        anchorMode = parseByte();
-                    } break;
-                    case Anm.ANM_OP_ANCHOR_OFFSET: {
-                        skipToArgs();
-                        anchorOffset.set(parseFloat(), parseFloat());
-                    } break;
-                    default:
                         break;
+                        case Anm.ANM_OP_SLEEP: {
+                            skipToArgs();
+                            time -= (short) parseInt();
+                        }
+                        break;
+                        case Anm.ANM_OP_RETURN: {
+                            pointer = previousPointer;
+                            time = previousTime;
+                        }
+                        break;
+                        case Anm.ANM_OP_JUMP: {
+                            int pos = pointer;
+                            skipToArgs();
+                            pointer = pos + parseInt();
+                            time = parseTime();
+                        }
+                        break;
+                        case Anm.ANM_OP_SOURCE: {
+                            skipToArgs();
+                            loadSource(parseByte());
+                        }
+                        break;
+                        case Anm.ANM_OP_UV_POSITION: {
+                            if (region == null) skip();
+                            else {
+                                skipToArgs();
+                                float uDiff = region.getU2() - region.getU();
+                                float vDiff = region.getV2() - region.getV();
+                                float u = parseFloat();
+                                float v = parseFloat();
+                                region.setU(u);
+                                region.setV(v);
+                                region.setU2(uDiff);
+                                region.setV2(vDiff);
+                            }
+                        }
+                        break;
+                        case Anm.ANM_OP_UV_SCALE: {
+                            if (region == null) skip();
+                            else {
+                                skipToArgs();
+                                float halfWidth = parseFloat() * 0.5f;
+                                float halfHeight = parseFloat() * 0.5f;
+                                float midU = (region.getU() + region.getU2()) * 0.5f;
+                                float midV = (region.getV() + region.getV2()) * 0.5f;
+                                region.setU(midU - halfWidth);
+                                region.setV(midV - halfHeight);
+                                region.setU2(midU + halfWidth);
+                                region.setV2(midV + halfHeight);
+                            }
+                        }
+                        break;
+                        case Anm.ANM_OP_UV_SCROLLING_X:
+                            skipToArgs();
+                            uScrolling = parseFloat();
+                            break;
+                        case Anm.ANM_OP_UV_SCROLLING_Y:
+                            skipToArgs();
+                            vScrolling = parseFloat();
+                            break;
+                        case Anm.ANM_OP_UV_MOVE:
+                        case Anm.ANM_OP_UV_RESCALE:
+                            skip();
+                            break;
+                        case Anm.ANM_OP_UV_MODE: {
+                            if (region == null) skip();
+                            else {
+                                skipToArgs();
+                                uvMode = parseByte();
+                            }
+                        }
+                        break;
+                        case Anm.ANM_OP_COLOR: {
+                            skipToArgs();
+                            float r = parseFloat();
+                            float g = parseFloat();
+                            float b = parseFloat();
+                            color.set(r, g, b, 1.0f);
+                        }
+                        break;
+                        case Anm.ANM_OP_ALPHA: {
+                            skipToArgs();
+                            alpha = parseFloat();
+                        }
+                        break;
+                        case Anm.ANM_OP_CHANGE_COLOR: {
+                            skipToArgs();
+                            int time = parseInt();
+                            float r = parseFloat();
+                            float g = parseFloat();
+                            float b = parseFloat();
+                            int type = parseByte();
+                            colorInterpolator.start((byte) type, color.cpy(), new Color(r, g, b, 1.0f), (short) time);
+                        }
+                        break;
+                        case Anm.ANM_OP_FADE: {
+                            skipToArgs();
+                            int time = parseInt();
+                            float a = parseFloat();
+                            int type = parseByte();
+                            alphaInterpolator.start((byte) type, alpha, a, (short) time);
+                        }
+                        break;
+                        case Anm.ANM_OP_BLENDING: {
+                            skip();
+                        }
+                        break;
+                        case Anm.ANM_OP_VISIBLE: {
+                            skipToArgs();
+                            int value = parseByte();
+                            if (value == 0)
+                                flags &= ~ANM_FLAG_VISIBLE;
+                            else
+                                flags |= ANM_FLAG_VISIBLE;
+                        }
+                        break;
+                        case Anm.ANM_OP_FLIP_X: {
+                            skipToArgs();
+                            int value = parseByte();
+                            if (value == 0)
+                                flags &= ~ANM_FLAG_FLIP_X;
+                            else
+                                flags |= ANM_FLAG_FLIP_X;
+                        }
+                        break;
+                        case Anm.ANM_OP_FLIP_Y: {
+                            skipToArgs();
+                            int value = parseByte();
+                            if (value == 0)
+                                flags &= ~ANM_FLAG_FLIP_Y;
+                            else
+                                flags |= ANM_FLAG_FLIP_Y;
+                        }
+                        break;
+                        case Anm.ANM_OP_POSITION: {
+                            skipToArgs();
+                            anmPosition.set(parseFloat(), parseFloat());
+                        }
+                        break;
+                        case Anm.ANM_OP_ANGLE: {
+                            skipToArgs();
+                            anmAngle = parseFloat();
+                        }
+                        break;
+                        case Anm.ANM_OP_SCALE: {
+                            skipToArgs();
+                            anmScale.set(parseFloat(), parseFloat());
+                        }
+                        break;
+                        case Anm.ANM_OP_MOVE: {
+                            skipToArgs();
+                            int time = parseInt();
+                            float x = parseFloat();
+                            float y = parseFloat();
+                            int type = parseByte();
+                            positionInterpolator.start((byte) type, anmPosition, new Vector2(x, y), (short) time);
+                        }
+                        break;
+                        case Anm.ANM_OP_ROTATE: {
+                            skipToArgs();
+                            int time = parseInt();
+                            float a = parseFloat();
+                            int type = parseByte();
+                            angleInterpolator.start((byte) type, anmAngle, a, (short) time);
+                        }
+                        break;
+                        case Anm.ANM_OP_GROW: {
+                            skipToArgs();
+                            int time = parseInt();
+                            float w = parseFloat();
+                            float h = parseFloat();
+                            int type = parseByte();
+                            positionInterpolator.start((byte) type, anmScale, new Vector2(w, h), (short) time);
+                        }
+                        break;
+                        case Anm.ANM_OP_AUTOROTATE: {
+                            skipToArgs();
+                            int value = parseByte();
+                            if (value == 0)
+                                flags &= ~ANM_FLAG_AUTOROTATE;
+                            else
+                                flags |= ANM_FLAG_AUTOROTATE;
+                        }
+                        break;
+                        case Anm.ANM_OP_ANGULAR_SPEED: {
+                            skipToArgs();
+                            angularSpeed = parseFloat();
+                        }
+                        break;
+                        case Anm.ANM_OP_ORIGIN_MODE: {
+                            skipToArgs();
+                            originMode = parseByte();
+                        }
+                        break;
+                        case Anm.ANM_OP_ANCHOR_MODE: {
+                            skipToArgs();
+                            anchorMode = parseByte();
+                        }
+                        break;
+                        case Anm.ANM_OP_ANCHOR_OFFSET: {
+                            skipToArgs();
+                            anchorOffset.set(parseFloat(), parseFloat());
+                        }
+                        break;
+                        default:
+                            break;
+                    }
                 }
             }
 
