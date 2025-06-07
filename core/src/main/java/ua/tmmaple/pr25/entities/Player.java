@@ -1,5 +1,6 @@
 package ua.tmmaple.pr25.entities;
 
+import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.Game;
 import ua.tmmaple.pr25.God;
@@ -8,6 +9,7 @@ import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
 public class Player {
+    static Vector2 playerPos = new Vector2();
     final GraphicManager.AnmVirtualMachine plr;
     private final GraphicManager.AnmVirtualMachine sprite;
     private final GraphicManager.AnmVirtualMachine hitbox;
@@ -17,6 +19,7 @@ public class Player {
     private int bigBulletCooldown;
     public Player() {
         plr = GraphicManager.global.new AnmVirtualMachine();
+        playerPos = new Vector2();
         sprite = GraphicManager.global.new AnmVirtualMachine();
         sprite.parent = plr;
         sprite.loadAnm(Assets.global.get(Anm.class,"game/plr.anm"));
@@ -42,6 +45,7 @@ public class Player {
     }
 
     private int update(){
+        playerPos = plr.position;
         plr.execute();
         if (God.global.inputState(God.INPUT_MOVE_UP)==God.INPUT_STATE_JUST_PRESSED){
             sprite.interrupt((byte) 1);
@@ -74,11 +78,11 @@ public class Player {
         }
         if (God.global.inputState(God.INPUT_FIRE)==God.INPUT_STATE_PRESSED){
             if (smallBulletCooldown==0){
-                BulletManager.global.createBullet(BulletManager.global.plrSmallBullets, smallBulletOrb.absolutePosition());
+                BulletManager.global.createPlayerBullet(BulletManager.global.plrSmallBullets, smallBulletOrb.absolutePosition());
                 smallBulletCooldown =3;
             }
             if (bigBulletCooldown==0){
-                BulletManager.global.createBullet(BulletManager.global.plrBigBullets, bigBulletOrb.absolutePosition());
+                BulletManager.global.createPlayerBullet(BulletManager.global.plrBigBullets, bigBulletOrb.absolutePosition());
                 bigBulletCooldown =10;
             }
         }
