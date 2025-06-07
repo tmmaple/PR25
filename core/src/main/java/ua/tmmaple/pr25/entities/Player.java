@@ -9,7 +9,7 @@ import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
 public class Player {
-    static Vector2 playerPos = new Vector2();
+    static Vector2 playerPos;
     final GraphicManager.AnmVirtualMachine plr;
     private final GraphicManager.AnmVirtualMachine sprite;
     private final GraphicManager.AnmVirtualMachine hitbox;
@@ -19,7 +19,7 @@ public class Player {
     private int bigBulletCooldown;
     public Player() {
         plr = GraphicManager.global.new AnmVirtualMachine();
-        playerPos = new Vector2();
+        playerPos = new Vector2(0, 0);
         sprite = GraphicManager.global.new AnmVirtualMachine();
         sprite.parent = plr;
         sprite.loadAnm(Assets.global.get(Anm.class,"game/plr.anm"));
@@ -45,7 +45,6 @@ public class Player {
     }
 
     private int update(){
-        playerPos = plr.position;
         plr.execute();
         if (God.global.inputState(God.INPUT_MOVE_UP)==God.INPUT_STATE_JUST_PRESSED){
             sprite.interrupt((byte) 1);
@@ -57,23 +56,23 @@ public class Player {
             sprite.interrupt((byte) 3);
         }
         if (God.global.inputState(God.INPUT_MOVE_UP)==God.INPUT_STATE_PRESSED){
-            if (plr.position.y < Game.BASE_WINDOW_HEIGHT-26) {
-                plr.position.add(0, 3);
+            if (playerPos.y < Game.BASE_WINDOW_HEIGHT-26) {
+                playerPos.add(0, 3);
             }
         }
         if (God.global.inputState(God.INPUT_MOVE_DOWN)==God.INPUT_STATE_PRESSED){
-            if (plr.position.y > 26) {
-                plr.position.add(0, -3);
+            if (playerPos.y > 26) {
+                playerPos.add(0, -3);
             }
         }
         if (God.global.inputState(God.INPUT_MOVE_LEFT)==God.INPUT_STATE_PRESSED){
-            if (plr.position.x > 21) {
-                plr.position.add(-3, 0);
+            if (playerPos.x > 21) {
+                playerPos.add(-3, 0);
             }
         }
         if (God.global.inputState(God.INPUT_MOVE_RIGHT)==God.INPUT_STATE_PRESSED){
-            if (plr.position.x < Game.BASE_WINDOW_WIDTH-21) {
-                plr.position.add(3, 0);
+            if (playerPos.x < Game.BASE_WINDOW_WIDTH-21) {
+                playerPos.add(3, 0);
             }
         }
         if (God.global.inputState(God.INPUT_FIRE)==God.INPUT_STATE_PRESSED){
@@ -102,6 +101,7 @@ public class Player {
         return 0;
     }
     private int draw(){
+        plr.position.set(playerPos);
         sprite.draw();
         smallBulletOrb.draw();
         bigBulletOrb.draw();
