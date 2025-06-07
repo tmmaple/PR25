@@ -352,6 +352,7 @@ public final class GraphicManager {
                 if (found) {
                     skip();
                     time = parseTime();
+                    flags |= ANM_FLAG_EXECUTE | ANM_FLAG_VISIBLE;
                 } else {
                     pointer = previousPointer;
                     time = previousTime;
@@ -364,10 +365,9 @@ public final class GraphicManager {
                     case Anm.ANM_OP_INTERRUPT: skip(); break;
                     case Anm.ANM_OP_DELETE: delete(); return 1;
                     case Anm.ANM_OP_STOP: anm = null; return 1;
-                    case Anm.ANM_OP_PAUSE: pointer = -1; skip(); break;
+                    case Anm.ANM_OP_PAUSE: flags &= ~ANM_FLAG_EXECUTE; skip(); break;
                     case Anm.ANM_OP_HIDE_PAUSE: {
-                        pointer = -1;
-                        flags &= ~ANM_FLAG_VISIBLE;
+                        flags &= ~(ANM_FLAG_EXECUTE | ANM_FLAG_VISIBLE);
                         skip();
                     } break;
                     case Anm.ANM_OP_SLEEP: {
