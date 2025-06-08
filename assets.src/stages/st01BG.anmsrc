@@ -1,0 +1,9 @@
+#import "stages/st01BG.png"
+
+#source(0, 0, 0, 384, 1376)
+
+script Background {
+    source(0);
+    anchorMode(ANCHOR_BOTTOM_MIDDLE);
+    pause;
+}

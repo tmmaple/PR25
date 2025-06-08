@@ -18,21 +18,32 @@ public class BulletManager {
     PlayersBullet[] plrBigBullets;
     EnemyBullet[] enemyBullets;
 
+    private static Flow.FlowNode<BulletManager> updateNode;
+    private static Flow.FlowNode<BulletManager> drawNode;
+
     public BulletManager() {
-        plrSmallBullets = new PlayersBullet[20];
-        plrBigBullets = new PlayersBullet[10];
+        plrSmallBullets = new PlayersBullet[32];
+        plrBigBullets = new PlayersBullet[32];
         enemyBullets = new EnemyBullet[600];
     }
+
     public static void register(){
-        Flow.FlowNode<BulletManager> upd = new Flow.FlowNode<>(global, BulletManager::update, BulletManager::added);
-        Flow.global.addToUpdate(upd, 2);
-        Flow.FlowNode<BulletManager> draw = new Flow.FlowNode<>(global, BulletManager::draw);
-        Flow.global.addToDraw(draw, 2);
+        updateNode = new Flow.FlowNode<>(global, BulletManager::update, BulletManager::added);
+        Flow.global.addToUpdate(updateNode, 2);
+        drawNode = new Flow.FlowNode<>(global, BulletManager::draw);
+        Flow.global.addToDraw(drawNode, 555);
     }
+
+    public static void shutdown() {
+        Flow.global.cut(updateNode);
+        Flow.global.cut(drawNode);
+    }
+
     private static int update(BulletManager bulletManager) {
         bulletManager.updateBullets();
         return Flow.FLOW_RESULT_CONTINUE;
     }
+
     private static int added(BulletManager bulletManager) {
         for (int i=0; i<bulletManager.plrSmallBullets.length; i++) {
             bulletManager.plrSmallBullets[i] = bulletManager.new PlayersBullet(Assets.global.get(Anm.class,"game/plr.anm"), 14, 2, 0, 8, 0, 0, 100);
@@ -52,6 +63,8 @@ public class BulletManager {
     private void updateBullets() {
         for (PlayersBullet bullet : plrSmallBullets) {
             if (bullet.active) {
+                bullet.sprite.position.set(bullet.position);
+                bullet.sprite.execute();
                 bullet.move();
                 bullet.checkCollision();
                 if (bullet.lifeTime==0){
@@ -62,6 +75,8 @@ public class BulletManager {
         }
         for (PlayersBullet bullet : plrBigBullets) {
             if (bullet.active) {
+                bullet.sprite.position.set(bullet.position);
+                bullet.sprite.execute();
                 bullet.move();
                 bullet.checkCollision();
                 if (bullet.lifeTime==0){
@@ -72,6 +87,8 @@ public class BulletManager {
         }
         for (EnemyBullet bullet : enemyBullets) {
             if (bullet.active) {
+                bullet.sprite.position.set(bullet.position);
+                bullet.sprite.execute();
                 bullet.move();
                 bullet.checkCollision();
                 if (bullet.lifeTime==0){
@@ -81,22 +98,20 @@ public class BulletManager {
             }
         }
     }
+
     private static int draw(BulletManager bulletManager) {
         for (PlayersBullet bullet : bulletManager.plrSmallBullets) {
             if (bullet.active) {
-                bullet.sprite.position.set(bullet.position);
                 bullet.sprite.draw();
             }
         }
         for (PlayersBullet bullet : bulletManager.plrBigBullets) {
             if (bullet.active) {
-                bullet.sprite.position.set(bullet.position);
                 bullet.sprite.draw();
             }
         }
         for (EnemyBullet bullet : bulletManager.enemyBullets) {
             if (bullet.active) {
-                bullet.sprite.position.set(bullet.position);
                 bullet.sprite.draw();
             }
         }
@@ -111,9 +126,10 @@ public class BulletManager {
         int i = 0;
         int max = bulletPool.length;
         while (i < max && bulletPool[i].active) i++;
-        if (i<max-1){
+        if (i < max){
             bulletPool[i].active = true;
             bulletPool[i].position.set(pos);
+            bulletPool[i].sprite.teleport();
         }
     }
 
@@ -126,6 +142,7 @@ public class BulletManager {
             bulletPool[i].speed.rotateRad(angle);
             bulletPool[i].sprite.angle = angle;
             bulletPool[i].position.set(pos);
+            bulletPool[i].sprite.teleport();
         }
     }
 
@@ -202,6 +219,7 @@ public class BulletManager {
             active = false;
             speed.set(defaultSpeed);
             lifeTime = defaultLifeTime;
+            sprite.teleport();
         }
     }
 }

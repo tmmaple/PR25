@@ -29,86 +29,635 @@
 #source(0, 80, 0, 4, 8)
 #define BULLET_4x8_WHITE 13
 
-script Bullet_8x8Red {
-	source(BULLET_8x8_RED);
-	pause;
+#source(0, 0, 8, 12, 12)
+#define BULLET_12x12_RED 14
+#source(0, 12, 8, 12, 12)
+#define BULLET_12x12_ORANGE 15
+#source(0, 24, 8, 12, 12)
+#define BULLET_12x12_YELLOW 16
+#source(0, 36, 8, 12, 12)
+#define BULLET_12x12_GREEN 17
+#source(0, 48, 8, 12, 12)
+#define BULLET_12x12_BLUE 18
+#source(0, 60, 8, 12, 12)
+#define BULLET_12x12_PURPLE 19
+#source(0, 72, 8, 12, 12)
+#define BULLET_12x12_WHITE 20
+#source(0, 84, 8, 8, 12)
+#define BULLET_8x12_RED 21
+#source(0, 92, 8, 8, 12)
+#define BULLET_8x12_ORANGE 22
+#source(0, 100, 8, 8, 12)
+#define BULLET_8x12_YELLOW 23
+#source(0, 108, 8, 8, 12)
+#define BULLET_8x12_GREEN 24
+#source(0, 116, 8, 8, 12)
+#define BULLET_8x12_BLUE 25
+#source(0, 124, 8, 8, 12)
+#define BULLET_8x12_PURPLE 26
+#source(0, 132, 8, 8, 12)
+#define BULLET_8x12_WHITE 27
+#source(0, 140, 8, 4, 12)
+#define BULLET_4x12_RED 28
+#source(0, 144, 8, 4, 12)
+#define BULLET_4x12_ORANGE 29
+#source(0, 148, 8, 4, 12)
+#define BULLET_4x12_YELLOW 30
+#source(0, 152, 8, 4, 12)
+#define BULLET_4x12_GREEN 31
+#source(0, 156, 8, 4, 12)
+#define BULLET_4x12_BLUE 32
+#source(0, 160, 8, 4, 12)
+#define BULLET_4x12_PURPLE 33
+#source(0, 164, 8, 4, 12)
+#define BULLET_4x12_WHITE 34
+#source(0, 168, 8, 12, 12)
+#define BULLET_RINGED_12x12_RED 35
+#source(0, 180, 8, 12, 12)
+#define BULLET_RINGED_12x12_ORANGE 36
+#source(0, 192, 8, 12, 12)
+#define BULLET_RINGED_12x12_YELLOW 37
+#source(0, 204, 8, 12, 12)
+#define BULLET_RINGED_12x12_GREEN 38
+#source(0, 216, 8, 12, 12)
+#define BULLET_RINGED_12x12_BLUE 39
+#source(0, 228, 8, 12, 12)
+#define BULLET_RINGED_12x12_PURPLE 40
+#source(0, 240, 8, 12, 12)
+#define BULLET_RINGED_12x12_WHITE 41
+
+#source(0, 0, 20, 16, 16)
+#define BULLET_16x16_RED 42
+#source(0, 16, 20, 16, 16)
+#define BULLET_16x16_ORANGE 43
+#source(0, 32, 20, 16, 16)
+#define BULLET_16x16_YELLOW 44
+#source(0, 48, 20, 16, 16)
+#define BULLET_16x16_GREEN 45
+#source(0, 64, 20, 16, 16)
+#define BULLET_16x16_BLUE 46
+#source(0, 80, 20, 16, 16)
+#define BULLET_16x16_PURPLE 47
+#source(0, 96, 20, 16, 16)
+#define BULLET_16x16_WHITE 48
+#source(0, 112, 20, 16, 16)
+#define BULLET_RINGED_16x16_RED 49
+#source(0, 128, 20, 16, 16)
+#define BULLET_RINGED_16x16_ORANGE 50
+#source(0, 144, 20, 16, 16)
+#define BULLET_RINGED_16x16_YELLOW 51
+#source(0, 160, 20, 16, 16)
+#define BULLET_RINGED_16x16_GREEN 52
+#source(0, 176, 20, 16, 16)
+#define BULLET_RINGED_16x16_BLUE 53
+#source(0, 192, 20, 16, 16)
+#define BULLET_RINGED_16x16_PURPLE 54
+#source(0, 208, 20, 16, 16)
+#define BULLET_RINGED_16x16_WHITE 55
+#source(0, 224, 20, 10, 16)
+#define BULLET_10x16_RED 56
+#source(0, 234, 20, 10, 16)
+#define BULLET_10x16_ORANGE 57
+#source(0, 244, 20, 10, 16)
+#define BULLET_10x16_YELLOW 58
+#source(0, 254, 20, 10, 16)
+#define BULLET_10x16_GREEN 59
+#source(0, 264, 20, 10, 16)
+#define BULLET_10x16_BLUE 60
+#source(0, 274, 20, 10, 16)
+#define BULLET_10x16_PURPLE 61
+#source(0, 284, 20, 10, 16)
+#define BULLET_10x16_WHITE 62
+
+#source(0, 0, 36, 32, 32)
+#define BULLET_32x32_RED 63
+#source(0, 32, 36, 32, 32)
+#define BULLET_32x32_ORANGE 64
+#source(0, 64, 36, 32, 32)
+#define BULLET_32x32_YELLOW 65
+#source(0, 96, 36, 32, 32)
+#define BULLET_32x32_GREEN 66
+#source(0, 128, 36, 32, 32)
+#define BULLET_32x32_BLUE 67
+#source(0, 160, 36, 32, 32)
+#define BULLET_32x32_PURPLE 68
+#source(0, 192, 36, 32, 32)
+#define BULLET_32x32_WHITE 69
+#source(0, 224, 36, 32, 32)
+#define BULLET_RINGED_32x32_RED 70
+#source(0, 256, 36, 32, 32)
+#define BULLET_RINGED_32x32_ORANGE 71
+#source(0, 288, 36, 32, 32)
+#define BULLET_RINGED_32x32_YELLOW 72
+#source(0, 320, 36, 32, 32)
+#define BULLET_RINGED_32x32_GREEN 73
+#source(0, 352, 36, 32, 32)
+#define BULLET_RINGED_32x32_BLUE 74
+#source(0, 384, 36, 32, 32)
+#define BULLET_RINGED_32x32_PURPLE 75
+#source(0, 416, 36, 32, 32)
+#define BULLET_RINGED_32x32_WHITE 76
+#source(0, 0, 68, 16, 32)
+#define BULLET_16x32_RED 77
+#source(0, 16, 68, 16, 32)
+#define BULLET_16x32_ORANGE 78
+#source(0, 32, 68, 16, 32)
+#define BULLET_16x32_YELLOW 79
+#source(0, 48, 68, 16, 32)
+#define BULLET_16x32_GREEN 80
+#source(0, 64, 68, 16, 32)
+#define BULLET_16x32_BLUE 81
+#source(0, 80, 68, 16, 32)
+#define BULLET_16x32_PURPLE 82
+#source(0, 96, 68, 16, 32)
+#define BULLET_16x32_WHITE 83
+
+script BULLET_8x8_RED {
+    source(BULLET_8x8_RED);
+    pause;
 }
 
-script Bullet_8x8Orange {
-	source(BULLET_8x8_ORANGE);
-	pause;
+script BULLET_8x8_ORANGE {
+    source(BULLET_8x8_ORANGE);
+    pause;
 }
 
-script Bullet_8x8Yellow {
-	source(BULLET_8x8_YELLOW);
-	pause;
+script BULLET_8x8_YELLOW {
+    source(BULLET_8x8_YELLOW);
+    pause;
 }
 
-script Bullet_8x8Green {
-	source(BULLET_8x8_GREEN);
-	pause;
+script BULLET_8x8_GREEN {
+    source(BULLET_8x8_GREEN);
+    pause;
 }
 
-script Bullet_8x8Blue {
-	source(BULLET_8x8_BLUE);
-	pause;
+script BULLET_8x8_BLUE {
+    source(BULLET_8x8_BLUE);
+    pause;
 }
 
-script Bullet_8x8Purple {
-	source(BULLET_8x8_PURPLE);
-	pause;
+script BULLET_8x8_PURPLE {
+    source(BULLET_8x8_PURPLE);
+    pause;
 }
 
-script Bullet_8x8White {
-	source(BULLET_8x8_WHITE);
-	pause;
+script BULLET_8x8_WHITE {
+    source(BULLET_8x8_WHITE);
+    pause;
 }
 
-script Bullet_4x8Red {
-	source(BULLET_4x8_RED);
-	autorotate(true);
-	angle(-1.57079632679);
-	pause;
+script BULLET_4x8_RED {
+    source(BULLET_4x8_RED);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
 }
 
-script Bullet_4x8Orange {
-	source(BULLET_4x8_ORANGE);
-	autorotate(true);
-	angle(-1.57079632679);
-	pause;
+script BULLET_4x8_ORANGE {
+    source(BULLET_4x8_ORANGE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
 }
 
-script Bullet_4x8Yellow {
-	source(BULLET_4x8_YELLOW);
-	autorotate(true);
-	angle(-1.57079632679);
-	pause;
+script BULLET_4x8_YELLOW {
+    source(BULLET_4x8_YELLOW);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
 }
 
-script Bullet_4x8Green {
-	source(BULLET_4x8_GREEN);
-	autorotate(true);
-	angle(-1.57079632679);
-	pause;
+script BULLET_4x8_GREEN {
+    source(BULLET_4x8_GREEN);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
 }
 
-script Bullet_4x8Blue {
-	source(BULLET_4x8_BLUE);
-	autorotate(true);
-	angle(-1.57079632679);
-	pause;
+script BULLET_4x8_BLUE {
+    source(BULLET_4x8_BLUE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
 }
 
-script Bullet_4x8Purple {
-	source(BULLET_4x8_PURPLE);
-	autorotate(true);
-	angle(-1.57079632679);
-	pause;
+script BULLET_4x8_PURPLE {
+    source(BULLET_4x8_PURPLE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
 }
 
-script Bullet_4x8White {
-	source(BULLET_4x8_WHITE);
-	autorotate(true);
-	angle(-1.57079632679);
-	pause;
+script BULLET_4x8_WHITE {
+    source(BULLET_4x8_WHITE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_12x12_RED {
+    source(BULLET_12x12_RED);
+    pause;
+}
+
+script BULLET_12x12_ORANGE {
+    source(BULLET_12x12_ORANGE);
+    pause;
+}
+
+script BULLET_12x12_YELLOW {
+    source(BULLET_12x12_YELLOW);
+    pause;
+}
+
+script BULLET_12x12_GREEN {
+    source(BULLET_12x12_GREEN);
+    pause;
+}
+
+script BULLET_12x12_BLUE {
+    source(BULLET_12x12_BLUE);
+    pause;
+}
+
+script BULLET_12x12_PURPLE {
+    source(BULLET_12x12_PURPLE);
+    pause;
+}
+
+script BULLET_12x12_WHITE {
+    source(BULLET_12x12_WHITE);
+    pause;
+}
+
+script BULLET_8x12_RED {
+    source(BULLET_8x12_RED);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_8x12_ORANGE {
+    source(BULLET_8x12_ORANGE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_8x12_YELLOW {
+    source(BULLET_8x12_YELLOW);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_8x12_GREEN {
+    source(BULLET_8x12_GREEN);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_8x12_BLUE {
+    source(BULLET_8x12_BLUE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_8x12_PURPLE {
+    source(BULLET_8x12_PURPLE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_8x12_WHITE {
+    source(BULLET_8x12_WHITE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_4x12_RED {
+    source(BULLET_4x12_RED);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_4x12_ORANGE {
+    source(BULLET_4x12_ORANGE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_4x12_YELLOW {
+    source(BULLET_4x12_YELLOW);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_4x12_GREEN {
+    source(BULLET_4x12_GREEN);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_4x12_BLUE {
+    source(BULLET_4x12_BLUE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_4x12_PURPLE {
+    source(BULLET_4x12_PURPLE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_4x12_WHITE {
+    source(BULLET_4x12_WHITE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_RINGED_12x12_RED {
+    source(BULLET_RINGED_12x12_RED);
+    pause;
+}
+
+script BULLET_RINGED_12x12_ORANGE {
+    source(BULLET_RINGED_12x12_ORANGE);
+    pause;
+}
+
+script BULLET_RINGED_12x12_YELLOW {
+    source(BULLET_RINGED_12x12_YELLOW);
+    pause;
+}
+
+script BULLET_RINGED_12x12_GREEN {
+    source(BULLET_RINGED_12x12_GREEN);
+    pause;
+}
+
+script BULLET_RINGED_12x12_BLUE {
+    source(BULLET_RINGED_12x12_BLUE);
+    pause;
+}
+
+script BULLET_RINGED_12x12_PURPLE {
+    source(BULLET_RINGED_12x12_PURPLE);
+    pause;
+}
+
+script BULLET_RINGED_12x12_WHITE {
+    source(BULLET_RINGED_12x12_WHITE);
+    pause;
+}
+
+script BULLET_16x16_RED {
+    source(BULLET_16x16_RED);
+    pause;
+}
+
+script BULLET_16x16_ORANGE {
+    source(BULLET_16x16_ORANGE);
+    pause;
+}
+
+script BULLET_16x16_YELLOW {
+    source(BULLET_16x16_YELLOW);
+    pause;
+}
+
+script BULLET_16x16_GREEN {
+    source(BULLET_16x16_GREEN);
+    pause;
+}
+
+script BULLET_16x16_BLUE {
+    source(BULLET_16x16_BLUE);
+    pause;
+}
+
+script BULLET_16x16_PURPLE {
+    source(BULLET_16x16_PURPLE);
+    pause;
+}
+
+script BULLET_16x16_WHITE {
+    source(BULLET_16x16_WHITE);
+    pause;
+}
+
+script BULLET_RINGED_16x16_RED {
+    source(BULLET_RINGED_16x16_RED);
+    pause;
+}
+
+script BULLET_RINGED_16x16_ORANGE {
+    source(BULLET_RINGED_16x16_ORANGE);
+    pause;
+}
+
+script BULLET_RINGED_16x16_YELLOW {
+    source(BULLET_RINGED_16x16_YELLOW);
+    pause;
+}
+
+script BULLET_RINGED_16x16_GREEN {
+    source(BULLET_RINGED_16x16_GREEN);
+    pause;
+}
+
+script BULLET_RINGED_16x16_BLUE {
+    source(BULLET_RINGED_16x16_BLUE);
+    pause;
+}
+
+script BULLET_RINGED_16x16_PURPLE {
+    source(BULLET_RINGED_16x16_PURPLE);
+    pause;
+}
+
+script BULLET_RINGED_16x16_WHITE {
+    source(BULLET_RINGED_16x16_WHITE);
+    pause;
+}
+
+script BULLET_10x16_RED {
+    source(BULLET_10x16_RED);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_10x16_ORANGE {
+    source(BULLET_10x16_ORANGE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_10x16_YELLOW {
+    source(BULLET_10x16_YELLOW);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_10x16_GREEN {
+    source(BULLET_10x16_GREEN);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_10x16_BLUE {
+    source(BULLET_10x16_BLUE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_10x16_PURPLE {
+    source(BULLET_10x16_PURPLE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_10x16_WHITE {
+    source(BULLET_10x16_WHITE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_32x32_RED {
+    source(BULLET_32x32_RED);
+    pause;
+}
+
+script BULLET_32x32_ORANGE {
+    source(BULLET_32x32_ORANGE);
+    pause;
+}
+
+script BULLET_32x32_YELLOW {
+    source(BULLET_32x32_YELLOW);
+    pause;
+}
+
+script BULLET_32x32_GREEN {
+    source(BULLET_32x32_GREEN);
+    pause;
+}
+
+script BULLET_32x32_BLUE {
+    source(BULLET_32x32_BLUE);
+    pause;
+}
+
+script BULLET_32x32_PURPLE {
+    source(BULLET_32x32_PURPLE);
+    pause;
+}
+
+script BULLET_32x32_WHITE {
+    source(BULLET_32x32_WHITE);
+    pause;
+}
+
+script BULLET_RINGED_32x32_RED {
+    source(BULLET_RINGED_32x32_RED);
+    pause;
+}
+
+script BULLET_RINGED_32x32_ORANGE {
+    source(BULLET_RINGED_32x32_ORANGE);
+    pause;
+}
+
+script BULLET_RINGED_32x32_YELLOW {
+    source(BULLET_RINGED_32x32_YELLOW);
+    pause;
+}
+
+script BULLET_RINGED_32x32_GREEN {
+    source(BULLET_RINGED_32x32_GREEN);
+    pause;
+}
+
+script BULLET_RINGED_32x32_BLUE {
+    source(BULLET_RINGED_32x32_BLUE);
+    pause;
+}
+
+script BULLET_RINGED_32x32_PURPLE {
+    source(BULLET_RINGED_32x32_PURPLE);
+    pause;
+}
+
+script BULLET_RINGED_32x32_WHITE {
+    source(BULLET_RINGED_32x32_WHITE);
+    pause;
+}
+
+script BULLET_16x32_RED {
+    source(BULLET_16x32_RED);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_16x32_ORANGE {
+    source(BULLET_16x32_ORANGE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_16x32_YELLOW {
+    source(BULLET_16x32_YELLOW);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_16x32_GREEN {
+    source(BULLET_16x32_GREEN);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_16x32_BLUE {
+    source(BULLET_16x32_BLUE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_16x32_PURPLE {
+    source(BULLET_16x32_PURPLE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
+}
+
+script BULLET_16x32_WHITE {
+    source(BULLET_16x32_WHITE);
+    autorotate(true);
+    angle(-1.57079632679);
+    pause;
 }

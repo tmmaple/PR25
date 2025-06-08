@@ -25,7 +25,7 @@ public class Enemy {
         Flow.global.addToDraw(new Flow.FlowNode<>(this, Enemy::draw),3);
     }
     private void attack(){
-        gun.direction.set(Player.playerPos);
+        gun.direction.set(Player.global.position);
         isAttacking = true;
     }
     private int update(){

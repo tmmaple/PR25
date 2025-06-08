@@ -358,7 +358,7 @@ public final class GraphicManager {
             }
 
             if ((flags & ANM_FLAG_EXECUTE) != 0) {
-                while (pointer >= scriptStart && pointer < scriptEnd && time >= parseTime()) {
+                while ((flags & ANM_FLAG_EXECUTE) != 0 && pointer >= scriptStart && pointer < scriptEnd && time >= parseTime()) {
                     switch (parseOpcode()) {
                         case Anm.ANM_OP_NOP:
                         case Anm.ANM_OP_INTERRUPT:
@@ -776,7 +776,8 @@ public final class GraphicManager {
             AnmVirtualMachine o = this;
             boolean result = true;
             while (o != null && result) {
-                if ((o.flags & ANM_FLAG_VISIBLE) == 0) result = false;
+                if ((o.flags & ANM_FLAG_VISIBLE) == 0)
+                    result = false;
                 else if (o.alpha == 0.0f) result = false;
                 else o = o.parent;
             }
