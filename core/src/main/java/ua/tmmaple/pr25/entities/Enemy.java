@@ -20,7 +20,7 @@ public class Enemy {
         sprite.loadScriptAndPlay("PlayerSprite");
         isAttacking = false;
         attackCooldown = 100;
-        gun = new Gun(this, BulletManager.global.enemyBullets, 180, 0.3f, 10, 5);
+        gun = new Gun(this, BulletManager.global.enemyBullets, 360, 0.3f, 10, 5);
         Flow.global.addToUpdate(new Flow.FlowNode<>(this, Enemy::update),3);
         Flow.global.addToDraw(new Flow.FlowNode<>(this, Enemy::draw),3);
     }
