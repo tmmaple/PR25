@@ -114,6 +114,7 @@ public final class GraphicManager {
                 surface.end();
             }
             fbo.begin();
+            ScreenUtils.clear(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
             surface = this;
         }
 
@@ -130,6 +131,7 @@ public final class GraphicManager {
                 surface.end();
             }
             fbo.begin();
+            ScreenUtils.clear(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
             if (surface != null) surface.draw(x, y, width, height);
             surface = this;
         }
@@ -154,6 +156,7 @@ public final class GraphicManager {
             if (!drawing) throw new PR25RuntimeException("Can't use a surface before drawing");
             TextureRegion region = new TextureRegion(fbo.getColorBufferTexture());
             region.flip(false, true);
+            region.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
             return region;
         }
 
@@ -164,6 +167,7 @@ public final class GraphicManager {
          */
         public void draw(float x, float y, float width, float height) {
             if (!drawing) throw new PR25RuntimeException("Can't use a surface before drawing");
+            viewport.apply();
             batch.draw(get(), x, y, width, height);
         }
 
@@ -278,10 +282,6 @@ public final class GraphicManager {
                 float an = absoluteAngle();
                 Vector2 off = absoluteAnchorOffset();
                 Vector2 sc = absoluteScale();
-
-                lastAbsolutePosition.set(pos);
-                lastAbsoluteAngle = an;
-                lastAbsoluteScale.set(sc);
 
                 Texture.TextureWrap wrap;
                 switch (uvMode) {
@@ -590,6 +590,9 @@ public final class GraphicManager {
             }
 
             if (region != null) {
+                lastAbsolutePosition.set(absolutePosition());
+                lastAbsoluteAngle = absoluteAngle();
+                lastAbsoluteScale.set(absoluteScale());
                 region.scroll(uScrolling, vScrolling);
             }
             if (colorInterpolator.isRunning()) {
