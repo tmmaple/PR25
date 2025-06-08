@@ -7,6 +7,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.utils.I18NBundle;
+import ua.tmmaple.pr25.entities.GameplayManager;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
 import java.util.Locale;
@@ -15,6 +16,15 @@ import java.util.Locale;
  * Налаштування гри та її поточний стан.
  */
 public final class God {
+    private enum State {
+        INIT,
+        MAIN_MENU,
+        GAME,
+        RESULT_SCREEN,
+        ENDING,
+        CREDITS
+    }
+
     public static God global;
 
     public static final int LANGUAGE_ENGLISH = 0;
@@ -46,6 +56,8 @@ public final class God {
         new Locale("uk", "UA"),
     };
 
+    private State state;
+
     public final int[] controls = {
         Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT,
         Input.Keys.Z, Input.Keys.X, Input.Keys.SHIFT_LEFT,
@@ -70,6 +82,7 @@ public final class God {
         windowScale = 0;
         sfxVolume = 1.0f;
         musicVolume = 1.0f;
+        state = State.INIT;
     }
 
     /**
@@ -87,6 +100,9 @@ public final class God {
      * @author uwuhasmile
      */
     private static int added(God god) {
+        GameplayManager.global = new GameplayManager();
+        GameplayManager.register();
+
         I18NBundle.setExceptionOnMissingKey(false);
         god.prefs = Gdx.app.getPreferences("pr25_settings");
         String language = god.prefs.getString("language", "en");
@@ -143,6 +159,8 @@ public final class God {
      * @author uwuhasmile
      */
     private static int removed(God god) {
+        GameplayManager.shutdown();
+
         god.prefs.putString("language", god.language == LANGUAGE_ENGLISH ? "en" : "uk");
         god.prefs.putInteger("keyMoveUp", god.controls[0]);
         god.prefs.putInteger("keyMoveDown", god.controls[1]);

@@ -44,11 +44,11 @@
 
 // Сфера
 #source(0, 16, 156, 16, 16)
-#define SPHERE_0 15
+#define ORB_0 15
 #source(0, 16, 172, 16, 16)
-#define SPHERE_1 16
+#define ORB_1 16
 #source(0, 16, 188, 16, 16)
-#define SPHERE_2 17
+#define ORB_2 17
 
 #define ANIM_VINCIBLE 1
 #define ANIM_INVINCIBLE 2
@@ -100,16 +100,12 @@ right_start:
 +6: jump right_start;
 }
 
-// Хітбокс
-script PlayerHitbox {
-    source(HITBOX);
-    alpha(0.0);
-
-    interrupt ANIM_UNFOCUSED;
-    fade(10, 0.0, INTERPOLATION_LINEAR);
-    stop;
-
-    interrupt ANIM_FOCUSED;
-    fade(10, 1.0, INTERPOLATION_LINEAR);
-    stop;
+// Сфера
+script Orb {
+    angularSpeed(6.28318531);
+sphere_start:
+    source(ORB_0);
+6:  source(ORB_1);
+12:  source(ORB_2);
+18:  jump sphere_start;
 }

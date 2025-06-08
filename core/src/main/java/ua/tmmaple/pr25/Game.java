@@ -45,11 +45,9 @@ public class Game extends ApplicationAdapter {
 
         Assets.register();
         God.register();
-        Assets.global.load(Anm.class,"game/plr.anm");
-        Flow.global.executeUpdate();
-        BulletManager.register();
-        plr = new Player();
-        enemy = new Enemy();
+        // BulletManager.register();
+        // plr = new Player();
+        // enemy = new Enemy();
     }
 
     @Override

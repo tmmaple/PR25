@@ -1,118 +1,248 @@
 package ua.tmmaple.pr25.entities;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
-import ua.tmmaple.pr25.Game;
 import ua.tmmaple.pr25.God;
 import ua.tmmaple.pr25.assets.Assets;
+import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
 public class Player {
-    static Vector2 playerPos;
-    final GraphicManager.AnmVirtualMachine plr;
-    private final GraphicManager.AnmVirtualMachine sprite;
-    private final GraphicManager.AnmVirtualMachine hitbox;
-    private final GraphicManager.AnmVirtualMachine smallBulletOrb;
-    private final GraphicManager.AnmVirtualMachine bigBulletOrb;
+    private enum MovementDirection {
+        NONE,
+        UP,
+        UP_LEFT,
+        LEFT,
+        DOWN_LEFT,
+        DOWN,
+        DOWN_RIGHT,
+        RIGHT,
+        UP_RIGHT,
+    }
+
+    private static final float Y_SPAWN_OFFSET = 32.0f;
+    private static final float HORIZONTAL_BOUNDARIES = 24.0f;
+    private static final float VERTICAL_BOUNDARIES = 26.0f;
+
+    private static final float ORTHOGONAL_SPEED = 5.0f;
+    private static final float DIAGONAL_SPEED = 3.53553390593f;
+    private static final float FOCUS_SPEED_MULTIPLIER = 0.25f;
+
+    private static final short INVINCIBILITY_COOLDOWN = 90;
+    public static final short DEATH_BOMB_COOLDOWN = 9;
+
+    private static final Vector2 UNFOCUSED_ORB_OFFSET = new Vector2(22.0f, 0.0f);
+    private static final Vector2 FOCUSED_ORB_OFFSET = new Vector2(12.0f, 24.0f);
+
+    public static Player global;
+
+    public final Vector2 position;
+    private final GraphicManager.AnmVirtualMachine parentVM;
+    private final GraphicManager.AnmVirtualMachine spriteVM;
+    private final GraphicManager.AnmVirtualMachine rightOrbVM;
+    private final GraphicManager.AnmVirtualMachine leftOrbVM;
+
+    private final Vector2 orbOffset;
+
+    private short invincibilityCooldown;
+
     private int smallBulletCooldown;
     private int bigBulletCooldown;
+
+    private MovementDirection direction;
+
+    private static Flow.FlowNode<Player> updateNode;
+    private static Flow.FlowNode<Player> drawNode;
+
+    public static int register() {
+        if (updateNode != null)
+            return 0;
+        updateNode = new Flow.FlowNode<>(global, Player::update, Player::added, Player::removed);
+        drawNode = new Flow.FlowNode<>(global, Player::draw);
+        Flow.global.addToUpdate(updateNode, 6);
+        Flow.global.addToDraw(drawNode, 6);
+        return 0;
+    }
+
+    public static void shutdown() {
+        Flow.global.cut(updateNode);
+        Flow.global.cut(drawNode);
+        updateNode = null;
+        drawNode = null;
+    }
+
     public Player() {
-        plr = GraphicManager.global.new AnmVirtualMachine();
-        playerPos = new Vector2(0, 0);
-        sprite = GraphicManager.global.new AnmVirtualMachine();
-        sprite.parent = plr;
-        sprite.loadAnm(Assets.global.get(Anm.class,"game/plr.anm"));
-        sprite.loadScriptAndPlay("PlayerSprite");
-        hitbox = GraphicManager.global.new AnmVirtualMachine();
-        hitbox.parent = plr;
-        hitbox.loadAnm(Assets.global.get(Anm.class,"game/plr.anm"));
-        hitbox.loadScriptAndPlay("PlayerHitbox");
-        plr.loadAnm(Assets.global.get(Anm.class,"game/plr.anm"));
-        plr.loadScriptAndPlay("Player");
-        smallBulletOrb = GraphicManager.global.new AnmVirtualMachine();
-        smallBulletOrb.loadAnm(Assets.global.get(Anm.class,"game/plr.anm"));
-        smallBulletOrb.loadSource((byte)15);
-        smallBulletOrb.parent = plr;
-        smallBulletOrb.position.set(20, 20);
-        bigBulletOrb = GraphicManager.global.new AnmVirtualMachine();
-        bigBulletOrb.loadAnm(Assets.global.get(Anm.class,"game/plr.anm"));
-        bigBulletOrb.loadSource((byte)15);
-        bigBulletOrb.parent = plr;
-        bigBulletOrb.position.set(-20, 20);
-        Flow.global.addToUpdate(new Flow.FlowNode<>(this, Player::update, Player::updAdded, Player::updRemoved),1);
-        Flow.global.addToDraw(new Flow.FlowNode<>(this, Player::draw, Player::drawAdded, Player::drawRemoved),1);
+        position = new Vector2();
+        parentVM = GraphicManager.global.new AnmVirtualMachine();
+        spriteVM = GraphicManager.global.new AnmVirtualMachine();
+        spriteVM.parent = parentVM;
+        rightOrbVM = GraphicManager.global.new AnmVirtualMachine();
+        rightOrbVM.parent = spriteVM;
+        leftOrbVM = GraphicManager.global.new AnmVirtualMachine();
+        leftOrbVM.parent = spriteVM;
+        orbOffset = new Vector2();
     }
 
-    private int update(){
-        plr.execute();
-        if (God.global.inputState(God.INPUT_MOVE_UP)==God.INPUT_STATE_JUST_PRESSED){
-            sprite.interrupt((byte) 1);
-        }
-        if (God.global.inputState(God.INPUT_MOVE_LEFT)==God.INPUT_STATE_JUST_PRESSED){
-            sprite.interrupt((byte) 2);
-        }
-        if (God.global.inputState(God.INPUT_MOVE_RIGHT)==God.INPUT_STATE_JUST_PRESSED){
-            sprite.interrupt((byte) 3);
-        }
-        if (God.global.inputState(God.INPUT_MOVE_UP)==God.INPUT_STATE_PRESSED){
-            if (playerPos.y < Game.BASE_WINDOW_HEIGHT-26) {
-                playerPos.add(0, 3);
+    private void setDirection(MovementDirection direction) {
+        if (this.direction != direction) {
+            this.direction = direction;
+            switch (direction) {
+                case NONE:
+                case DOWN:
+                case UP:
+                    spriteVM.interrupt((byte) 1);
+                    break;
+                case UP_LEFT:
+                case LEFT:
+                case DOWN_LEFT:
+                    spriteVM.interrupt((byte) 2);
+                    break;
+                case DOWN_RIGHT:
+                case RIGHT:
+                case UP_RIGHT:
+                    spriteVM.interrupt((byte) 3);
+                    break;
             }
         }
-        if (God.global.inputState(God.INPUT_MOVE_DOWN)==God.INPUT_STATE_PRESSED){
-            if (playerPos.y > 26) {
-                playerPos.add(0, -3);
+    }
+
+    private void respawn() {
+        invincibilityCooldown = INVINCIBILITY_COOLDOWN;
+        parentVM.interrupt((byte) 2);
+        position.set(GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + Y_SPAWN_OFFSET);
+        orbOffset.set(UNFOCUSED_ORB_OFFSET);
+    }
+
+    private int update() {
+        boolean up = God.global.inputState(God.INPUT_MOVE_UP) == God.INPUT_STATE_PRESSED;
+        boolean left = God.global.inputState(God.INPUT_MOVE_LEFT) == God.INPUT_STATE_PRESSED;
+        boolean down = God.global.inputState(God.INPUT_MOVE_DOWN) == God.INPUT_STATE_PRESSED;
+        boolean right = God.global.inputState(God.INPUT_MOVE_RIGHT) == God.INPUT_STATE_PRESSED;
+        boolean focus = God.global.inputState(God.INPUT_FOCUS) == God.INPUT_STATE_PRESSED;
+        boolean shooting = God.global.inputState(God.INPUT_FIRE) == God.INPUT_STATE_PRESSED;
+        if ((!up && !left && !down && !right) || (up && down || right && left))
+            setDirection(MovementDirection.NONE);
+        else if (up) {
+            if (left)
+                setDirection(MovementDirection.UP_LEFT);
+            else if (right)
+                setDirection(MovementDirection.UP_RIGHT);
+            else
+                setDirection(MovementDirection.UP);
+        } else if (down) {
+            if (left)
+                setDirection(MovementDirection.DOWN_LEFT);
+            else if (right)
+                setDirection(MovementDirection.DOWN_RIGHT);
+            else
+                setDirection(MovementDirection.DOWN);
+        } else if (left)
+            setDirection(MovementDirection.LEFT);
+        else if (right)
+            setDirection(MovementDirection.RIGHT);
+        switch (direction) {
+            case UP:
+                position.y += ORTHOGONAL_SPEED * (focus ? FOCUS_SPEED_MULTIPLIER : 1.0f);
+                break;
+            case UP_LEFT:
+                position.add(-DIAGONAL_SPEED * (focus ? FOCUS_SPEED_MULTIPLIER : 1.0f), DIAGONAL_SPEED * (focus ? FOCUS_SPEED_MULTIPLIER : 1.0f));
+                break;
+            case LEFT:
+                position.x -= ORTHOGONAL_SPEED * (focus ? FOCUS_SPEED_MULTIPLIER : 1.0f);
+                break;
+            case DOWN_LEFT:
+                position.add(-DIAGONAL_SPEED * (focus ? FOCUS_SPEED_MULTIPLIER : 1.0f), -DIAGONAL_SPEED * (focus ? FOCUS_SPEED_MULTIPLIER : 1.0f));
+                break;
+            case DOWN:
+                position.y -= ORTHOGONAL_SPEED * (focus ? FOCUS_SPEED_MULTIPLIER : 1.0f);
+                break;
+            case DOWN_RIGHT:
+                position.add(DIAGONAL_SPEED * (focus ? FOCUS_SPEED_MULTIPLIER : 1.0f), -DIAGONAL_SPEED * (focus ? FOCUS_SPEED_MULTIPLIER : 1.0f));
+                break;
+            case RIGHT:
+                position.x += ORTHOGONAL_SPEED * (focus ? FOCUS_SPEED_MULTIPLIER : 1.0f);
+                break;
+            case UP_RIGHT:
+                position.add(DIAGONAL_SPEED * (focus ? FOCUS_SPEED_MULTIPLIER : 1.0f), DIAGONAL_SPEED * (focus ? FOCUS_SPEED_MULTIPLIER : 1.0f));
+                break;
+        }
+        position.x = MathUtils.clamp(position.x,
+            GameplayManager.VIEWPORT_START_X + HORIZONTAL_BOUNDARIES,
+            GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH - HORIZONTAL_BOUNDARIES);
+        position.y = MathUtils.clamp(position.y,
+            GameplayManager.VIEWPORT_START_Y + VERTICAL_BOUNDARIES,
+            GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT - VERTICAL_BOUNDARIES);
+        if (focus) {
+            if (orbOffset.dst2(FOCUSED_ORB_OFFSET) < 0.01f)
+                orbOffset.set(FOCUSED_ORB_OFFSET);
+            else
+                orbOffset.lerp(FOCUSED_ORB_OFFSET, 0.25f);
+        } else if (orbOffset.dst2(UNFOCUSED_ORB_OFFSET) < 0.01f)
+            orbOffset.set(UNFOCUSED_ORB_OFFSET);
+        else
+            orbOffset.lerp(UNFOCUSED_ORB_OFFSET, 0.25f);
+        if (shooting) {
+            if (smallBulletCooldown == 0)
+                smallBulletCooldown = 4;
+            if (bigBulletCooldown == 0)
+                bigBulletCooldown = 30;
+        } else
+            bigBulletCooldown = 0;
+        if (smallBulletCooldown > 0) {
+            --smallBulletCooldown;
+            if (smallBulletCooldown == 0) {
+                Audio.global.playSound("plrFire.ogg", 1.0f);
+                BulletManager.global.createPlayerBullet(BulletManager.global.plrSmallBullets, position.cpy().add(orbOffset));
+                BulletManager.global.createPlayerBullet(BulletManager.global.plrSmallBullets, position.cpy().add(new Vector2(-orbOffset.x, orbOffset.y)));
             }
         }
-        if (God.global.inputState(God.INPUT_MOVE_LEFT)==God.INPUT_STATE_PRESSED){
-            if (playerPos.x > 21) {
-                playerPos.add(-3, 0);
+        if (bigBulletCooldown > 0) {
+            --bigBulletCooldown;
+            if (bigBulletCooldown == 0) {
+                BulletManager.global.createPlayerBullet(BulletManager.global.plrBigBullets, position.cpy().add(orbOffset));
+                BulletManager.global.createPlayerBullet(BulletManager.global.plrBigBullets, position.cpy().add(new Vector2(-orbOffset.x, orbOffset.y)));
             }
         }
-        if (God.global.inputState(God.INPUT_MOVE_RIGHT)==God.INPUT_STATE_PRESSED){
-            if (playerPos.x < Game.BASE_WINDOW_WIDTH-21) {
-                playerPos.add(3, 0);
-            }
+        if (invincibilityCooldown > 0) {
+            --invincibilityCooldown;
+            if (invincibilityCooldown == 0)
+                parentVM.interrupt((byte) 1);
         }
-        if (God.global.inputState(God.INPUT_FIRE)==God.INPUT_STATE_PRESSED){
-            if (smallBulletCooldown==0){
-                BulletManager.global.createPlayerBullet(BulletManager.global.plrSmallBullets, smallBulletOrb.absolutePosition());
-                smallBulletCooldown =3;
-            }
-            if (bigBulletCooldown==0){
-                BulletManager.global.createPlayerBullet(BulletManager.global.plrBigBullets, bigBulletOrb.absolutePosition());
-                bigBulletCooldown =10;
-            }
-        }
-        sprite.execute();
-        hitbox.execute();
-        if (smallBulletCooldown >0) smallBulletCooldown--;
-        if (bigBulletCooldown >0) bigBulletCooldown--;
+        parentVM.execute();
+        spriteVM.execute();
+        leftOrbVM.execute();
+        rightOrbVM.execute();
+        return Flow.FLOW_RESULT_CONTINUE;
+    }
+
+    private int draw() {
+        spriteVM.position.set(position);
+        leftOrbVM.position.set(new Vector2(-orbOffset.x, orbOffset.y));
+        rightOrbVM.position.set(new Vector2(orbOffset.x, orbOffset.y));
+        leftOrbVM.draw();
+        rightOrbVM.draw();
+        spriteVM.draw();
         return 0;
     }
 
-    private int updAdded(){
-
+    private int added() {
+        parentVM.loadAnm(Assets.global.get(Anm.class, "game/plr.anm"));
+        parentVM.loadScriptAndPlay("Player");
+        spriteVM.loadAnm(Assets.global.get(Anm.class, "game/plr.anm"));
+        spriteVM.loadScriptAndPlay("PlayerSprite");
+        leftOrbVM.loadAnm(Assets.global.get(Anm.class, "game/plr.anm"));
+        leftOrbVM.loadScriptAndPlay("Orb");
+        rightOrbVM.loadAnm(Assets.global.get(Anm.class, "game/plr.anm"));
+        rightOrbVM.loadScriptAndPlay("Orb");
+        respawn();
         return 0;
     }
-    private int updRemoved(){
 
-        return 0;
-    }
-    private int draw(){
-        plr.position.set(playerPos);
-        sprite.draw();
-        smallBulletOrb.draw();
-        bigBulletOrb.draw();
-        return 0;
-    }
-    private int drawAdded(){
-
-        return 0;
-    }
-    private int drawRemoved(){
-
+    private int removed() {
+        parentVM.delete();
+        spriteVM.delete();
         return 0;
     }
 }
