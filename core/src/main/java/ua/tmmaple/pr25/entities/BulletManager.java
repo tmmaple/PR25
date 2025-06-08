@@ -52,7 +52,7 @@ public class BulletManager {
             bulletManager.plrBigBullets[i] = bulletManager.new PlayersBullet(Assets.global.get(Anm.class,"game/plr.anm"), 13, 5, 0, 5, 0, 0, 100);
         }
         for (int i=0; i<bulletManager.enemyBullets.length; i++) {
-            bulletManager.enemyBullets[i] = bulletManager.new EnemyBullet(Assets.global.get(Anm.class,"game/plr.anm"), 13, 0, 0, 0, 5, 100);
+            bulletManager.enemyBullets[i] = bulletManager.new EnemyBullet(Assets.global.get(Anm.class,"game/plr.anm"), 13, 0.1f, 0, -0.3f, 5, 100);
         }
         return 0;
     }
@@ -140,6 +140,7 @@ public class BulletManager {
         if (i<max-1){
             bulletPool[i].active = true;
             bulletPool[i].speed.rotateRad(angle);
+            bulletPool[i].acceleration.rotateRad(angle);
             bulletPool[i].sprite.angle = angle;
             bulletPool[i].position.set(pos);
             bulletPool[i].sprite.teleport();
@@ -189,6 +190,7 @@ public class BulletManager {
         Vector2 position;
         boolean active;
         final Vector2 defaultSpeed;
+        final Vector2 defaultAcceleration;
         Vector2 speed;
         Vector2 acceleration;
         final int defaultLifeTime;
@@ -201,6 +203,7 @@ public class BulletManager {
             this.position = new Vector2();
             this.active = false;
             this.speed = new Vector2(speedX, speedY);
+            this.defaultAcceleration = new Vector2(accelerationX, accelerationY);
             this.acceleration = new Vector2(accelerationX, accelerationY);
             this.defaultSpeed = new Vector2(speedX, speedY);
             this.defaultLifeTime = lifeTime;
@@ -218,6 +221,7 @@ public class BulletManager {
         protected void toPool() {
             active = false;
             speed.set(defaultSpeed);
+            acceleration.set(defaultAcceleration);
             lifeTime = defaultLifeTime;
             sprite.teleport();
         }
