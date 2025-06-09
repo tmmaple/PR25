@@ -41,7 +41,7 @@ public final class GameplayManager {
             loading = false;
             Player.register();
             BulletManager.register();
-            new Enemy();
+            new Enemy(300, 300);
         }
         return Flow.FLOW_RESULT_CONTINUE;
     }

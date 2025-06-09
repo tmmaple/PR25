@@ -2,6 +2,10 @@ package ua.tmmaple.pr25.entities;
 
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * Патерн атаки ворога
+ * @author SkyWarp
+ */
 public class Gun {
     private final Enemy owner;
     BulletManager.EnemyBullet[] bullets;
@@ -12,6 +16,8 @@ public class Gun {
     int iterationsLeft;
     int timer;
     Vector2 direction;
+    boolean isAttacking;
+    int attackCooldown;
 
     public Gun(Enemy owner, BulletManager.EnemyBullet[] bullets, float range, float turnAngle, int interval, int iterations) {
         this.owner = owner;
@@ -23,8 +29,22 @@ public class Gun {
         this.iterationsLeft = iterations;
         this.timer = 0;
         this.direction = new Vector2();
+        this.isAttacking = false;
+        attackCooldown = 100;
     }
-
+    public void update() {
+        if(attackCooldown==0) {
+            attack();
+            attackCooldown=100;
+        } else attackCooldown--;
+        if(isAttacking) {
+            shoot();
+        }
+    }
+    private void attack(){
+        direction.set(Player.global.position);
+        isAttacking = true;
+    }
     public void shoot() {
         if (timer == 0){
             float directionAngle = (float) Math.atan2(direction.y-owner.position.y, direction.x-owner.position.x);
@@ -35,7 +55,7 @@ public class Gun {
             }
             if (iterationsLeft == 0){
                 iterationsLeft = iterations;
-                owner.isAttacking = false;
+                isAttacking = false;
             } else iterationsLeft--;
             timer = interval;
         } else {
