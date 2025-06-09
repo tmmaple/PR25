@@ -11,32 +11,20 @@ public class Enemy {
     GraphicManager.AnmVirtualMachine sprite;
     Vector2 position;
     Gun gun;
-    boolean isAttacking;
-    int attackCooldown;
+
     public Enemy(){
         position = new Vector2(300, 300);
         sprite = GraphicManager.global.new AnmVirtualMachine();
         sprite.loadAnm(Assets.global.get(Anm.class,"game/plr.anm"));
         sprite.loadScriptAndPlay("PlayerSprite");
-        isAttacking = false;
-        attackCooldown = 100;
-        gun = new Gun(this, BulletManager.global.enemyBullets, 360, 0.3f, 10, 5);
+        gun = new Gun(this, BulletManager.global.enemyBullets, 60, 0.3f, 10, 5);
         Flow.global.addToUpdate(new Flow.FlowNode<>(this, Enemy::update),3);
         Flow.global.addToDraw(new Flow.FlowNode<>(this, Enemy::draw),3);
     }
-    private void attack(){
-        gun.direction.set(Player.global.position);
-        isAttacking = true;
-    }
+
     private int update(){
         sprite.execute();
-        if(attackCooldown==0) {
-            attack();
-            attackCooldown=100;
-        } else attackCooldown--;
-        if(isAttacking) {
-            gun.shoot();
-        }
+        gun.update();
         return 0;
     }
     private int draw(){
