@@ -46,10 +46,10 @@ public class BulletManager {
 
     private static int added(BulletManager bulletManager) {
         for (int i=0; i<bulletManager.plrSmallBullets.length; i++) {
-            bulletManager.plrSmallBullets[i] = bulletManager.new PlayersBullet(Assets.global.get(Anm.class,"game/plr.anm"), 14, 2, 0, 8, 0, 0, 100);
+            bulletManager.plrSmallBullets[i] = bulletManager.new PlayersBullet(Assets.global.get(Anm.class,"game/plr.anm"), 14, 2, 0, 20, 0, 0, 100);
         }
         for (int i=0; i<bulletManager.plrBigBullets.length; i++) {
-            bulletManager.plrBigBullets[i] = bulletManager.new PlayersBullet(Assets.global.get(Anm.class,"game/plr.anm"), 13, 5, 0, 5, 0, 0, 100);
+            bulletManager.plrBigBullets[i] = bulletManager.new PlayersBullet(Assets.global.get(Anm.class,"game/plr.anm"), 13, 5, 0, 40, 0, 0, 100);
         }
         for (int i=0; i<bulletManager.enemyBullets.length; i++) {
             bulletManager.enemyBullets[i] = bulletManager.new EnemyBullet(Assets.global.get(Anm.class,"game/plr.anm"), 13, 0.1f, 0, -0.3f, 5, 100);
