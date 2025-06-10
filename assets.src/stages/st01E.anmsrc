@@ -1,0 +1,89 @@
+#import "stages/st01E.png"
+#import "stages/st01Boss.png"
+
+#source(0, 128, 0, 32, 32)
+#define DRAGONFLY_0 0
+#source(0, 192, 0, 32, 32)
+#define DRAGONFLY_1 1
+#source(0, 160, 0, 32, 32)
+#define DRAGONFLY_2 2
+
+#source(0, 128, 80, 48, 48)
+#define BUNNY_0 3
+#source(0, 176, 80, 48, 48)
+#define BUNNY_1 4
+#source(0, 128, 32, 48, 48)
+#define BUNNY_2 5
+#source(0, 176, 32, 48, 48)
+#define BUNNY_3 6
+
+#source(0, 0, 64, 64, 64)
+#define MIDBOSS_0 7
+#source(0, 64, 64, 64, 64)
+#define MIDBOSS_1 8
+#source(0, 0, 0, 64, 64)
+#define MIDBOSS_2 9
+#source(0, 64, 0, 64, 64)
+#define MIDBOSS_3 10
+
+#source(1, 0, 0, 72, 80)
+#define BOSS_0 11
+#source(1, 72, 0, 72, 80)
+#define BOSS_1 12
+#source(1, 0, 80, 72, 80)
+#define BOSS_2 13
+#source(1, 72, 80, 72, 80)
+#define BOSS_3 14
+#source(1, 144, 80, 72, 80)
+#define BOSS_4 15
+#source(1, 216, 80, 72, 80)
+#define BOSS_5 16
+
+#define MIDBOSS_IDLE 1
+#define MIDBOSS_POSING 2
+
+#define BOSS_FIST_BUMP 1
+
+script Dragonfly {
+    autorotate(true);
+anim_start:
+0:  source(DRAGONFLY_0);
+4:  source(DRAGONFLY_1);
+8: source(DRAGONFLY_2);
+12: jump anim_start;
+}
+
+script Bunny {
+anim_start:
+0:  source(BUNNY_0);
+8:  source(BUNNY_1);
+16: source(BUNNY_2);
+24: source(BUNNY_3);
+32: jump anim_start;
+}
+
+script Midboss {
+    interrupt MIDBOSS_IDLE;
+idle_start:
+0:  source(MIDBOSS_0);
+6:  source(MIDBOSS_1);
+12: jump idle_start;
+0:  interrupt MIDBOSS_POSING;
+posing_start:
+0: source(MIDBOSS_2);
+6: source(MIDBOSS_3);
+12: jump posing_start;
+}
+
+script Boss {
+idle_start:
+0:  source(BOSS_0);
+6:  source(BOSS_1);
+12: jump idle_start;
+0:  interrupt BOSS_FIST_BUMP;
+0:  source(BOSS_2);
+4:  source(BOSS_3);
+8:  source(BOSS_4);
+12: source(BOSS_5);
+20: jump idle_start;
+}

@@ -63,7 +63,7 @@ public abstract class Tweener<T> {
     public final void update() {
         if (!isRunning()) return;
         ++curr;
-        if (curr == t) {
+        if (curr >= t) {
             value = b;
             running = false;
         } else {

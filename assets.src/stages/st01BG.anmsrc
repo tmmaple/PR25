@@ -1,9 +1,14 @@
 #import "stages/st01BG.png"
 
-#source(0, 0, 0, 384, 1376)
+#source(0, 0, 0, 384, 960)
+#source(0, 384, 0, 384, 960)
+#source(0, 768, 0, 384, 960)
 
 script Background {
-    source(0);
     anchorMode(ANCHOR_BOTTOM_MIDDLE);
-    pause;
+start:
+0:  source(0);
+20: source(1);
+40: source(2);
+60: jump start;
 }

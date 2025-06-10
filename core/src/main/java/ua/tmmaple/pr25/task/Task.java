@@ -102,7 +102,7 @@ public interface Task {
      * @return ключ таймлайну
      * @author uwuhasmile
      */
-    static TimelineTask.Keyframe keyframe(short timeMarker, Task task) {
-        return new TimelineTask.Keyframe(timeMarker, task);
+    static TimelineTask.Keyframe keyframe(int timeMarker, Task task) {
+        return new TimelineTask.Keyframe((short) timeMarker, task);
     }
 }
