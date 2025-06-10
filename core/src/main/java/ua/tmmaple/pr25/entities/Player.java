@@ -56,6 +56,10 @@ public class Player {
     private static Flow.FlowNode<Player> updateNode;
     private static Flow.FlowNode<Player> drawNode;
 
+    public static void load() {
+        Assets.global.load(Anm.class,"game/plr.anm");
+    }
+
     public static int register() {
         if (updateNode != null)
             return 0;
@@ -194,15 +198,15 @@ public class Player {
             --smallBulletCooldown;
             if (smallBulletCooldown == 0) {
                 Audio.global.playSound("plrFire.ogg", 1.0f);
-                BulletManager.global.createPlayerBullet(BulletManager.global.plrSmallBullets, position.cpy().add(orbOffset));
-                BulletManager.global.createPlayerBullet(BulletManager.global.plrSmallBullets, position.cpy().add(new Vector2(-orbOffset.x, orbOffset.y)));
+                BulletManager.global.createSmallPlayerBullet(position.cpy().add(orbOffset));
+                BulletManager.global.createSmallPlayerBullet(position.cpy().add(new Vector2(-orbOffset.x, orbOffset.y)));
             }
         }
         if (bigBulletCooldown > 0) {
             --bigBulletCooldown;
             if (bigBulletCooldown == 0) {
-                BulletManager.global.createPlayerBullet(BulletManager.global.plrBigBullets, position.cpy().add(orbOffset));
-                BulletManager.global.createPlayerBullet(BulletManager.global.plrBigBullets, position.cpy().add(new Vector2(-orbOffset.x, orbOffset.y)));
+                BulletManager.global.createBigPlayerBullet(position.cpy().add(orbOffset));
+                BulletManager.global.createBigPlayerBullet(position.cpy().add(new Vector2(-orbOffset.x, orbOffset.y)));
             }
         }
         if (invincibilityCooldown > 0) {
@@ -228,13 +232,14 @@ public class Player {
     }
 
     private int added() {
-        parentVM.loadAnm(Assets.global.get(Anm.class, "game/plr.anm"));
+        Anm anm = Assets.global.get(Anm.class, "game/plr.anm");
+        parentVM.loadAnm(anm);
         parentVM.loadScriptAndPlay("Player");
-        spriteVM.loadAnm(Assets.global.get(Anm.class, "game/plr.anm"));
+        spriteVM.loadAnm(anm);
         spriteVM.loadScriptAndPlay("PlayerSprite");
-        leftOrbVM.loadAnm(Assets.global.get(Anm.class, "game/plr.anm"));
+        leftOrbVM.loadAnm(anm);
         leftOrbVM.loadScriptAndPlay("Orb");
-        rightOrbVM.loadAnm(Assets.global.get(Anm.class, "game/plr.anm"));
+        rightOrbVM.loadAnm(anm);
         rightOrbVM.loadScriptAndPlay("Orb");
         respawn();
         return 0;
@@ -243,6 +248,7 @@ public class Player {
     private int removed() {
         parentVM.delete();
         spriteVM.delete();
+        Assets.global.unload("game/plr.anm");
         return 0;
     }
 }

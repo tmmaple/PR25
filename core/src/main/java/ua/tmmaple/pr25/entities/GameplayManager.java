@@ -1,5 +1,7 @@
 package ua.tmmaple.pr25.entities;
 
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.graphics.Anm;
@@ -41,7 +43,9 @@ public final class GameplayManager {
             loading = false;
             Player.register();
             BulletManager.register();
-            new Enemy(300, 300);
+            Enemy enm = new Enemy(300, 300);
+            // enm.setOrbitalMove(new Vector2(180, 300), 60.0f, 120.0f, MathUtils.degRad * 90.0f);
+            // enm.setVelocity(10.0f);
         }
         return Flow.FLOW_RESULT_CONTINUE;
     }
@@ -51,8 +55,8 @@ public final class GameplayManager {
     }
 
     private int added() {
-        Assets.global.load(Anm.class,"game/plr.anm");
-        Assets.global.load(Anm.class,"stages/st01BG.anm");
+        Player.load();
+        BulletManager.load();
         loading = true;
         return 0;
     }
