@@ -66,7 +66,8 @@ public final class Assets {
      * @author uwuhasmile
      */
     public void unload(String filename) {
-        manager.unload(filename);
+        if (manager.isLoaded(filename))
+            manager.unload(filename);
     }
 
     /**
@@ -132,7 +133,6 @@ public final class Assets {
      */
     private static int removed(Assets instance) {
         instance.manager.dispose();
-        Assets.global = null;
         return 0;
     }
 }

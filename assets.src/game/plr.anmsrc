@@ -102,10 +102,20 @@ right_start:
 
 // Сфера
 script Orb {
-    angularSpeed(6.28318531);
+    angularSpeed(0.10471975512);
 sphere_start:
     source(ORB_0);
 6:  source(ORB_1);
 12:  source(ORB_2);
 18:  jump sphere_start;
+}
+
+script SmallBullet {
+    source(BULLET_SMALL);
+    pause;
+}
+
+script BigBullet {
+    source(BULLET_BIG);
+    pause;
 }
