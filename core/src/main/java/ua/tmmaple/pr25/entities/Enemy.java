@@ -1,16 +1,24 @@
 package ua.tmmaple.pr25.entities;
 
 import com.badlogic.gdx.math.Vector2;
-import ua.tmmaple.pr25.Flow;
-import ua.tmmaple.pr25.assets.Assets;
+import com.badlogic.gdx.utils.Array;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
+import ua.tmmaple.pr25.task.Task;
+import ua.tmmaple.pr25.task.TimelineTask;
 import ua.tmmaple.pr25.util.Tweener;
 
 public class Enemy {
     GraphicManager.AnmVirtualMachine sprite;
     Vector2 position;
-    private Gun gun;
+    Enemy parent;
+    Array<Enemy> children;
+    boolean active;
+    TimelineTask timelineTask;
+    Task[] asynchTasks;
+    int health;
+    private Gun[] guns;
+
     enum MoveType {
         LINEAR, ORBITAL, NONE
     }
@@ -29,16 +37,29 @@ public class Enemy {
     private final Tweener.FloatTweener xPositionTweener;
     private final Tweener.FloatTweener yPositionTweener;
 
-    public Enemy(float x, float y){
-        this.position = new Vector2(x, y);
+    public Enemy(int amountOfGuns) {
+        this.position = new Vector2();
         this.sprite = GraphicManager.global.new AnmVirtualMachine();
-        this.gun = new Gun(this);
+        this.guns = new Gun[amountOfGuns];
         this.velocityTweener = new Tweener.FloatTweener();
         this.angleTweener = new Tweener.FloatTweener();
         this.xPositionTweener = new Tweener.FloatTweener();
         this.yPositionTweener = new Tweener.FloatTweener();
-        Flow.global.addToUpdate(new Flow.FlowNode<>(this, Enemy::update, Enemy::added),3);
-        Flow.global.addToDraw(new Flow.FlowNode<>(this, Enemy::draw),3);
+        linearMoveVector = new Vector2();
+        centre = new Vector2();
+        moveType = MoveType.NONE;
+        children = new Array<>();
+        active = false;
+        for (int i = 0; i < guns.length; i++) {
+            guns[i] = new Gun(this);
+        }
+    }
+    public void setSprite(Anm source, String sprite){
+        this.sprite.loadAnm(source);
+        this.sprite.loadScriptAndPlay(sprite);
+    }
+    public void createChild(TimelineTask task, Task[] asynchTasks, float x, float y) {
+        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x, y, this));
     }
     public void changePosition(byte interpolation, float x, float y, short shiftTime){
         xPositionTweener.start(interpolation, position.x, x, shiftTime);
@@ -56,6 +77,10 @@ public class Enemy {
         moveType = MoveType.LINEAR;
     }
     public void setLinearMove(){this.moveType = MoveType.LINEAR;}
+    public void rotate(byte interpolation, float angle, short shiftTime){
+        float currentAngle = linearMoveVector.angleRad();
+        angleTweener.start(interpolation, currentAngle, currentAngle+angle, shiftTime);
+    }
     public void setOrbitalMove(Vector2 centre, float xRadius, float yRadius, float startAngle){
         this.centre = centre;
         this.xRadius = xRadius;
@@ -75,7 +100,8 @@ public class Enemy {
     public void stopMovement(){
         this.moveType = MoveType.NONE;
     }
-    private int update(){
+
+    void update(){
         if (velocityTweener.isRunning()){
             velocityTweener.update();
             velocity = velocityTweener.value();
@@ -98,21 +124,20 @@ public class Enemy {
             position.set(centre.x+xRadius*(float)Math.cos(currentAngle), centre.y+yRadius*(float)Math.sin(currentAngle));
             currentAngle += velocity/(xRadius+yRadius/2);
         }
+        if (health <= 0) {
+            active = false;
+            for (Enemy child : children) {
+                child.active = false;
+            }
+        }
+        if (timelineTask.execute(this)) active = false;
+        for (Task task : asynchTasks) task.execute(this);
         sprite.execute();
-        gun.update();
-        return 0;
+        for (Gun gun: guns) gun.update();
     }
-    private int added(){
-        sprite.loadAnm(Assets.global.get(Anm.class,"game/plr.anm"));
-        sprite.loadScriptAndPlay("PlayerSprite");
-        linearMoveVector = new Vector2();
-        centre = new Vector2();
-        moveType = MoveType.NONE;
-        return 0;
-    }
-    private int draw(){
+
+    void draw(){
         sprite.position.set(position);
         sprite.draw();
-        return 0;
     }
 }
