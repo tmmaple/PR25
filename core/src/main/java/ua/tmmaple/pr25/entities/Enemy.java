@@ -44,6 +44,13 @@ public class Enemy {
         this.currentAngle = startAngle;
         this.moveType = MoveType.ORBITAL;
     }
+    public void setOrbitalMove(float angle, float xRadius, float yRadius){
+        this.centre.set(position.x- xRadius *(float)Math.cos(angle), position.y - yRadius *(float)Math.sin(angle));
+        this.xRadius = xRadius;
+        this.yRadius = yRadius;
+        this.currentAngle = angle;
+        this.moveType = MoveType.ORBITAL;
+    }
     public void stopMovement(){
         this.moveType = MoveType.NONE;
     }
