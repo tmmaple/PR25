@@ -19,7 +19,6 @@ public final class StageManager {
         Flow.global.addToUpdate(node, 20);
         global.stage = new StageTest();
         global.task = global.stage.main();
-        global.root = new Enemy(300, 300);
     }
 
     public static void shutdown() {

@@ -9,6 +9,10 @@ import ua.tmmaple.pr25.task.TimelineTask;
 import ua.tmmaple.pr25.util.Tweener;
 
 public class Enemy {
+    public static final int FLAG_SPRITE_ROTATION = 1 << 1;
+    public static final int FLAG_INVINCIBLE = 1 << 2;
+    public static final int FLAG_BOSS = 1 << 3;
+
     GraphicManager.AnmVirtualMachine sprite;
     Vector2 position;
     Enemy parent;
@@ -18,6 +22,7 @@ public class Enemy {
     Task[] asynchTasks;
     int health;
     private Gun[] guns;
+    private int flags;
 
     enum MoveType {
         LINEAR, ORBITAL, NONE
@@ -58,6 +63,14 @@ public class Enemy {
         this.sprite.loadAnm(source);
         this.sprite.loadScriptAndPlay(sprite);
     }
+
+    public void setSpriteRotation(boolean allow) {
+        if (allow)
+            flags |= FLAG_SPRITE_ROTATION;
+        else
+            flags &= ~FLAG_SPRITE_ROTATION;
+    }
+
     public void createChild(TimelineTask task, Task[] asynchTasks, float x, float y) {
         children.add(EnemyManager.global.createEnemy(task, asynchTasks, x, y, this));
     }
@@ -101,6 +114,18 @@ public class Enemy {
         this.moveType = MoveType.NONE;
     }
 
+    public void setAngle(float angle) {
+        this.linearMoveVector.setAngleRad(angle);
+    }
+
+    public void setVelocity(float velocity) {
+        this.velocity = velocity;
+    }
+
+    public void setPosition(float x, float y) {
+        this.position.set(x, y);
+    }
+
     void update(){
         if (velocityTweener.isRunning()){
             velocityTweener.update();
@@ -130,6 +155,8 @@ public class Enemy {
                 child.active = false;
             }
         }
+        if ((flags & FLAG_SPRITE_ROTATION) != 0)
+            sprite.angle = linearMoveVector.angleRad();
         if (timelineTask.execute(this)) active = false;
         for (Task task : asynchTasks) task.execute(this);
         sprite.execute();
