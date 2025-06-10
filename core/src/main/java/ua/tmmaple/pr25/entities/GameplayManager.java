@@ -36,6 +36,7 @@ public final class GameplayManager {
     public GameplayManager() {
         Background.global = new Background();
         Player.global = new Player();
+        StageManager.global = new StageManager();
     }
 
     private int update() {
@@ -43,7 +44,7 @@ public final class GameplayManager {
             loading = false;
             Player.register();
             BulletManager.register();
-            Enemy enm = new Enemy(300, 300);
+            StageManager.register();
         }
         return Flow.FLOW_RESULT_CONTINUE;
     }
@@ -60,6 +61,7 @@ public final class GameplayManager {
     }
 
     private int removed() {
+        StageManager.shutdown();
         BulletManager.shutdown();
         Player.shutdown();
         return 0;

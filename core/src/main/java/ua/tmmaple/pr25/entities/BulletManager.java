@@ -192,6 +192,10 @@ public class BulletManager {
                 bullet.sprite.position.set(bullet.position);
                 if (Intersector.intersectPolygons(bullet.collider, Player.global.hitbox, null))
                     bullet.toPool();
+                else if (!bullet.grazed && Intersector.intersectPolygons(bullet.collider, Player.global.grazeBox, null)) {
+                    Player.global.graze();
+                    bullet.grazed = true;
+                }
                 else if (bullet.position.y < GameplayManager.VIEWPORT_START_Y - 32.0
                 || bullet.position.y > GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT + 32.0f
                 || bullet.position.x < GameplayManager.VIEWPORT_START_X - 32.0f
@@ -253,6 +257,7 @@ public class BulletManager {
         int max = enemyBullets.length;
         while (i < max && enemyBullets[i].active) i++;
         if (i < max){
+            enemyBullets[i].grazed = false;
             enemyBullets[i].active = true;
             enemyBullets[i].setVelocity(angle, speed);
             enemyBullets[i].acceleration = acceleration;
@@ -337,6 +342,7 @@ public class BulletManager {
         private float angularSpeed;
         public float angularAcceleration;
         public boolean rotates;
+        public boolean grazed;
 
         private Bullet(Anm source) {
             position = new  Vector2();

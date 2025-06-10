@@ -49,6 +49,7 @@ public class Player {
     private ShapeRenderer shapeRenderer;
 
     public final Polygon hitbox;
+    public final Polygon grazeBox;
 
     private final Vector2 orbOffset;
 
@@ -94,6 +95,11 @@ public class Player {
         leftOrbVM.parent = spriteVM;
         orbOffset = new Vector2();
         hitbox = new Polygon(new float[] { -2.0f, -2.0f, -2.0f, 2.0f, 2.0f, 2.0f, 2.0f, -2.0f });
+        grazeBox = new Polygon(new float[] { -16.0f, -16.0f, -16.0f, 16.0f, 16.0f, 16.0f, 16.0f, -16.0f });
+    }
+
+    public void graze() {
+
     }
 
     private void setDirection(MovementDirection direction) {
