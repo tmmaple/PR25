@@ -1,6 +1,8 @@
 package ua.tmmaple.pr25.entities;
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.God;
@@ -43,6 +45,10 @@ public class Player {
     private final GraphicManager.AnmVirtualMachine spriteVM;
     private final GraphicManager.AnmVirtualMachine rightOrbVM;
     private final GraphicManager.AnmVirtualMachine leftOrbVM;
+
+    private ShapeRenderer shapeRenderer;
+
+    public final Polygon hitbox;
 
     private final Vector2 orbOffset;
 
@@ -87,6 +93,7 @@ public class Player {
         leftOrbVM = GraphicManager.global.new AnmVirtualMachine();
         leftOrbVM.parent = spriteVM;
         orbOffset = new Vector2();
+        hitbox = new Polygon(new float[] { -2.0f, -2.0f, -2.0f, 2.0f, 2.0f, 2.0f, 2.0f, -2.0f });
     }
 
     private void setDirection(MovementDirection direction) {
@@ -112,7 +119,7 @@ public class Player {
         }
     }
 
-    private void respawn() {
+    public void respawn() {
         invincibilityCooldown = INVINCIBILITY_COOLDOWN;
         parentVM.interrupt((byte) 2);
         position.set(GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + Y_SPAWN_OFFSET);
@@ -214,6 +221,7 @@ public class Player {
             if (invincibilityCooldown == 0)
                 parentVM.interrupt((byte) 1);
         }
+        hitbox.setPosition(position.x, position.y);
         parentVM.execute();
         spriteVM.execute();
         leftOrbVM.execute();
@@ -241,6 +249,7 @@ public class Player {
         leftOrbVM.loadScriptAndPlay("Orb");
         rightOrbVM.loadAnm(anm);
         rightOrbVM.loadScriptAndPlay("Orb");
+        shapeRenderer = new ShapeRenderer();
         respawn();
         return 0;
     }
@@ -249,6 +258,7 @@ public class Player {
         parentVM.delete();
         spriteVM.delete();
         Assets.global.unload("game/plr.anm");
+        shapeRenderer.dispose();
         return 0;
     }
 }

@@ -30,7 +30,7 @@ public class Enemy {
     public Enemy(float x, float y){
         this.position = new Vector2(x, y);
         this.sprite = GraphicManager.global.new AnmVirtualMachine();
-        this.gun = new Gun(this, BulletManager.global.enemyBullets, 360, 0.3f, 10, 5);
+        this.gun = new Gun(this);
         this.velocityTweener = new Tweener.FloatTweener();
         this.angleTweener = new Tweener.FloatTweener();
         Flow.global.addToUpdate(new Flow.FlowNode<>(this, Enemy::update, Enemy::added),3);

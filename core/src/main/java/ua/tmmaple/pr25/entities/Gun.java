@@ -42,7 +42,7 @@ public class Gun {
         ENEMY,
         ABSOLUTE,
         PLAYER,
-    };
+    }
 
     private final Enemy owner;
 
@@ -76,7 +76,7 @@ public class Gun {
     private short repeatsLeft;
     private short currentInterval;
 
-    private final Array<BulletManager.Bullet> ownedBullets;
+    private final Array<BulletManager.EnemyBullet> ownedBullets;
     private final Random random;
 
     public Gun(Enemy owner) {
@@ -91,7 +91,7 @@ public class Gun {
     public void init() {
         fireSound = null;
         offsetMode = OffsetMode.ENEMY;
-        bulletType = BulletType.BULLET_16x32_GREEN;
+        bulletType = BulletType.BULLET_16x16_RED;
         aim = Aim.FAN_PLAYER;
         countA = 0;
         countB = 0;
@@ -107,7 +107,7 @@ public class Gun {
         angularAccelerationB = 0.0f;
         radiusA = 0.0f;
         radiusB = 0.0f;
-        repeat = 1;
+        repeat = 0;
         interval = 0;
         preInterval = 0;
     }
@@ -180,6 +180,11 @@ public class Gun {
             bullet.angularAcceleration = angularAcceleration;
     }
 
+    public void changeType(BulletType bulletType) {
+        for (BulletManager.EnemyBullet bullet : ownedBullets)
+            bullet.setType(BulletManager.BULLET_TYPES[bulletType.ordinal()]);
+    }
+
     public void destroyAll() {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.toPool();
@@ -221,7 +226,7 @@ public class Gun {
                         Vector2 bulletPosition = absolutePosition.cpy().add(MathUtils.cos(bulletAngle) * bulletRadius, MathUtils.sin(bulletAngle) * bulletRadius);
                         if (aim == Aim.FAN_PLAYER && offsetMode == OffsetMode.PLAYER)
                             bulletAngle = MathUtils.atan2(Player.global.position.y - bulletPosition.y, Player.global.position.x - bulletPosition.x);
-                        BulletManager.Bullet bullet = BulletManager.global.createEnemyBullet(bulletPosition,
+                        BulletManager.EnemyBullet bullet = BulletManager.global.createEnemyBullet(bulletPosition,
                             bulletAngle,
                             speedA + speedStep * i,
                             accelerationA + accelerationStep * j,
@@ -250,7 +255,7 @@ public class Gun {
                         Vector2 bulletPosition = absolutePosition.cpy().add(MathUtils.cos(bulletAngle) * bulletRadius, MathUtils.sin(bulletAngle) * bulletRadius);
                         if (aim == Aim.RANDOM_FAN_PLAYER && offsetMode == OffsetMode.PLAYER)
                             bulletAngle = MathUtils.atan2(Player.global.position.y - bulletPosition.y, Player.global.position.x - bulletPosition.x);
-                        BulletManager.Bullet bullet = BulletManager.global.createEnemyBullet(bulletPosition,
+                        BulletManager.EnemyBullet bullet = BulletManager.global.createEnemyBullet(bulletPosition,
                             bulletAngle,
                             speedA + speedStep * i,
                             accelerationA + accelerationStep * j,
@@ -281,7 +286,7 @@ public class Gun {
                         Vector2 bulletPosition = absolutePosition.cpy().add(MathUtils.cos(bulletAngle) * bulletRadius, MathUtils.sin(bulletAngle) * bulletRadius);
                         if (aim == Aim.RING_PLAYER && offsetMode == OffsetMode.PLAYER)
                             bulletAngle = MathUtils.atan2(Player.global.position.y - bulletPosition.y, Player.global.position.x - bulletPosition.x);
-                        BulletManager.Bullet bullet = BulletManager.global.createEnemyBullet(bulletPosition,
+                        BulletManager.EnemyBullet bullet = BulletManager.global.createEnemyBullet(bulletPosition,
                             bulletAngle,
                             speedA + speedStep * i,
                             accelerationA + accelerationStep * j,
@@ -312,7 +317,7 @@ public class Gun {
                         Vector2 bulletPosition = absolutePosition.cpy().add(MathUtils.cos(bulletAngle) * bulletRadius, MathUtils.sin(bulletAngle) * bulletRadius);
                         if (aim == Aim.RANDOM_RING_PLAYER && offsetMode == OffsetMode.PLAYER)
                             bulletAngle = MathUtils.atan2(Player.global.position.y - bulletPosition.y, Player.global.position.x - bulletPosition.x);
-                        BulletManager.Bullet bullet = BulletManager.global.createEnemyBullet(bulletPosition,
+                        BulletManager.EnemyBullet bullet = BulletManager.global.createEnemyBullet(bulletPosition,
                             bulletAngle,
                             random.nextFloat(speedA, speedB),
                             accelerationA + accelerationStep * j,

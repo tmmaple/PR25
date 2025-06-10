@@ -44,8 +44,6 @@ public final class GameplayManager {
             Player.register();
             BulletManager.register();
             Enemy enm = new Enemy(300, 300);
-            // enm.setOrbitalMove(new Vector2(180, 300), 60.0f, 120.0f, MathUtils.degRad * 90.0f);
-            // enm.setVelocity(10.0f);
         }
         return Flow.FLOW_RESULT_CONTINUE;
     }
