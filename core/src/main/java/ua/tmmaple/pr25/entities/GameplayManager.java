@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.graphics.Anm;
+import ua.tmmaple.pr25.stages.StageTest;
 import ua.tmmaple.pr25.util.Tweener;
 
 public final class GameplayManager {

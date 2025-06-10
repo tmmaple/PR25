@@ -5,6 +5,7 @@ import ua.tmmaple.pr25.assets.Stage;
 import ua.tmmaple.pr25.entities.Enemy;
 import ua.tmmaple.pr25.task.Task;
 import ua.tmmaple.pr25.task.TimelineTask;
+import ua.tmmaple.pr25.util.Tweener;
 
 public class StageTest extends Stage {
     @Override
@@ -24,16 +25,15 @@ public class StageTest extends Stage {
         return Task.timeline(
             Task.keyframe(
                 en -> {
-                    en.setLinearMove(-MathUtils.HALF_PI, (short) 0);
-                    en.setVelocity(2.0f, (short) 0);
+                    en.changeAngle(Tweener.INTERPOLATION_LINEAR, -MathUtils.HALF_PI, (short) 0);
+                    en.changeVelocity(Tweener.INTERPOLATION_LINEAR, 2.0f, (short) 0);
                     return true;
                 }
             ),
             Task.keyframe(
                 (short) 60,
                 en -> {
-                    en.setLinearMove(0.0f, (short) 50);
-                    en.setVelocity(4.0f, (short) 50);
+                    en.setLinearMove(Tweener.INTERPOLATION_LINEAR, 0.0f, 4.0f, (short) 50);
                     return true;
                 }
             ),
