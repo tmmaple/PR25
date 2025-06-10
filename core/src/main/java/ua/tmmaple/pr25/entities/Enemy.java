@@ -26,6 +26,8 @@ public class Enemy {
 
     private final Tweener.FloatTweener velocityTweener;
     private final Tweener.FloatTweener angleTweener;
+    private final Tweener.FloatTweener xPositionTweener;
+    private final Tweener.FloatTweener yPositionTweener;
 
     public Enemy(float x, float y){
         this.position = new Vector2(x, y);
@@ -33,16 +35,27 @@ public class Enemy {
         this.gun = new Gun(this);
         this.velocityTweener = new Tweener.FloatTweener();
         this.angleTweener = new Tweener.FloatTweener();
+        this.xPositionTweener = new Tweener.FloatTweener();
+        this.yPositionTweener = new Tweener.FloatTweener();
         Flow.global.addToUpdate(new Flow.FlowNode<>(this, Enemy::update, Enemy::added),3);
         Flow.global.addToDraw(new Flow.FlowNode<>(this, Enemy::draw),3);
     }
-    public void setVelocity(float velocity, short shiftTime){
-        this.velocityTweener.start((byte) 0, this.velocity, velocity, shiftTime);
+    public void changePosition(byte interpolation, float x, float y, short shiftTime){
+        xPositionTweener.start(interpolation, position.x, x, shiftTime);
+        yPositionTweener.start(interpolation, position.y, y, shiftTime);
     }
-    public void setLinearMove(float angle, short shiftTime){
-        this.angleTweener.start((byte) 0, linearMoveVector.angleRad(), angle, shiftTime);
-        this.moveType = MoveType.LINEAR;
+    public void changeVelocity(byte interpolation, float velocity, short shiftTime){
+        velocityTweener.start(interpolation, this.velocity, velocity, shiftTime);
     }
+    public void changeAngle(byte interpolation, float angle, short shiftTime){
+        angleTweener.start(interpolation, linearMoveVector.angleRad(), angle, shiftTime);
+    }
+    public void setLinearMove(byte interpolation, float velocity, float angle, short shiftTime){
+        velocityTweener.start(interpolation, this.velocity, velocity, shiftTime);
+        angleTweener.start(interpolation, linearMoveVector.angleRad(), angle, shiftTime);
+        moveType = MoveType.LINEAR;
+    }
+    public void setLinearMove(){this.moveType = MoveType.LINEAR;}
     public void setOrbitalMove(Vector2 centre, float xRadius, float yRadius, float startAngle){
         this.centre = centre;
         this.xRadius = xRadius;
@@ -50,6 +63,7 @@ public class Enemy {
         this.currentAngle = startAngle;
         this.moveType = MoveType.ORBITAL;
     }
+    public void setRoundMove(Vector2 centre, float radius, float startAngle){setOrbitalMove(centre, radius, radius, startAngle);}
     public void setOrbitalMove(float angle, float xRadius, float yRadius){
         this.centre.set(position.x- xRadius *(float)Math.cos(angle), position.y - yRadius *(float)Math.sin(angle));
         this.xRadius = xRadius;
@@ -57,6 +71,7 @@ public class Enemy {
         this.currentAngle = angle;
         this.moveType = MoveType.ORBITAL;
     }
+    public void setRoundMove(float angle, float radius){setOrbitalMove(angle, radius, radius);}
     public void stopMovement(){
         this.moveType = MoveType.NONE;
     }
@@ -64,10 +79,19 @@ public class Enemy {
         if (velocityTweener.isRunning()){
             velocityTweener.update();
             velocity = velocityTweener.value();
+            linearMoveVector.scl(velocityTweener.value()/velocity);
         }
         if (angleTweener.isRunning()){
             angleTweener.update();
             linearMoveVector.set(velocity*(float)Math.cos(angleTweener.value()), velocity*(float)Math.sin(angleTweener.value()));
+        }
+        if (xPositionTweener.isRunning()){
+            xPositionTweener.update();
+            position.x = xPositionTweener.value();
+        }
+        if (yPositionTweener.isRunning()){
+            yPositionTweener.update();
+            position.y = yPositionTweener.value();
         }
         if(moveType == MoveType.LINEAR) position.add(linearMoveVector);
         if(moveType == MoveType.ORBITAL) {
