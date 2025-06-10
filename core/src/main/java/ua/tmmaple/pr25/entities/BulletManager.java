@@ -1,5 +1,6 @@
 package ua.tmmaple.pr25.entities;
 
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
@@ -102,9 +103,9 @@ public class BulletManager {
 
     public static BulletManager global;
 
-    PlayersBullet[] plrSmallBullets;
-    PlayersBullet[] plrBigBullets;
-    EnemyBullet[] enemyBullets;
+    public final PlayersBullet[] plrSmallBullets;
+    public final PlayersBullet[] plrBigBullets;
+    public final EnemyBullet[] enemyBullets;
 
     private Anm anm;
 
@@ -112,8 +113,8 @@ public class BulletManager {
     private static Flow.FlowNode<BulletManager> drawNode;
 
     public BulletManager() {
-        plrSmallBullets = new PlayersBullet[64];
-        plrBigBullets = new PlayersBullet[64];
+        plrSmallBullets = new PlayersBullet[32];
+        plrBigBullets = new PlayersBullet[32];
         enemyBullets = new EnemyBullet[600];
     }
 
@@ -180,15 +181,23 @@ public class BulletManager {
         for (EnemyBullet bullet : enemyBullets) {
             if (bullet.active) {
                 bullet.position.add(bullet.velocity);
+                bullet.collider.setPosition(bullet.position.x, bullet.position.y);
                 bullet.setSpeed(bullet.getSpeed() + bullet.acceleration);
                 bullet.setAngle(bullet.getAngle() + bullet.getAngularSpeed());
                 bullet.setAngularSpeed(bullet.getAngularSpeed() + bullet.angularAcceleration);
-                bullet.sprite.position.set(bullet.position);
                 if (bullet.rotates) {
                     bullet.collider.setRotation(MathUtils.radDeg * bullet.getAngle());
                     bullet.sprite.angle = bullet.getAngle();
                 }
-                bullet.checkCollision();
+                bullet.sprite.position.set(bullet.position);
+                if (Intersector.intersectPolygons(bullet.collider, Player.global.hitbox, null))
+                    bullet.toPool();
+                else if (bullet.position.y < GameplayManager.VIEWPORT_START_Y - 32.0
+                || bullet.position.y > GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT + 32.0f
+                || bullet.position.x < GameplayManager.VIEWPORT_START_X - 32.0f
+                || bullet.position.x > GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH + 32.0f) {
+                    bullet.toPool();
+                }
                 bullet.sprite.execute();
             }
         }
@@ -239,7 +248,7 @@ public class BulletManager {
         }
     }
 
-    public Bullet createEnemyBullet(Vector2 pos, float angle, float speed, float acceleration, float angularSpeed, float angularAcceleration, int type) {
+    public EnemyBullet createEnemyBullet(Vector2 pos, float angle, float speed, float acceleration, float angularSpeed, float angularAcceleration, int type) {
         int i = 0;
         int max = enemyBullets.length;
         while (i < max && enemyBullets[i].active) i++;
@@ -260,7 +269,7 @@ public class BulletManager {
      * Будь-які кулі гравця
      * @author SkyWarp
      */
-    class PlayersBullet extends Bullet {
+    public class PlayersBullet extends Bullet {
         public final int damage;
 
         public PlayersBullet(Anm source, String sprite, int damage, float speed) {
@@ -281,7 +290,7 @@ public class BulletManager {
         }
 
         private void checkCollision() {
-            //TODO Колізії з ворогами
+
             if (position.y > GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT) {
                 toPool();
             }
@@ -292,7 +301,7 @@ public class BulletManager {
      * Будь-які кулі ворогів
      * @author SkyWarp
      */
-    class EnemyBullet extends Bullet {
+    public class EnemyBullet extends Bullet {
         public boolean rotates;
 
         public EnemyBullet(Anm source) {
@@ -311,20 +320,10 @@ public class BulletManager {
             vertices[5] = type.collisionHeight * 0.5f;
             vertices[6] = type.collisionWidth * 0.5f;
             vertices[7] = -type.collisionHeight * 0.5f;
-            collider.setOrigin(vertices[0] * 0.5f, vertices[1] * 0.5f);
         }
-
-        private void checkCollision() {
-            //TODO Колізії з гравцем
-            if (position.y < GameplayManager.VIEWPORT_START_Y || position.y > GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT
-                    || position.x < GameplayManager.VIEWPORT_START_X || position.x > GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH) {
-                toPool();
-            }
-        }
-
     }
 
-    abstract class Bullet {
+    public abstract class Bullet {
         private static final int LIFETIME = 100000;
 
         public final Polygon collider;
@@ -366,8 +365,6 @@ public class BulletManager {
         }
 
         public void setAngularSpeed(float angularSpeed) {
-            if (angularSpeed < 0.0f)
-                angularSpeed = 0.0f;
             this.angularSpeed = angularSpeed;
         }
 
