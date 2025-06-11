@@ -72,26 +72,41 @@ public class Enemy {
             flags &= ~FLAG_SPRITE_ROTATION;
     }
 
-    public void createChildRelative(TimelineTask task, Task[] asynchTasks, float x, float y) {
-        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x, y, this));
+    public void createChildRelative(TimelineTask task, Task[] asynchTasks, float x, float y, int health) {
+        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x, y, this, health));
+    }
+    private void removeChild(Enemy child) {
+        children.removeValue(child, true);
+    }
+    public void createChildAbsolute(TimelineTask task, Task[] asynchTasks, float x, float y, int health) {
+        Vector2 abs = absolutePosition();
+        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x - abs.x, y - abs.y, this, health));
     }
 
-    public void createChildAbsolute(TimelineTask task, Task[] asynchTasks, float x, float y) {
-        Vector2 abs = absolutePosition();
-        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x - abs.x, y - abs.y, this));
+    public void createSiblingRelative(TimelineTask task, Task[] asynchTasks, float x, float y, int health) {
+        if (parent == null)
+            return;
+        parent.children.add(EnemyManager.global.createEnemy(task, asynchTasks, position.x + x, position.y + y, parent, health));
+    }
+
+    public void createSiblingAbsolute(TimelineTask task, Task[] asynchTasks, float x, float y, int health) {
+        if (parent == null)
+            return;
+        Vector2 abs = parent.absolutePosition();
+        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x - abs.x, y - abs.y, parent, health));
     }
 
     public void createSiblingRelative(TimelineTask task, Task[] asynchTasks, float x, float y) {
         if (parent == null)
             return;
-        parent.children.add(EnemyManager.global.createEnemy(task, asynchTasks, position.x + x, position.y + y, parent));
+        parent.children.add(EnemyManager.global.createEnemy(task, asynchTasks, position.x + x, position.y + y, parent, this.health));
     }
 
     public void createSiblingAbsolute(TimelineTask task, Task[] asynchTasks, float x, float y) {
         if (parent == null)
             return;
         Vector2 abs = parent.absolutePosition();
-        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x - abs.x, y - abs.y, parent));
+        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x - abs.x, y - abs.y, parent, this.health));
     }
 
     public void changePosition(byte interpolation, float x, float y, int ticks){
@@ -358,6 +373,7 @@ public class Enemy {
         }
         if (health <= 0) {
             active = false;
+            parent.removeChild(this);
             for (Enemy child : children) {
                 child.active = false;
             }
@@ -368,7 +384,10 @@ public class Enemy {
             else
                 sprite.angle = velocity.angleRad();
         }
-        if (timelineTask.execute(this)) active = false;
+        if (timelineTask.execute(this) && children.size == 0) {
+            parent.removeChild(this);
+            active = false;
+        }
         // for (Task task : asynchTasks) task.execute(this);
         // sprite.position.set(position);
         sprite.execute();

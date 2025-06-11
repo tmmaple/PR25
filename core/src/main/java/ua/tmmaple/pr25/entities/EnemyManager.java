@@ -27,25 +27,27 @@ public class EnemyManager {
         Flow.global.cut(updateNode);
         Flow.global.cut(drawNode);
     }
-    public void createEnemy(TimelineTask task, Task[] asynchTasks, float x, float y){
+    public void createEnemy(TimelineTask task, Task[] asynchTasks, float x, float y, int health){
         int i = 0;
         while (i < enemies.length && !enemies[i].active) i++;
         if (i < enemies.length) {
             enemies[i].parent=null;
             enemies[i].children.removeRange(0, enemies[i].children.size-1);
             enemies[i].active = true;
+            enemies[i].health = health;
             enemies[i].position.set(x, y);
             enemies[i].timelineTask = task;
             enemies[i].asynchTasks = asynchTasks;
         }
     }
-    Enemy createEnemy(TimelineTask task, Task[] asynchTasks, float x, float y, Enemy parent) {
+    Enemy createEnemy(TimelineTask task, Task[] asynchTasks, float x, float y, Enemy parent, int health) {
         int i = 0;
         while (i < enemies.length && enemies[i].active) i++;
         if (i < enemies.length) {
             enemies[i].health = 100;
             enemies[i].parent = parent;
             enemies[i].active = true;
+            enemies[i].health = health;
             enemies[i].children.clear();
             enemies[i].position.set(x, y);
             enemies[i].timelineTask = task;
