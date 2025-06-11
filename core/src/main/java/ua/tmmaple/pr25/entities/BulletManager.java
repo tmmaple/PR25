@@ -134,7 +134,18 @@ public class BulletManager {
         Flow.global.cut(drawNode);
     }
 
+    public void clear() {
+        for (PlayersBullet b : plrSmallBullets)
+            b.active = false;
+        for (PlayersBullet b : plrBigBullets)
+            b.active = false;
+        for (EnemyBullet b : enemyBullets)
+            b.active = false;
+    }
+
     private static int update(BulletManager bulletManager) {
+        if (!GameplayManager.global.canUpdate() || Player.global.deathbombing())
+            return Flow.FLOW_RESULT_CONTINUE;
         bulletManager.updateBullets();
         return Flow.FLOW_RESULT_CONTINUE;
     }
@@ -199,9 +210,10 @@ public class BulletManager {
                     bullet.sprite.angle = bullet.getAngle();
                 }
                 bullet.sprite.position.set(bullet.position);
-                if (Intersector.intersectPolygons(bullet.collider, Player.global.hitbox, null))
+                if (Intersector.intersectPolygons(bullet.collider, Player.global.hitbox, null)) {
                     bullet.toPool();
-                else if (!bullet.grazed && Intersector.intersectPolygons(bullet.collider, Player.global.grazeBox, null)) {
+                    Player.global.damage();
+                } else if (!bullet.grazed && Intersector.intersectPolygons(bullet.collider, Player.global.grazeBox, null)) {
                     Player.global.graze();
                     bullet.grazed = true;
                 }

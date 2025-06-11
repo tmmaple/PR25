@@ -112,8 +112,8 @@ public class StageTest extends Stage {
                     en.setGunRadius(0, 48.0f, 60.0f);
                     en.setGunRepeating(0, 60);
                     en.setGunRepeatInterval(0, 5);
-                    en.setGunCount(0, 6, 3);
-                    en.setGunAngle(0, 0.0f, MathUtils.degRad * 25.0f);
+                    en.setGunCount(0, 4, 1);
+                    en.setGunAngle(0, 0.0f, MathUtils.degRad * 40.0f);
                     en.setGunBulletType(0, Gun.BulletType.BULLET_8x12_ORANGE);
                     en.setGunAngularSpeed(0, 0.3f / 60.0f, 0.2f / 60.0f);
                     en.initGun(1);
@@ -121,7 +121,7 @@ public class StageTest extends Stage {
                     en.setGunCount(1, 20, 1);
                     en.setGunRadius(1, 64.0f, 64.0f);
                     en.setGunSpeed(1, 4.0f, 2.0f);
-                    en.setGunBulletType(1, Gun.BulletType.BULLET_RINGED_32x32_RED);
+                    en.setGunBulletType(1, Gun.BulletType.BULLET_RINGED_12x12_RED);
                     en.setGunRepeatInterval(1, 30);
                     en.setGunRepeating(1, 0);
                     en.turnGunOn(0);

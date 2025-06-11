@@ -33,7 +33,9 @@ public class Player {
     private static final float FOCUS_SPEED_MULTIPLIER = 0.25f;
 
     private static final short INVINCIBILITY_COOLDOWN = 90;
-    public static final short DEATH_BOMB_COOLDOWN = 9;
+    private static final short DEATH_BOMB_COOLDOWN = 9;
+
+    private static final short GRAZE_SOUND_COOLDOWN = 5;
 
     private static final Vector2 UNFOCUSED_ORB_OFFSET = new Vector2(22.0f, 0.0f);
     private static final Vector2 FOCUSED_ORB_OFFSET = new Vector2(12.0f, 24.0f);
@@ -43,6 +45,7 @@ public class Player {
     public final Vector2 position;
     private final GraphicManager.AnmVirtualMachine parentVM;
     private final GraphicManager.AnmVirtualMachine spriteVM;
+    private final GraphicManager.AnmVirtualMachine grazeVM;
     private final GraphicManager.AnmVirtualMachine rightOrbVM;
     private final GraphicManager.AnmVirtualMachine leftOrbVM;
 
@@ -54,9 +57,12 @@ public class Player {
     private final Vector2 orbOffset;
 
     private short invincibilityCooldown;
+    private short deathBombCooldown;
 
     private int smallBulletCooldown;
     private int bigBulletCooldown;
+
+    private int grazeSoundCooldown;
 
     private MovementDirection direction;
 
@@ -89,6 +95,7 @@ public class Player {
         parentVM = GraphicManager.global.new AnmVirtualMachine();
         spriteVM = GraphicManager.global.new AnmVirtualMachine();
         spriteVM.parent = parentVM;
+        grazeVM = GraphicManager.global.new AnmVirtualMachine();
         rightOrbVM = GraphicManager.global.new AnmVirtualMachine();
         rightOrbVM.parent = spriteVM;
         leftOrbVM = GraphicManager.global.new AnmVirtualMachine();
@@ -99,7 +106,12 @@ public class Player {
     }
 
     public void graze() {
-
+        grazeVM.interrupt((byte) 1);
+        GameplayStats.global.graze();
+        if (grazeSoundCooldown == 0) {
+            Audio.global.playSound("plrGraze.ogg", 1.0f);
+            grazeSoundCooldown = GRAZE_SOUND_COOLDOWN;
+        }
     }
 
     private void setDirection(MovementDirection direction) {
@@ -125,14 +137,42 @@ public class Player {
         }
     }
 
+    public void damage() {
+        if (invincibilityCooldown > 0)
+            return;
+        Audio.global.playSound("plrDeath.ogg", 1.0f);
+        invincibilityCooldown = INVINCIBILITY_COOLDOWN;
+        if (GameplayStats.global.canBomb())
+            deathBombCooldown = DEATH_BOMB_COOLDOWN;
+        else
+            GameplayManager.global.gameOver();
+    }
+
     public void respawn() {
         invincibilityCooldown = INVINCIBILITY_COOLDOWN;
         parentVM.interrupt((byte) 2);
         position.set(GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + Y_SPAWN_OFFSET);
         orbOffset.set(UNFOCUSED_ORB_OFFSET);
+        deathBombCooldown = (short) 0;
     }
 
     private int update() {
+        if (grazeSoundCooldown > 0)
+            --grazeSoundCooldown;
+        if (!GameplayManager.global.canUpdate())
+            return Flow.FLOW_RESULT_CONTINUE;
+        boolean bomb = God.global.inputState(God.INPUT_BOMB) == God.INPUT_STATE_JUST_PRESSED;
+        if (bomb) {
+            if (deathBombCooldown > 0) {
+                deathBombCooldown = 0;
+            }
+        }
+        if (deathBombCooldown > 0) {
+            --deathBombCooldown;
+            if (deathBombCooldown == 0)
+                GameplayManager.global.gameOver();
+            return Flow.FLOW_RESULT_CONTINUE;
+        }
         boolean up = God.global.inputState(God.INPUT_MOVE_UP) == God.INPUT_STATE_PRESSED;
         boolean left = God.global.inputState(God.INPUT_MOVE_LEFT) == God.INPUT_STATE_PRESSED;
         boolean down = God.global.inputState(God.INPUT_MOVE_DOWN) == God.INPUT_STATE_PRESSED;
@@ -228,20 +268,28 @@ public class Player {
                 parentVM.interrupt((byte) 1);
         }
         hitbox.setPosition(position.x, position.y);
+        grazeBox.setPosition(position.x, position.y);
         parentVM.execute();
         spriteVM.execute();
+        grazeVM.execute();
         leftOrbVM.execute();
         rightOrbVM.execute();
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    public boolean deathbombing() {
+        return deathBombCooldown > 0;
+    }
+
     private int draw() {
         spriteVM.position.set(position);
+        grazeVM.position.set(position);
         leftOrbVM.position.set(new Vector2(-orbOffset.x, orbOffset.y));
         rightOrbVM.position.set(new Vector2(orbOffset.x, orbOffset.y));
         leftOrbVM.draw();
         rightOrbVM.draw();
         spriteVM.draw();
+        grazeVM.draw();
         return 0;
     }
 
@@ -251,18 +299,22 @@ public class Player {
         parentVM.loadScriptAndPlay("Player");
         spriteVM.loadAnm(anm);
         spriteVM.loadScriptAndPlay("PlayerSprite");
+        grazeVM.loadAnm(anm);
+        grazeVM.loadScriptAndPlay("GrazeBox");
         leftOrbVM.loadAnm(anm);
         leftOrbVM.loadScriptAndPlay("Orb");
         rightOrbVM.loadAnm(anm);
         rightOrbVM.loadScriptAndPlay("Orb");
         shapeRenderer = new ShapeRenderer();
-        respawn();
         return 0;
     }
 
     private int removed() {
         parentVM.delete();
         spriteVM.delete();
+        grazeVM.delete();
+        leftOrbVM.delete();
+        rightOrbVM.delete();
         Assets.global.unload("game/plr.anm");
         shapeRenderer.dispose();
         return 0;
