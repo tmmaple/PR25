@@ -1,7 +1,6 @@
 package ua.tmmaple.pr25.entities;
 
 import ua.tmmaple.pr25.Flow;
-import ua.tmmaple.pr25.task.Task;
 import ua.tmmaple.pr25.task.TimelineTask;
 
 public class EnemyManager {
@@ -27,7 +26,7 @@ public class EnemyManager {
         Flow.global.cut(updateNode);
         Flow.global.cut(drawNode);
     }
-    public void createEnemy(TimelineTask task, Task[] asynchTasks, float x, float y, int health){
+    public void createEnemy(TimelineTask task, float x, float y, int health){
         int i = 0;
         while (i < enemies.length && !enemies[i].active) i++;
         if (i < enemies.length) {
@@ -37,10 +36,9 @@ public class EnemyManager {
             enemies[i].health = health;
             enemies[i].position.set(x, y);
             enemies[i].timelineTask = task;
-            enemies[i].asynchTasks = asynchTasks;
         }
     }
-    Enemy createEnemy(TimelineTask task, Task[] asynchTasks, float x, float y, Enemy parent, int health) {
+    Enemy createEnemy(TimelineTask task, float x, float y, Enemy parent, int health) {
         int i = 0;
         while (i < enemies.length && enemies[i].active) i++;
         if (i < enemies.length) {
@@ -51,7 +49,6 @@ public class EnemyManager {
             enemies[i].children.clear();
             enemies[i].position.set(x, y);
             enemies[i].timelineTask = task;
-            enemies[i].asynchTasks = asynchTasks;
             return enemies[i];
         }
         return null;
