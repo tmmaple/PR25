@@ -59,6 +59,7 @@ public class Enemy {
             guns[i] = new Gun(this);
         }
     }
+
     public void setSprite(Anm source, String sprite){
         this.sprite.loadAnm(source);
         this.sprite.loadScriptAndPlay(sprite);
@@ -74,26 +75,35 @@ public class Enemy {
     public void createChild(TimelineTask task, Task[] asynchTasks, float x, float y) {
         children.add(EnemyManager.global.createEnemy(task, asynchTasks, x, y, this));
     }
+
     public void changePosition(byte interpolation, float x, float y, short shiftTime){
         xPositionTweener.start(interpolation, position.x, x, shiftTime);
         yPositionTweener.start(interpolation, position.y, y, shiftTime);
     }
+
     public void changeVelocity(byte interpolation, float velocity, short shiftTime){
         velocityTweener.start(interpolation, this.velocity, velocity, shiftTime);
     }
+
     public void changeAngle(byte interpolation, float angle, short shiftTime){
         angleTweener.start(interpolation, linearMoveVector.angleRad(), angle, shiftTime);
     }
+
     public void setLinearMove(byte interpolation, float velocity, float angle, short shiftTime){
         velocityTweener.start(interpolation, this.velocity, velocity, shiftTime);
         angleTweener.start(interpolation, linearMoveVector.angleRad(), angle, shiftTime);
         moveType = MoveType.LINEAR;
     }
-    public void setLinearMove(){this.moveType = MoveType.LINEAR;}
+
+    public void setLinearMove(){
+        this.moveType = MoveType.LINEAR;
+    }
+
     public void rotate(byte interpolation, float angle, short shiftTime){
         float currentAngle = linearMoveVector.angleRad();
         angleTweener.start(interpolation, currentAngle, currentAngle+angle, shiftTime);
     }
+
     public void setOrbitalMove(Vector2 centre, float xRadius, float yRadius, float startAngle){
         this.centre = centre;
         this.xRadius = xRadius;
@@ -101,7 +111,11 @@ public class Enemy {
         this.currentAngle = startAngle;
         this.moveType = MoveType.ORBITAL;
     }
-    public void setRoundMove(Vector2 centre, float radius, float startAngle){setOrbitalMove(centre, radius, radius, startAngle);}
+
+    public void setRoundMove(Vector2 centre, float radius, float startAngle) {
+        setOrbitalMove(centre, radius, radius, startAngle);
+    }
+
     public void setOrbitalMove(float angle, float xRadius, float yRadius){
         this.centre.set(position.x- xRadius *(float)Math.cos(angle), position.y - yRadius *(float)Math.sin(angle));
         this.xRadius = xRadius;
@@ -109,8 +123,12 @@ public class Enemy {
         this.currentAngle = angle;
         this.moveType = MoveType.ORBITAL;
     }
-    public void setRoundMove(float angle, float radius){setOrbitalMove(angle, radius, radius);}
-    public void stopMovement(){
+
+    public void setRoundMove(float angle, float radius) {
+        setOrbitalMove(angle, radius, radius);
+    }
+
+    public void stopMovement() {
         this.moveType = MoveType.NONE;
     }
 
@@ -126,21 +144,21 @@ public class Enemy {
         this.position.set(x, y);
     }
 
-    void update(){
-        if (velocityTweener.isRunning()){
+    void update() {
+        if (velocityTweener.isRunning()) {
             velocityTweener.update();
             velocity = velocityTweener.value();
             linearMoveVector.scl(velocityTweener.value()/velocity);
         }
-        if (angleTweener.isRunning()){
+        if (angleTweener.isRunning()) {
             angleTweener.update();
             linearMoveVector.set(velocity*(float)Math.cos(angleTweener.value()), velocity*(float)Math.sin(angleTweener.value()));
         }
-        if (xPositionTweener.isRunning()){
+        if (xPositionTweener.isRunning()) {
             xPositionTweener.update();
             position.x = xPositionTweener.value();
         }
-        if (yPositionTweener.isRunning()){
+        if (yPositionTweener.isRunning()) {
             yPositionTweener.update();
             position.y = yPositionTweener.value();
         }
@@ -163,7 +181,7 @@ public class Enemy {
         for (Gun gun: guns) gun.update();
     }
 
-    void draw(){
+    void draw() {
         sprite.position.set(position);
         sprite.draw();
     }
