@@ -41,6 +41,13 @@ public final class GameplayStats {
         return grazeBombCounter == GRAZE_BOMB_THRESHOLD;
     }
 
+    public void bombUsed() {
+        graze -= grazeBombCounter;
+        if (graze < 0)
+            graze = 0;
+        grazeBombCounter = 0;
+    }
+
     public void graze() {
         ++graze;
         grazeBombRemoveCooldown = GRAZE_BOMB_REMOVE_COOLDOWN;

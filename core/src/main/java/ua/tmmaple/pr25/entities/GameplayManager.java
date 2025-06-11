@@ -41,6 +41,7 @@ public final class GameplayManager {
 
     public GameplayManager() {
         Background.global = new Background();
+        BombManager.global = new BombManager();
         Player.global = new Player();
         EnemyManager.global = new EnemyManager();
         StageManager.global = new StageManager();
@@ -56,6 +57,7 @@ public final class GameplayManager {
             loading = false;
             GameplayStats.register();
             Background.register();
+            BombManager.register();
             Player.register();
             BulletManager.register();
             EnemyManager.register();
@@ -89,6 +91,7 @@ public final class GameplayManager {
 
     private int removed() {
         GameplayStats.shutdown();
+        BombManager.shutdown();
         StageManager.shutdown();
         Background.shutdown();
         BulletManager.shutdown();

@@ -57,7 +57,6 @@ public final class StageManager {
             Assets.global.unload(bgm);
         stage = null;
         root = null;
-        System.gc();
     }
 
     private int update() {
