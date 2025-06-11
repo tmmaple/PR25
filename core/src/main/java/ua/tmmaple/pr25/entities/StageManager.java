@@ -45,7 +45,7 @@ public final class StageManager {
             for (int i = 0; i < anmList.length; ++i)
                 this.anms[i] = Assets.global.get(Anm.class, anmList[i]);
             stage.init(this, Background.global);
-            root = EnemyManager.global.createEnemy(stage.main(), null, 0.0f, 0.0f, null, 1);
+            root = EnemyManager.global.createEnemy(stage.main(), 0.0f, 0.0f, null, 1);
         }
         return Flow.FLOW_RESULT_CONTINUE;
     }

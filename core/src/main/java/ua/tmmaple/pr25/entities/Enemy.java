@@ -21,7 +21,7 @@ public class Enemy {
     Array<Enemy> children;
     boolean active;
     TimelineTask timelineTask;
-    Task[] asynchTasks;
+    Array<Task> asynchTasks;
     int health;
     private Gun[] guns;
     private int flags;
@@ -54,6 +54,7 @@ public class Enemy {
         centre = new Vector2();
         moveType = MoveType.NONE;
         children = new Array<>();
+        asynchTasks = new Array<>();
         active = false;
         for (int i = 0; i < guns.length; i++) {
             guns[i] = new Gun(this);
@@ -72,41 +73,43 @@ public class Enemy {
             flags &= ~FLAG_SPRITE_ROTATION;
     }
 
-    public void createChildRelative(TimelineTask task, Task[] asynchTasks, float x, float y, int health) {
-        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x, y, this, health));
+    public void createChildRelative(TimelineTask task, float x, float y, int health) {
+        children.add(EnemyManager.global.createEnemy(task, x, y, this, health));
     }
     private void removeChild(Enemy child) {
         children.removeValue(child, true);
     }
-    public void createChildAbsolute(TimelineTask task, Task[] asynchTasks, float x, float y, int health) {
+    public void createChildAbsolute(TimelineTask task, float x, float y, int health) {
         Vector2 abs = absolutePosition();
-        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x - abs.x, y - abs.y, this, health));
+        children.add(EnemyManager.global.createEnemy(task, x - abs.x, y - abs.y, this, health));
     }
-
-    public void createSiblingRelative(TimelineTask task, Task[] asynchTasks, float x, float y, int health) {
+    public void addAsynchTask(Task task) {
+        asynchTasks.add(task);
+    }
+    public void createSiblingRelative(TimelineTask task, float x, float y, int health) {
         if (parent == null)
             return;
-        parent.children.add(EnemyManager.global.createEnemy(task, asynchTasks, position.x + x, position.y + y, parent, health));
+        parent.children.add(EnemyManager.global.createEnemy(task, position.x + x, position.y + y, parent, health));
     }
 
-    public void createSiblingAbsolute(TimelineTask task, Task[] asynchTasks, float x, float y, int health) {
-        if (parent == null)
-            return;
-        Vector2 abs = parent.absolutePosition();
-        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x - abs.x, y - abs.y, parent, health));
-    }
-
-    public void createSiblingRelative(TimelineTask task, Task[] asynchTasks, float x, float y) {
-        if (parent == null)
-            return;
-        parent.children.add(EnemyManager.global.createEnemy(task, asynchTasks, position.x + x, position.y + y, parent, this.health));
-    }
-
-    public void createSiblingAbsolute(TimelineTask task, Task[] asynchTasks, float x, float y) {
+    public void createSiblingAbsolute(TimelineTask task, float x, float y, int health) {
         if (parent == null)
             return;
         Vector2 abs = parent.absolutePosition();
-        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x - abs.x, y - abs.y, parent, this.health));
+        children.add(EnemyManager.global.createEnemy(task, x - abs.x, y - abs.y, parent, health));
+    }
+
+    public void createSiblingRelative(TimelineTask task, float x, float y) {
+        if (parent == null)
+            return;
+        parent.children.add(EnemyManager.global.createEnemy(task, position.x + x, position.y + y, parent, this.health));
+    }
+
+    public void createSiblingAbsolute(TimelineTask task, float x, float y) {
+        if (parent == null)
+            return;
+        Vector2 abs = parent.absolutePosition();
+        children.add(EnemyManager.global.createEnemy(task, x - abs.x, y - abs.y, parent, this.health));
     }
 
     public void changePosition(byte interpolation, float x, float y, int ticks){
@@ -384,11 +387,11 @@ public class Enemy {
             else
                 sprite.angle = velocity.angleRad();
         }
-        if (timelineTask.execute(this) && children.size == 0) {
+        if (timelineTask.execute(this) && asynchTasks.size == 0 && children.size == 0) {
             parent.removeChild(this);
             active = false;
         }
-        // for (Task task : asynchTasks) task.execute(this);
+        for (Task task : asynchTasks) if (task.execute(this)) asynchTasks.removeValue(task, true);
         // sprite.position.set(position);
         sprite.execute();
         for (Gun gun: guns) gun.update();
