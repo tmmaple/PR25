@@ -42,12 +42,12 @@ public class StageTest extends Stage {
                 200,
                 en -> {
                     background.setCameraLimits(128.0f, 192.0f, true);
-                    en.createChildAbsolute(enemyA(), null, -100.0f, 40.0f);
-                    en.createChildAbsolute(enemyB(), null, 100.0f, 40.0f);
-                    en.createChildAbsolute(enemyA(), null, -100.0f, 20.0f);
-                    en.createChildAbsolute(enemyB(), null, 100.0f, 20.0f);
-                    en.createChildAbsolute(enemyA(), null, -120.0f, 0.0f);
-                    en.createChildAbsolute(enemyB(), null, 120.0f, 0.0f);
+                    en.createChildAbsolute(enemyA(), null, -100.0f, 40.0f, 20);
+                    en.createChildAbsolute(enemyB(), null, 100.0f, 40.0f, 20);
+                    en.createChildAbsolute(enemyA(), null, -100.0f, 20.0f, 20);
+                    en.createChildAbsolute(enemyB(), null, 100.0f, 20.0f, 20);
+                    en.createChildAbsolute(enemyA(), null, -120.0f, 0.0f, 20);
+                    en.createChildAbsolute(enemyB(), null, 120.0f, 0.0f, 20);
                     return true;
                 }
             ),
