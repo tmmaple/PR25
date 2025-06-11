@@ -1,6 +1,7 @@
 package ua.tmmaple.pr25.entities;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import ua.tmmaple.pr25.graphics.Anm;
@@ -23,6 +24,7 @@ public class Enemy {
     TimelineTask timelineTask;
     Array<Task> asynchTasks;
     int health;
+    Polygon hitbox;
     private Gun[] guns;
     private int flags;
 
@@ -65,7 +67,12 @@ public class Enemy {
         this.sprite.loadAnm(source);
         this.sprite.loadScriptAndPlay(sprite);
     }
-
+    public void setHitbox(Polygon hitbox) {
+        this.hitbox = hitbox;
+    }
+    public void setHitbox(float width, float height) {
+        this.hitbox = new Polygon(new float[] {-width/2, -height/2, width/2, -height/2, width/2, height/2, -width/2, height/2});
+    }
     public void setSpriteRotation(boolean allow) {
         if (allow)
             flags |= FLAG_SPRITE_ROTATION;
@@ -393,6 +400,10 @@ public class Enemy {
         }
         for (Task task : asynchTasks) if (task.execute(this)) asynchTasks.removeValue(task, true);
         // sprite.position.set(position);
+        if (hitbox!=null){
+            hitbox.setPosition(sprite.position.x, sprite.position.y);
+            hitbox.setRotation(velocity.angleRad());
+        }
         sprite.execute();
         for (Gun gun: guns) gun.update();
     }
