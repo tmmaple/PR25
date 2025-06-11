@@ -164,6 +164,15 @@ public class BulletManager {
     private void updateBullets() {
         for (PlayersBullet bullet : plrSmallBullets) {
             if (bullet.active) {
+                for (Enemy enemy: EnemyManager.global.enemies){
+                    if (enemy.hitbox != null && enemy.active) {
+                        if (Intersector.intersectPolygons(enemy.hitbox, bullet.collider, null)){
+                            enemy.health -= bullet.damage;
+                            bullet.toPool();
+                        }
+                    }
+                }
+                bullet.collider.setPosition(bullet.position.x, bullet.position.y);
                 bullet.position.add(bullet.velocity);
                 bullet.sprite.position.set(bullet.position);
                 bullet.checkCollision();

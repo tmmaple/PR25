@@ -64,6 +64,7 @@ public class StageTest extends Stage {
                 en -> {
                     en.setSprite(getAnm(1), "Dragonfly");
                     en.setSpriteRotation(true);
+                    en.setHitbox(32, 32);
                     en.setVelocity(-MathUtils.HALF_PI, 2.0f);
                     return true;
                 }
@@ -140,6 +141,7 @@ public class StageTest extends Stage {
                 en -> {
                     en.setSprite(getAnm(1), "Dragonfly");
                     en.setSpriteRotation(true);
+                    en.setHitbox(32, 32);
                     en.setVelocity(-MathUtils.HALF_PI, 2.0f);
                     return true;
                 }
