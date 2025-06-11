@@ -1,5 +1,6 @@
 package ua.tmmaple.pr25.entities;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import ua.tmmaple.pr25.graphics.Anm;
@@ -59,7 +60,7 @@ public class Enemy {
         }
     }
 
-    public void setSprite(Anm source, String sprite){
+    public void setSprite(Anm source, String sprite) {
         this.sprite.loadAnm(source);
         this.sprite.loadScriptAndPlay(sprite);
     }
@@ -83,14 +84,14 @@ public class Enemy {
     public void createSiblingRelative(TimelineTask task, Task[] asynchTasks, float x, float y) {
         if (parent == null)
             return;
-        parent.children.add(EnemyManager.global.createEnemy(task, asynchTasks, position.x + x, position.y + y, this));
+        parent.children.add(EnemyManager.global.createEnemy(task, asynchTasks, position.x + x, position.y + y, parent));
     }
 
     public void createSiblingAbsolute(TimelineTask task, Task[] asynchTasks, float x, float y) {
         if (parent == null)
             return;
         Vector2 abs = parent.absolutePosition();
-        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x - abs.x, y - abs.y, this));
+        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x - abs.x, y - abs.y, parent));
     }
 
     public void changePosition(byte interpolation, float x, float y, int ticks){
@@ -148,9 +149,9 @@ public class Enemy {
         this.moveType = MoveType.NONE;
     }
 
-    private void setVelocity(float speed, float angle) {
+    public void setVelocity(float angle, float speed) {
+        velocity.set(1.0f, 0.0f).setAngleRad(angle).scl(speed);
         this.speed = speed;
-        velocity.setAngleRad(angle);
         moveType = MoveType.LINEAR;
     }
 
@@ -159,6 +160,7 @@ public class Enemy {
     }
 
     public void setSpeed(float speed) {
+        velocity.nor().scl(speed);
         this.speed = speed;
     }
 
@@ -276,10 +278,10 @@ public class Enemy {
         guns[gun].stop();
     }
 
-    public void adjustGunAimAtPlayer(int gun, Vector2 offset) {
+    public void adjustGunAimAtPlayer(int gun, float offsetX, float offsetY) {
         if (gun < 0 || gun >= guns.length)
             throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
-        guns[gun].adjustAimAtPlayer(offset);
+        guns[gun].adjustAimAtPlayer(new Vector2(offsetX, offsetY));
     }
 
 
@@ -319,7 +321,7 @@ public class Enemy {
         guns[gun].adjustAngularAcceleration(angularAcceleration);
     }
 
-    public void adjustGunType(int gun, Gun.BulletType bulletType) {
+    public void adjustGunBulletType(int gun, Gun.BulletType bulletType) {
         if (gun < 0 || gun >= guns.length)
             throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
         guns[gun].adjustType(bulletType);
@@ -331,15 +333,19 @@ public class Enemy {
         guns[gun].destroyAll();
     }
 
+    public void destroy() {
+        active = false;
+    }
+
     void update() {
         if (velocityTweener.isRunning()) {
             velocityTweener.update();
             speed = velocityTweener.value();
-            velocity.scl(velocityTweener.value()/ speed);
+            velocity.nor().scl(speed);
         }
         if (angleTweener.isRunning()) {
             angleTweener.update();
-            velocity.set(speed *(float)Math.cos(angleTweener.value()), speed *(float)Math.sin(angleTweener.value()));
+            velocity.setAngleRad(angleTweener.value());
         }
         if (positionTweener.isRunning()) {
             positionTweener.update();
@@ -358,12 +364,13 @@ public class Enemy {
         }
         if ((flags & FLAG_SPRITE_ROTATION) != 0) {
             if (moveType == MoveType.ORBITAL)
-                sprite.angle = currentAngle;
+                sprite.angle = currentAngle + MathUtils.HALF_PI;
             else
                 sprite.angle = velocity.angleRad();
         }
         if (timelineTask.execute(this)) active = false;
-        for (Task task : asynchTasks) task.execute(this);
+        // for (Task task : asynchTasks) task.execute(this);
+        // sprite.position.set(position);
         sprite.execute();
         for (Gun gun: guns) gun.update();
     }
@@ -374,7 +381,7 @@ public class Enemy {
     }
 
     public Vector2 absolutePosition() {
-        Vector2 result = Vector2.Zero;
+        Vector2 result = new Vector2();
         Enemy e = this;
         while (e != null) {
             result.add(e.position);

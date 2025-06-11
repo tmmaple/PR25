@@ -38,14 +38,18 @@ public final class GameplayManager {
         Background.global = new Background();
         Player.global = new Player();
         EnemyManager.global = new EnemyManager();
+        StageManager.global = new StageManager();
     }
 
     private int update() {
         if (loading && Assets.global.isLoaded()) {
             loading = false;
+            Background.register();
             Player.register();
             BulletManager.register();
             EnemyManager.register();
+            StageManager.register();
+            StageManager.global.load(new StageTest());
         }
         return Flow.FLOW_RESULT_CONTINUE;
     }
@@ -62,6 +66,8 @@ public final class GameplayManager {
     }
 
     private int removed() {
+        StageManager.shutdown();
+        Background.shutdown();
         BulletManager.shutdown();
         Player.shutdown();
         EnemyManager.shutdown();

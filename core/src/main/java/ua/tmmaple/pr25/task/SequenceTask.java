@@ -25,6 +25,8 @@ public final class SequenceTask implements Task {
             result = tasks[index].execute(enemy);
             if (result) ++index;
         }
+        if (result)
+            index = 0;
         return result;
     }
 
