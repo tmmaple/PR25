@@ -40,8 +40,7 @@ public class Enemy {
 
     private final Tweener.FloatTweener velocityTweener;
     private final Tweener.FloatTweener angleTweener;
-    private final Tweener.FloatTweener xPositionTweener;
-    private final Tweener.FloatTweener yPositionTweener;
+    private final Tweener.Vector2Tweener positionTweener;
 
     public Enemy(int amountOfGuns) {
         this.position = new Vector2();
@@ -49,8 +48,7 @@ public class Enemy {
         this.guns = new Gun[amountOfGuns];
         this.velocityTweener = new Tweener.FloatTweener();
         this.angleTweener = new Tweener.FloatTweener();
-        this.xPositionTweener = new Tweener.FloatTweener();
-        this.yPositionTweener = new Tweener.FloatTweener();
+        this.positionTweener = new Tweener.Vector2Tweener();
         velocity = new Vector2();
         centre = new Vector2();
         moveType = MoveType.NONE;
@@ -73,39 +71,56 @@ public class Enemy {
             flags &= ~FLAG_SPRITE_ROTATION;
     }
 
-    public void createChild(TimelineTask task, Task[] asynchTasks, float x, float y) {
+    public void createChildRelative(TimelineTask task, Task[] asynchTasks, float x, float y) {
         children.add(EnemyManager.global.createEnemy(task, asynchTasks, x, y, this));
     }
 
-    public void changePosition(byte interpolation, float x, float y, short shiftTime){
-        xPositionTweener.start(interpolation, position.x, x, shiftTime);
-        yPositionTweener.start(interpolation, position.y, y, shiftTime);
+    public void createChildAbsolute(TimelineTask task, Task[] asynchTasks, float x, float y) {
+        Vector2 abs = absolutePosition();
+        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x - abs.x, y - abs.y, this));
     }
 
-    public void changeSpeed(byte interpolation, float speed, short shiftTime){
-        velocityTweener.start(interpolation, this.speed, speed, shiftTime);
+    public void createSiblingRelative(TimelineTask task, Task[] asynchTasks, float x, float y) {
+        if (parent == null)
+            return;
+        parent.children.add(EnemyManager.global.createEnemy(task, asynchTasks, position.x + x, position.y + y, this));
     }
 
-    public void changeAngle(byte interpolation, float angle, short shiftTime) {
-        angleTweener.start(interpolation, velocity.angleRad(), angle, shiftTime);
+    public void createSiblingAbsolute(TimelineTask task, Task[] asynchTasks, float x, float y) {
+        if (parent == null)
+            return;
+        Vector2 abs = parent.absolutePosition();
+        children.add(EnemyManager.global.createEnemy(task, asynchTasks, x - abs.x, y - abs.y, this));
     }
 
-    public void changeVelocity(byte interpolation, float speed, float angle, short shiftTime) {
-        velocityTweener.start(interpolation, this.speed, speed, shiftTime);
-        angleTweener.start(interpolation, this.velocity.angleRad(), angle, shiftTime);
+    public void changePosition(byte interpolation, float x, float y, int ticks){
+        positionTweener.start(interpolation, position.cpy(), new Vector2(x, y), (short) ticks);
+    }
+
+    public void changeSpeed(byte interpolation, float speed, int ticks) {
+        velocityTweener.start(interpolation, this.speed, speed, (short) ticks);
+    }
+
+    public void changeAngle(byte interpolation, float angle, int ticks) {
+        angleTweener.start(interpolation, velocity.angleRad(), angle, (short) ticks);
+    }
+
+    public void changeVelocity(byte interpolation, float speed, float angle, int ticks) {
+        velocityTweener.start(interpolation, this.speed, speed, (short) ticks);
+        angleTweener.start(interpolation, this.velocity.angleRad(), angle, (short) ticks);
         moveType = MoveType.LINEAR;
     }
 
-    public void moveLinearly(){
+    public void moveLinearly() {
         this.moveType = MoveType.LINEAR;
     }
 
-    public void rotate(byte interpolation, float angle, short shiftTime){
+    public void rotate(byte interpolation, float angle, int ticks) {
         float currentAngle = velocity.angleRad();
-        angleTweener.start(interpolation, currentAngle, currentAngle+angle, shiftTime);
+        angleTweener.start(interpolation, currentAngle, currentAngle+angle, (short) ticks);
     }
 
-    public void moveOrbitally(Vector2 centre, float xRadius, float yRadius, float startAngle){
+    public void moveOrbitally(Vector2 centre, float xRadius, float yRadius, float startAngle) {
         this.centre = centre;
         this.xRadius = xRadius;
         this.yRadius = yRadius;
@@ -326,13 +341,9 @@ public class Enemy {
             angleTweener.update();
             velocity.set(speed *(float)Math.cos(angleTweener.value()), speed *(float)Math.sin(angleTweener.value()));
         }
-        if (xPositionTweener.isRunning()) {
-            xPositionTweener.update();
-            position.x = xPositionTweener.value();
-        }
-        if (yPositionTweener.isRunning()) {
-            yPositionTweener.update();
-            position.y = yPositionTweener.value();
+        if (positionTweener.isRunning()) {
+            positionTweener.update();
+            position.set(positionTweener.value());
         }
         if(moveType == MoveType.LINEAR) position.add(velocity);
         if(moveType == MoveType.ORBITAL) {
@@ -358,7 +369,21 @@ public class Enemy {
     }
 
     void draw() {
-        sprite.position.set(position);
+        sprite.position.set(viewportPosition());
         sprite.draw();
+    }
+
+    public Vector2 absolutePosition() {
+        Vector2 result = Vector2.Zero;
+        Enemy e = this;
+        while (e != null) {
+            result.add(e.position);
+            e = e.parent;
+        }
+        return result;
+    }
+
+    public Vector2 viewportPosition() {
+        return absolutePosition().add(GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT);
     }
 }
