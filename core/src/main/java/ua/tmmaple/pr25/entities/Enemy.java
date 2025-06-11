@@ -29,9 +29,9 @@ public class Enemy {
         LINEAR, ORBITAL, NONE
     }
     MoveType moveType;
-    private float velocity;
+    private float speed;
 
-    private Vector2 linearMoveVector;
+    private Vector2 velocity;
 
     private Vector2 centre;
     private float xRadius;
@@ -51,7 +51,7 @@ public class Enemy {
         this.angleTweener = new Tweener.FloatTweener();
         this.xPositionTweener = new Tweener.FloatTweener();
         this.yPositionTweener = new Tweener.FloatTweener();
-        linearMoveVector = new Vector2();
+        velocity = new Vector2();
         centre = new Vector2();
         moveType = MoveType.NONE;
         children = new Array<>();
@@ -82,30 +82,30 @@ public class Enemy {
         yPositionTweener.start(interpolation, position.y, y, shiftTime);
     }
 
-    public void changeVelocity(byte interpolation, float velocity, short shiftTime){
-        velocityTweener.start(interpolation, this.velocity, velocity, shiftTime);
+    public void changeSpeed(byte interpolation, float speed, short shiftTime){
+        velocityTweener.start(interpolation, this.speed, speed, shiftTime);
     }
 
-    public void changeAngle(byte interpolation, float angle, short shiftTime){
-        angleTweener.start(interpolation, linearMoveVector.angleRad(), angle, shiftTime);
+    public void changeAngle(byte interpolation, float angle, short shiftTime) {
+        angleTweener.start(interpolation, velocity.angleRad(), angle, shiftTime);
     }
 
-    public void setLinearMove(byte interpolation, float velocity, float angle, short shiftTime){
-        velocityTweener.start(interpolation, this.velocity, velocity, shiftTime);
-        angleTweener.start(interpolation, linearMoveVector.angleRad(), angle, shiftTime);
+    public void changeVelocity(byte interpolation, float speed, float angle, short shiftTime) {
+        velocityTweener.start(interpolation, this.speed, speed, shiftTime);
+        angleTweener.start(interpolation, this.velocity.angleRad(), angle, shiftTime);
         moveType = MoveType.LINEAR;
     }
 
-    public void setLinearMove(){
+    public void moveLinearly(){
         this.moveType = MoveType.LINEAR;
     }
 
     public void rotate(byte interpolation, float angle, short shiftTime){
-        float currentAngle = linearMoveVector.angleRad();
+        float currentAngle = velocity.angleRad();
         angleTweener.start(interpolation, currentAngle, currentAngle+angle, shiftTime);
     }
 
-    public void setOrbitalMove(Vector2 centre, float xRadius, float yRadius, float startAngle){
+    public void moveOrbitally(Vector2 centre, float xRadius, float yRadius, float startAngle){
         this.centre = centre;
         this.xRadius = xRadius;
         this.yRadius = yRadius;
@@ -113,11 +113,11 @@ public class Enemy {
         this.moveType = MoveType.ORBITAL;
     }
 
-    public void setRoundMove(Vector2 centre, float radius, float startAngle) {
-        setOrbitalMove(centre, radius, radius, startAngle);
+    public void moveCircularly(Vector2 centre, float radius, float startAngle) {
+        moveOrbitally(centre, radius, radius, startAngle);
     }
 
-    public void setOrbitalMove(float angle, float xRadius, float yRadius){
+    public void moveOrbitally(float angle, float xRadius, float yRadius) {
         this.centre.set(position.x- xRadius *(float)Math.cos(angle), position.y - yRadius *(float)Math.sin(angle));
         this.xRadius = xRadius;
         this.yRadius = yRadius;
@@ -125,20 +125,26 @@ public class Enemy {
         this.moveType = MoveType.ORBITAL;
     }
 
-    public void setRoundMove(float angle, float radius) {
-        setOrbitalMove(angle, radius, radius);
+    public void moveCircularly(float angle, float radius) {
+        moveOrbitally(angle, radius, radius);
     }
 
     public void stopMovement() {
         this.moveType = MoveType.NONE;
     }
 
-    public void setAngle(float angle) {
-        this.linearMoveVector.setAngleRad(angle);
+    private void setVelocity(float speed, float angle) {
+        this.speed = speed;
+        velocity.setAngleRad(angle);
+        moveType = MoveType.LINEAR;
     }
 
-    public void setVelocity(float velocity) {
-        this.velocity = velocity;
+    public void setAngle(float angle) {
+        this.velocity.setAngleRad(angle);
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     public void setPosition(float x, float y) {
@@ -313,12 +319,12 @@ public class Enemy {
     void update() {
         if (velocityTweener.isRunning()) {
             velocityTweener.update();
-            velocity = velocityTweener.value();
-            linearMoveVector.scl(velocityTweener.value()/velocity);
+            speed = velocityTweener.value();
+            velocity.scl(velocityTweener.value()/ speed);
         }
         if (angleTweener.isRunning()) {
             angleTweener.update();
-            linearMoveVector.set(velocity*(float)Math.cos(angleTweener.value()), velocity*(float)Math.sin(angleTweener.value()));
+            velocity.set(speed *(float)Math.cos(angleTweener.value()), speed *(float)Math.sin(angleTweener.value()));
         }
         if (xPositionTweener.isRunning()) {
             xPositionTweener.update();
@@ -328,10 +334,10 @@ public class Enemy {
             yPositionTweener.update();
             position.y = yPositionTweener.value();
         }
-        if(moveType == MoveType.LINEAR) position.add(linearMoveVector);
+        if(moveType == MoveType.LINEAR) position.add(velocity);
         if(moveType == MoveType.ORBITAL) {
             position.set(centre.x+xRadius*(float)Math.cos(currentAngle), centre.y+yRadius*(float)Math.sin(currentAngle));
-            currentAngle += velocity/(xRadius+yRadius/2);
+            currentAngle += speed /(xRadius+yRadius/2);
         }
         if (health <= 0) {
             active = false;
@@ -339,8 +345,12 @@ public class Enemy {
                 child.active = false;
             }
         }
-        if ((flags & FLAG_SPRITE_ROTATION) != 0)
-            sprite.angle = linearMoveVector.angleRad();
+        if ((flags & FLAG_SPRITE_ROTATION) != 0) {
+            if (moveType == MoveType.ORBITAL)
+                sprite.angle = currentAngle;
+            else
+                sprite.angle = velocity.angleRad();
+        }
         if (timelineTask.execute(this)) active = false;
         for (Task task : asynchTasks) task.execute(this);
         sprite.execute();
