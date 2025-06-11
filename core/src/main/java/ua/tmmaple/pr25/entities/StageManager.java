@@ -3,9 +3,9 @@ package ua.tmmaple.pr25.entities;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.assets.Stage;
+import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.audio.Bgm;
 import ua.tmmaple.pr25.graphics.Anm;
-import ua.tmmaple.pr25.task.TimelineTask;
 
 public final class StageManager {
     public static StageManager global;
@@ -20,6 +20,7 @@ public final class StageManager {
 
     public static void register() {
         node = new Flow.FlowNode<>(global, StageManager::update);
+        node.removedListener = StageManager::removed;
         Flow.global.addToUpdate(node, 20);
     }
 
@@ -29,6 +30,7 @@ public final class StageManager {
     }
 
     public void load(Stage stage) {
+        unload();
         this.stage = stage;
         String[] anmList = stage.anmList();
         for (String anm : anmList)
@@ -38,15 +40,41 @@ public final class StageManager {
             Assets.global.load(Bgm.class, bgm);
     }
 
+    public void unload() {
+        if (stage == null)
+            return;
+        Audio.global.stopMusic();
+        Background.global.unload();
+        EnemyManager.global.clear();
+        BulletManager.global.clear();
+        anms = null;
+        bgms = null;
+        String[] anms = stage.anmList();
+        for (String anm : anms)
+            Assets.global.unload(anm);
+        String[] bgms = stage.bgmList();
+        for (String bgm : bgms)
+            Assets.global.unload(bgm);
+        stage = null;
+        root = null;
+        System.gc();
+    }
+
     private int update() {
-        if (Assets.global.isLoaded() && root == null) {
+        if (stage != null && Assets.global.isLoaded() && root == null) {
             String[] anmList = stage.anmList();
             anms = new Anm[anmList.length];
             for (int i = 0; i < anmList.length; ++i)
                 this.anms[i] = Assets.global.get(Anm.class, anmList[i]);
             stage.init(this, Background.global);
             root = EnemyManager.global.createEnemy(stage.main(), 0.0f, 0.0f, null, 1);
+            Player.global.respawn();
         }
         return Flow.FLOW_RESULT_CONTINUE;
+    }
+
+    private int removed() {
+        unload();
+        return 0;
     }
 }

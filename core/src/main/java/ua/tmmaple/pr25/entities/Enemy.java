@@ -359,7 +359,11 @@ public class Enemy {
     }
 
     public void destroy() {
+        positionTweener.end();
+        angleTweener.end();
+        velocityTweener.end();
         active = false;
+        sprite.delete();
     }
 
     void update() {
@@ -400,7 +404,7 @@ public class Enemy {
         }
         for (Task task : asynchTasks) if (task.execute(this)) asynchTasks.removeValue(task, true);
         // sprite.position.set(position);
-        if (hitbox!=null){
+        if (hitbox!=null) {
             hitbox.setPosition(sprite.position.x, sprite.position.y);
             hitbox.setRotation(velocity.angleRad());
         }

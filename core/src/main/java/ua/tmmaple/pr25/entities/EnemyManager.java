@@ -54,7 +54,14 @@ public class EnemyManager {
         return null;
     }
 
-    private int update(){
+    public void clear() {
+        for (int i = 0; i < enemies.length; ++i)
+            enemies[i].destroy();
+    }
+
+    private int update() {
+        if (!GameplayManager.global.canUpdate() || Player.global.deathbombing())
+            return Flow.FLOW_RESULT_CONTINUE;
         for (Enemy enemy : enemies){
             if(enemy.active) enemy.update();
         }

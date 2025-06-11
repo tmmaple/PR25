@@ -3,12 +3,15 @@ package ua.tmmaple.pr25.entities;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
+import ua.tmmaple.pr25.Logger;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.stages.StageTest;
 import ua.tmmaple.pr25.util.Tweener;
 
 public final class GameplayManager {
+    private static final short DEATHBOMB_COOLDOWN = (short) 10;
+
     public static final int VIEWPORT_START_X = 48;
     public static final int VIEWPORT_START_Y = 0;
     public static final int VIEWPORT_WIDTH = 384;
@@ -18,6 +21,8 @@ public final class GameplayManager {
 
     private static Flow.FlowNode<GameplayManager> updateNode;
     private static Flow.FlowNode<GameplayManager> drawNode;
+
+    private short deathbombCooldown;
 
     private boolean loading;
 
@@ -39,11 +44,17 @@ public final class GameplayManager {
         Player.global = new Player();
         EnemyManager.global = new EnemyManager();
         StageManager.global = new StageManager();
+        GameplayStats.global = new GameplayStats();
+    }
+
+    public boolean canUpdate() {
+        return deathbombCooldown == 0;
     }
 
     private int update() {
         if (loading && Assets.global.isLoaded()) {
             loading = false;
+            GameplayStats.register();
             Background.register();
             Player.register();
             BulletManager.register();
@@ -51,11 +62,22 @@ public final class GameplayManager {
             StageManager.register();
             StageManager.global.load(new StageTest());
         }
+        if (deathbombCooldown > 0) {
+            --deathbombCooldown;
+            if (deathbombCooldown == 0) {
+                gameOver();
+            }
+        }
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
     private int draw() {
         return Flow.FLOW_RESULT_CONTINUE;
+    }
+
+    public void gameOver() {
+        Player.global.respawn();
+        Logger.info("Game Over");
     }
 
     private int added() {
@@ -66,6 +88,7 @@ public final class GameplayManager {
     }
 
     private int removed() {
+        GameplayStats.shutdown();
         StageManager.shutdown();
         Background.shutdown();
         BulletManager.shutdown();

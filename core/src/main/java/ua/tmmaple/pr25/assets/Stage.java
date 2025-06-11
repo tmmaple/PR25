@@ -37,4 +37,8 @@ public abstract class Stage {
     protected void stopMusic() {
         Audio.global.stopMusic();
     }
+
+    protected void nextStage(Stage stage) {
+        owner.load(stage);
+    }
 }

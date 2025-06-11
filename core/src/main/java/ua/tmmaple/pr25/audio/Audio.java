@@ -112,10 +112,12 @@ public final class Audio {
      * @author uwuhasmile
      */
     public void stopMusic() {
+        if (bgm == null) return;
         bgm.stop();
         bgm.completionListener = null;
         fade = 0.0f;
         fadeStep = 0.0f;
+        bgm = null;
     }
 
     /**

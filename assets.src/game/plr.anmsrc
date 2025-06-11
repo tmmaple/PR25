@@ -30,25 +30,25 @@
 #source(0, 126, 104, 42, 52)
 #define RIGHT_3 11
 
-// Хітбокс
-#source(0, 0, 156, 4, 4)
-#define HITBOX 12
-
 // Велика куля
 #source(0, 0, 160, 6, 8)
-#define BULLET_BIG 13
+#define BULLET_BIG 12
 
 // Мала куля
 #source(0, 6, 160, 4, 5)
-#define BULLET_SMALL 14
+#define BULLET_SMALL 13
 
 // Сфера
 #source(0, 16, 156, 16, 16)
-#define ORB_0 15
+#define ORB_0 14
 #source(0, 16, 172, 16, 16)
-#define ORB_1 16
+#define ORB_1 15
 #source(0, 16, 188, 16, 16)
-#define ORB_2 17
+#define ORB_2 16
+
+// Ґрейзбокс
+#source(0, 42, 156, 42, 52)
+#define GRAZE_BOX 17
 
 #define ANIM_VINCIBLE 1
 #define ANIM_INVINCIBLE 2
@@ -117,5 +117,15 @@ script SmallBullet {
 
 script BigBullet {
     source(BULLET_BIG);
+    pause;
+}
+
+script GrazeBox {
+    source(GRAZE_BOX);
+    alpha(0.0);
+    pause;
+    interrupt 1;
+    alpha(1.0);
+    fade(5, 0.0, INTERPOLATION_EASE_OUT);
     pause;
 }
