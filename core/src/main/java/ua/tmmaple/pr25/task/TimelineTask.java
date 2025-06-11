@@ -34,10 +34,10 @@ public final class TimelineTask implements Task {
             if (result)
                 ++index;
         }
-        if (index < keyframes.length) {
+        if (index < keyframes.length && result)
             ++time;
+        if (index < keyframes.length || !result)
             return false;
-        }
         time = -1;
         return true;
     }

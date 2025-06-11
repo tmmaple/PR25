@@ -107,7 +107,7 @@ public class Gun {
         angularAccelerationB = 0.0f;
         radiusA = 0.0f;
         radiusB = 0.0f;
-        repeat = 0;
+        repeat = 1;
         interval = 0;
         delay = 0;
     }
@@ -193,13 +193,10 @@ public class Gun {
     }
 
     private void fire() {
-        Vector2 absolutePosition = offset.cpy();
+        Vector2 absolutePosition = offset.cpy().add(GameplayManager.VIEWPORT_START_X +GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT);
         switch (offsetMode) {
             case ENEMY:
                 absolutePosition.add(owner.position);
-                break;
-            case ABSOLUTE:
-                absolutePosition.add(GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT);
                 break;
             case PLAYER:
                 absolutePosition.add(Player.global.position);

@@ -12,16 +12,16 @@ public class EnemyManager {
     private static Flow.FlowNode<EnemyManager> drawNode;
 
     public EnemyManager(){
-        enemies = new Enemy[32];
+        enemies = new Enemy[240];
         for(int i = 0; i < enemies.length; i++){
-            enemies[i] = new Enemy(1); //Скільки gun-ів має бути я не знаю тому 1
+            enemies[i] = new Enemy(6); //Скільки gun-ів має бути я не знаю тому 1
         }
     }
     public static void register(){
         updateNode = new Flow.FlowNode<>(global, EnemyManager::update);
         drawNode = new Flow.FlowNode<>(global, EnemyManager::draw);
         Flow.global.addToUpdate(updateNode,3);
-        Flow.global.addToDraw(drawNode,3);
+        Flow.global.addToDraw(drawNode,7);
     }
     public static void shutdown(){
         Flow.global.cut(updateNode);
@@ -39,29 +39,32 @@ public class EnemyManager {
             enemies[i].asynchTasks = asynchTasks;
         }
     }
-    Enemy createEnemy(TimelineTask task, Task[] asynchTasks, float x, float y, Enemy parent){
+    Enemy createEnemy(TimelineTask task, Task[] asynchTasks, float x, float y, Enemy parent) {
         int i = 0;
-        while (i < enemies.length && !enemies[i].active) i++;
+        while (i < enemies.length && enemies[i].active) i++;
         if (i < enemies.length) {
+            enemies[i].health = 100;
             enemies[i].parent = parent;
             enemies[i].active = true;
-            enemies[i].children.removeRange(0, enemies[i].children.size-1);
+            enemies[i].children.clear();
             enemies[i].position.set(x, y);
             enemies[i].timelineTask = task;
             enemies[i].asynchTasks = asynchTasks;
+            return enemies[i];
         }
-        return enemies[i];
+        return null;
     }
+
     private int update(){
         for (Enemy enemy : enemies){
             if(enemy.active) enemy.update();
         }
-        return 0;
+        return Flow.FLOW_RESULT_CONTINUE;
     }
     private int draw(){
         for (Enemy enemy : enemies){
             if (enemy.active) enemy.draw();
         }
-        return 0;
+        return Flow.FLOW_RESULT_CONTINUE;
     }
 }
