@@ -70,7 +70,7 @@ public class Gun {
 
     public short repeat;
     public short interval;
-    public short preInterval;
+    public short delay;
 
     private boolean on;
     private short repeatsLeft;
@@ -109,13 +109,13 @@ public class Gun {
         radiusB = 0.0f;
         repeat = 0;
         interval = 0;
-        preInterval = 0;
+        delay = 0;
     }
 
     public void start() {
         on = true;
         repeatsLeft = repeat;
-        currentInterval = preInterval;
+        currentInterval = delay;
     }
 
     public void stop() {
@@ -139,48 +139,49 @@ public class Gun {
             --currentInterval;
     }
 
-    public void aimAtPlayer(Vector2 offset) {
+    public void adjustAimAtPlayer(Vector2 offset) {
         Vector2 position = offset.cpy().add(Player.global.position);
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.setAngle(MathUtils.atan2(position.y - bullet.position.y, position.x - bullet.position.x));
     }
 
-    public void aimAt(Vector2 position) {
+    public void adjustAimAt(Vector2 position) {
+        Vector2 absolutePosition = position.cpy().add(GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT);
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.setAngle(MathUtils.atan2(position.y - bullet.position.y, position.x - bullet.position.x));
     }
 
-    public void changeVelocity(float angle, float speed) {
+    public void adjustVelocity(float angle, float speed) {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.setVelocity(angle, speed);
     }
 
-    public void changeSpeed(float speed) {
+    public void adjustSpeed(float speed) {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.setSpeed(speed);
     }
 
-    public void changeAcceleration(float acceleration) {
+    public void adjustAcceleration(float acceleration) {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.acceleration = acceleration;
     }
 
-    public void changeAngle(float angle) {
+    public void adjustAngle(float angle) {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.setAngle(angle);
     }
 
-    public void changeAngularSpeed(float angularSpeed) {
+    public void adjustAngularSpeed(float angularSpeed) {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.setAngularSpeed(angularSpeed);
     }
 
-    public void changeAngularAcceleration(float angularAcceleration) {
+    public void adjustAngularAcceleration(float angularAcceleration) {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.angularAcceleration = angularAcceleration;
     }
 
-    public void changeType(BulletType bulletType) {
+    public void adjustType(BulletType bulletType) {
         for (BulletManager.EnemyBullet bullet : ownedBullets)
             bullet.setType(BulletManager.BULLET_TYPES[bulletType.ordinal()]);
     }
@@ -192,7 +193,7 @@ public class Gun {
     }
 
     private void fire() {
-        Vector2 absolutePosition = new Vector2(offset);
+        Vector2 absolutePosition = offset.cpy();
         switch (offsetMode) {
             case ENEMY:
                 absolutePosition.add(owner.position);
