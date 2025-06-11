@@ -6,6 +6,7 @@ import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 import ua.tmmaple.pr25.task.Task;
 import ua.tmmaple.pr25.task.TimelineTask;
+import ua.tmmaple.pr25.util.PR25RuntimeException;
 import ua.tmmaple.pr25.util.Tweener;
 
 public class Enemy {
@@ -142,6 +143,171 @@ public class Enemy {
 
     public void setPosition(float x, float y) {
         this.position.set(x, y);
+    }
+
+    public void initGun(int idx) {
+        if (idx < 0 || idx >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", idx));
+        guns[idx].init();
+    }
+
+    public void setGunBulletType(int gun, Gun.BulletType type) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].bulletType = type;
+    }
+
+    public void setGunAim(int gun, Gun.Aim aim) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].aim = aim;
+    }
+
+    public void setGunOffset(int gun, Gun.OffsetMode mode, float x, float y) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].offsetMode = mode;
+        guns[gun].offset.set(x, y);
+    }
+
+    public void setGunFireSound(int gun, String sound) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].fireSound = sound;
+    }
+
+    public void setGunCount(int gun, int countA, int countB) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].countA = countA;
+        guns[gun].countB = countB;
+    }
+
+    public void setGunSpeed(int gun, float speedA, float speedB) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].speedA = speedA;
+        guns[gun].speedB = speedB;
+    }
+
+    public void setGunAcceleration(int gun, float accelerationA, float accelerationB) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].accelerationA = accelerationA;
+        guns[gun].accelerationB = accelerationB;
+    }
+
+    public void setGunAngle(int gun, float angleA, float angleB) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].angleA = angleA;
+        guns[gun].angleB = angleB;
+    }
+
+    public void setGunAngularSpeed(int gun, float angularSpeedA, float angularSpeedB) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].angularSpeedA = angularSpeedA;
+        guns[gun].angularSpeedB = angularSpeedB;
+    }
+
+    public void setGunAngularAcceleration(int gun, float angularAccelerationA, float angularAccelerationB) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].angularAccelerationA = angularAccelerationA;
+        guns[gun].angularAccelerationB = angularAccelerationB;
+    }
+
+    public void setGunRadius(int gun, float radiusA, float radiusB) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].radiusA = radiusA;
+        guns[gun].radiusB = radiusB;
+    }
+
+    public void setGunRepeating(int gun, int times) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].repeat = (short) times;
+    }
+
+    public void setGunRepeatInterval(int gun, int interval) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].interval = (short) interval;
+    }
+
+    public void setGunDelay(int gun, int delay) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].delay = (short) delay;
+    }
+
+    public void turnGunOn(int gun) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].start();
+    }
+
+    public void turnGunOff(int gun) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].stop();
+    }
+
+    public void adjustGunAimAtPlayer(int gun, Vector2 offset) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].adjustAimAtPlayer(offset);
+    }
+
+
+    public void adjustGunAimAt(int gun, Vector2 position) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].adjustAimAt(position);
+    }
+
+    public void adjustGunVelocity(int gun, float angle, float speed) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].adjustVelocity(angle, speed);
+    }
+
+    public void adjustGunSpeed(int gun, float speed) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].adjustSpeed(speed);
+    }
+
+    public void adjustGunAngle(int gun, float angle) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].adjustAngle(angle);
+    }
+
+    public void adjustGunAngularSpeed(int gun, float angularSpeed) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].adjustAngularSpeed(angularSpeed);
+    }
+
+    public void adjustGunAngularAcceleration(int gun, float angularAcceleration) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].adjustAngularAcceleration(angularAcceleration);
+    }
+
+    public void adjustGunType(int gun, Gun.BulletType bulletType) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].adjustType(bulletType);
+    }
+
+    public void destroyGunBullets(int gun) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].destroyAll();
     }
 
     void update() {
