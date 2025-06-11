@@ -1,6 +1,7 @@
 package ua.tmmaple.pr25.entities;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
@@ -21,6 +22,10 @@ public final class Background {
 
     private final Tweener.FloatTweener positionTweener;
     private final Tweener.FloatTweener velocityTweener;
+
+    private int cameraShakePower;
+    private int cameraShakeCooldown;
+    private final Vector2 cameraShakeOffset;
 
     private final GraphicManager.AnmVirtualMachine vm;
 
@@ -43,6 +48,7 @@ public final class Background {
         vm = GraphicManager.global.new AnmVirtualMachine();
         positionTweener = new Tweener.FloatTweener();
         velocityTweener = new Tweener.FloatTweener();
+        cameraShakeOffset = new Vector2();
     }
 
     public void load(Anm anm, String scriptName) {
@@ -50,6 +56,8 @@ public final class Background {
         vm.loadScriptAndPlay(scriptName);
         cameraPosition = 0.0f;
         resetCameraLimits();
+        cameraShakePower = 0;
+        cameraShakeOffset.set(0.0f, 0.0f);
     }
 
     public void unload() {
@@ -74,8 +82,23 @@ public final class Background {
             velocityTweener.update();
             cameraVelocity = velocityTweener.value();
         }
+        if (cameraShakePower > 0) {
+            if (cameraShakeCooldown == 0) {
+                cameraShakeCooldown = 2;
+                --cameraShakePower;
+                cameraShakeOffset.set((1.0f - (float) Math.random() * 2.0f) * cameraShakePower * 4.0f, (1.0f - (float) Math.random() * 2.0f) * cameraShakePower * 4.0f);
+            } else
+                --cameraShakeCooldown;
+        }
+        vm.position.y = -cameraPosition;
+        vm.position.x = GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f;
+        vm.position.add(cameraShakeOffset);
         vm.execute();
         return Flow.FLOW_RESULT_CONTINUE;
+    }
+
+    public void shakeCamera(int power) {
+        cameraShakePower += power;
     }
 
     public void setCameraPosition(float cameraPosition) {
@@ -108,8 +131,6 @@ public final class Background {
     }
 
     private int draw() {
-        vm.position.y = -cameraPosition;
-        vm.position.x = GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f;
         vm.draw();
         return Flow.FLOW_RESULT_CONTINUE;
     }

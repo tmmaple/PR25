@@ -126,6 +126,6 @@ script GrazeBox {
     pause;
     interrupt 1;
     alpha(1.0);
-    fade(5, 0.0, INTERPOLATION_EASE_OUT);
+    fade(15, 0.0, INTERPOLATION_LINEAR);
     pause;
 }

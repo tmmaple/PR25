@@ -1,5 +1,6 @@
 package ua.tmmaple.pr25.entities;
 
+import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.task.TimelineTask;
 
@@ -56,7 +57,28 @@ public class EnemyManager {
 
     public void clear() {
         for (int i = 0; i < enemies.length; ++i)
-            enemies[i].destroy();
+            if (enemies[i].active)
+                enemies[i].destroy();
+    }
+
+    public boolean killAll() {
+        boolean result = false;
+        for (int i = 0; i < enemies.length; ++i)
+            if (enemies[i].active) {
+                enemies[i].destroy();
+                result = true;
+            }
+        return result;
+    }
+
+    public boolean killAllInRadius(Vector2 a, float radius) {
+        boolean result = false;
+        for (int i = 0; i < enemies.length; ++i)
+            if (enemies[i].active && enemies[i].viewportPosition().dst2(a) <= radius * radius) {
+                enemies[i].destroy();
+                result = true;
+            }
+        return result;
     }
 
     private int update() {

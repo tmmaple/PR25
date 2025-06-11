@@ -143,6 +143,17 @@ public class BulletManager {
             b.active = false;
     }
 
+    public void destroyEnemyBullets() {
+        for (EnemyBullet b : enemyBullets)
+            b.active = false;
+    }
+
+    public void destroyEnemyBulletsInRadius(Vector2 origin, float radius) {
+        for (EnemyBullet b : enemyBullets)
+            if (b.position.dst2(origin) <= radius * radius)
+                b.active = false;
+    }
+
     private static int update(BulletManager bulletManager) {
         if (!GameplayManager.global.canUpdate() || Player.global.deathbombing())
             return Flow.FLOW_RESULT_CONTINUE;

@@ -52,6 +52,45 @@ public class StageTest extends Stage {
                 }
             ),
             Task.keyframe(
+                600,
+                en -> {
+                    background.setCameraLimits(128.0f, 192.0f, true);
+                    en.createChildAbsolute(enemyA(), -100.0f, 40.0f, 20);
+                    en.createChildAbsolute(enemyB(), 100.0f, 40.0f, 20);
+                    en.createChildAbsolute(enemyA(), -100.0f, 20.0f, 20);
+                    en.createChildAbsolute(enemyB(), 100.0f, 20.0f, 20);
+                    en.createChildAbsolute(enemyA(), -120.0f, 0.0f, 20);
+                    en.createChildAbsolute(enemyB(), 120.0f, 0.0f, 20);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                900,
+                en -> {
+                    background.setCameraLimits(128.0f, 192.0f, true);
+                    en.createChildAbsolute(enemyA(), -100.0f, 40.0f, 20);
+                    en.createChildAbsolute(enemyB(), 100.0f, 40.0f, 20);
+                    en.createChildAbsolute(enemyA(), -100.0f, 20.0f, 20);
+                    en.createChildAbsolute(enemyB(), 100.0f, 20.0f, 20);
+                    en.createChildAbsolute(enemyA(), -120.0f, 0.0f, 20);
+                    en.createChildAbsolute(enemyB(), 120.0f, 0.0f, 20);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                1200,
+                en -> {
+                    background.setCameraLimits(128.0f, 192.0f, true);
+                    en.createChildAbsolute(enemyA(), -100.0f, 40.0f, 20);
+                    en.createChildAbsolute(enemyB(), 100.0f, 40.0f, 20);
+                    en.createChildAbsolute(enemyA(), -100.0f, 20.0f, 20);
+                    en.createChildAbsolute(enemyB(), 100.0f, 20.0f, 20);
+                    en.createChildAbsolute(enemyA(), -120.0f, 0.0f, 20);
+                    en.createChildAbsolute(enemyB(), 120.0f, 0.0f, 20);
+                    return true;
+                }
+            ),
+            Task.keyframe(
                 10000,
                 en -> true
             )

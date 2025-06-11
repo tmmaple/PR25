@@ -32,8 +32,8 @@ public class Player {
     private static final float DIAGONAL_SPEED = 3.53553390593f;
     private static final float FOCUS_SPEED_MULTIPLIER = 0.25f;
 
-    private static final short INVINCIBILITY_COOLDOWN = 90;
-    private static final short DEATH_BOMB_COOLDOWN = 9;
+    private static final short RESPAWN_INVINCIBILITY_COOLDOWN = 90;
+    private static final short DEATH_BOMB_COOLDOWN = 12;
 
     private static final short GRAZE_SOUND_COOLDOWN = 5;
 
@@ -141,7 +141,6 @@ public class Player {
         if (invincibilityCooldown > 0)
             return;
         Audio.global.playSound("plrDeath.ogg", 1.0f);
-        invincibilityCooldown = INVINCIBILITY_COOLDOWN;
         if (GameplayStats.global.canBomb())
             deathBombCooldown = DEATH_BOMB_COOLDOWN;
         else
@@ -149,11 +148,15 @@ public class Player {
     }
 
     public void respawn() {
-        invincibilityCooldown = INVINCIBILITY_COOLDOWN;
-        parentVM.interrupt((byte) 2);
+        makeInvincible(RESPAWN_INVINCIBILITY_COOLDOWN);
         position.set(GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + Y_SPAWN_OFFSET);
         orbOffset.set(UNFOCUSED_ORB_OFFSET);
         deathBombCooldown = (short) 0;
+    }
+
+    public void makeInvincible(short ticks) {
+        invincibilityCooldown = ticks;
+        parentVM.interrupt((byte) 2);
     }
 
     private int update() {
@@ -162,10 +165,11 @@ public class Player {
         if (!GameplayManager.global.canUpdate())
             return Flow.FLOW_RESULT_CONTINUE;
         boolean bomb = God.global.inputState(God.INPUT_BOMB) == God.INPUT_STATE_JUST_PRESSED;
-        if (bomb) {
-            if (deathBombCooldown > 0) {
+        if (bomb && GameplayStats.global.canBomb()) {
+            if (deathBombCooldown > 0)
                 deathBombCooldown = 0;
-            }
+            BombManager.global.use();
+            GameplayStats.global.bombUsed();
         }
         if (deathBombCooldown > 0) {
             --deathBombCooldown;

@@ -37,11 +37,9 @@ public abstract class Tweener<T> {
      * @author uwuhasmile
      */
     public final void start(byte type, T a, T b, short t) {
-        value = a;
+        initializeValues(a, b);
 
         this.type = type;
-        this.a = a;
-        this.b = b;
         this.t = t;
         curr = 0;
 
@@ -67,10 +65,8 @@ public abstract class Tweener<T> {
             value = b;
             running = false;
         } else {
-            float alpha = this.curr * (1.0f / t);
+            float alpha = (float) curr / t;
             switch (type) {
-                case INTERPOLATION_LINEAR:
-                    break;
                 case INTERPOLATION_EASE_IN:
                     alpha *= alpha;
                     break;
@@ -91,6 +87,12 @@ public abstract class Tweener<T> {
      */
     protected abstract void setValue(float alpha);
 
+    /**
+     * Встановлює початкове значення
+     * @param a перша позиція
+     */
+    protected abstract void initializeValues(T a, T b);
+
     public final boolean isRunning() {
         return running;
     }
@@ -108,6 +110,13 @@ public abstract class Tweener<T> {
         protected void setValue(float alpha) {
             value = a + (b - a) * alpha;
         }
+
+        @Override
+        protected void initializeValues(Float a, Float b) {
+            value = a;
+            this.a = a;
+            this.b = b;
+        }
     }
 
     /**
@@ -115,9 +124,21 @@ public abstract class Tweener<T> {
      * @author uwuhasmile
      */
     public static class Vector2Tweener extends Tweener<Vector2> {
+        public Vector2Tweener() {
+            super();
+            value = new Vector2();
+        }
+
         @Override
         protected void setValue(float alpha) {
-            value = a.cpy().lerp(b, alpha);
+            value.set(a).lerp(b, alpha);
+        }
+
+        @Override
+        protected void initializeValues(Vector2 a, Vector2 b) {
+            value.set(a);
+            this.a = a.cpy();
+            this.b = b.cpy();
         }
     }
 
@@ -126,9 +147,21 @@ public abstract class Tweener<T> {
      * @author uwuhasmile
      */
     public static class ColorTweener extends Tweener<Color> {
+        public ColorTweener() {
+            super();
+            value = new Color();
+        }
+
         @Override
         protected void setValue(float alpha) {
-            value = a.cpy().lerp(b, alpha);
+            value.set(a).lerp(b, alpha);
+        }
+
+        @Override
+        protected void initializeValues(Color a, Color b) {
+            value.set(a);
+            this.a = a.cpy();
+            this.b = b.cpy();
         }
     }
 }
