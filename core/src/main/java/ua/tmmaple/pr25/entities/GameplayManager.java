@@ -44,6 +44,7 @@ public final class GameplayManager {
         BombManager.global = new BombManager();
         Player.global = new Player();
         EnemyManager.global = new EnemyManager();
+        DropManager.global = new DropManager();
         StageManager.global = new StageManager();
         GameplayStats.global = new GameplayStats();
     }
@@ -61,6 +62,7 @@ public final class GameplayManager {
             Player.register();
             BulletManager.register();
             EnemyManager.register();
+            DropManager.register();
             StageManager.register();
             StageManager.global.load(new StageTest());
         }
