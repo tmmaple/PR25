@@ -2,6 +2,7 @@ package ua.tmmaple.pr25.entities;
 
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.assets.Assets;
+import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
@@ -53,6 +54,7 @@ public final class BombManager {
     }
 
     public void use() {
+        Audio.global.playSound("bomb.ogg", 1.4f);
         backgroundVm.interrupt((byte) 1);
         portraitVm.interrupt((byte) 1);
         left = DURATION;
