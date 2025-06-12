@@ -87,7 +87,7 @@ public final class TextManager {
         public TextSettings() {
             parent = null;
             font = 0;
-            color = Color.WHITE;
+            color = Color.WHITE.cpy();
             position = new Vector2();
             targetWidth = 64.0f;
             start = 0;
@@ -125,6 +125,7 @@ public final class TextManager {
             int start = Math.max(this.start, 0);
             int end = Math.min(this.end, text.length());
             font.draw(GraphicManager.global.batch, text, pos.x, pos.y, start, end, targetWidth, hAlign, wrap);
+            GraphicManager.global.batch.setColor(Color.WHITE.cpy());
         }
     }
 }

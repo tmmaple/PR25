@@ -107,7 +107,7 @@ public class DropManager {
             sprite = GraphicManager.global.new AnmVirtualMachine();
             sprite.loadAnm(source);
             sprite.loadScriptAndPlay(script);
-            sprite.scale.scl(5); //Для тесту, щоб відрізняти від реальних куль, прибрати коли буде спрайт
+            sprite.scale.scl(2); //Для тесту, щоб відрізняти від реальних куль, прибрати коли буде спрайт
             position = new Vector2();
             hitbox = new Polygon(new float[] {-2, -2, -2, 2, 2, 2, 2, -2}); //Поміняти розмір коли буде готовий спрайт
             active = false;

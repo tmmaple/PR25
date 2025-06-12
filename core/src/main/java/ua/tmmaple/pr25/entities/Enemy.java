@@ -475,9 +475,11 @@ public class Enemy {
             if (deathSound != null && !BombManager.global.isInUse())
                 Audio.global.playSound(deathSound, 1.0f);
             VfxManager.global.spawn(deathVfx, viewportPosition());
-            for (int i=0; i<scoreDrop; i++) DropManager.global.createScoreDrop(sprite.position);
+            GameplayStats.global.score(100);
+            for (int i=0; i<scoreDrop; i++) DropManager.global.createScoreDrop(viewportPosition().add(14.0f * (i * 0.5f - i), i * 7.0f));
             scoreDrop = 0;
-            for (int i=0; i<powerDrop; i++) DropManager.global.createPowerDrop(sprite.position);
+            for (int i=0; i<powerDrop; i++)
+                DropManager.global.createPowerDrop(viewportPosition().add(14.0f * (i * 0.5f - i), i * 7.0f));
             powerDrop = 0;
             destroy();
             return;

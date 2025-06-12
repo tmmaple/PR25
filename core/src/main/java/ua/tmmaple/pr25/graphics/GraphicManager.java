@@ -34,7 +34,7 @@ public final class GraphicManager {
 
     public GraphicManager() {
         batch = new SpriteBatch();
-        backgroundColor = Color.BLACK;
+        backgroundColor = Color.BLACK.cpy();
         viewport = new FitViewport(Game.BASE_WINDOW_WIDTH, Game.BASE_WINDOW_HEIGHT);
     }
 
@@ -247,7 +247,7 @@ public final class GraphicManager {
             angle = 0.0f;
             scale = new Vector2(1.0f, 1.0f);
 
-            color = new Color();
+            color = Color.WHITE.cpy();
             anmPosition = new Vector2();
             anmScale = new Vector2();
             anchorOffset = new Vector2();
@@ -308,7 +308,7 @@ public final class GraphicManager {
                 }
                 finalPos.add(off);
                 c.a = a;
-                batch.setColor(c);
+                batch.setColor(c.cpy());
                 batch.draw(region,
                     finalPos.x, finalPos.y,
                     -off.x, -off.y,
@@ -316,6 +316,7 @@ public final class GraphicManager {
                     finalSc.x * flipX, finalSc.y * flipY,
                     finalAn * MathUtils.radDeg
                 );
+                batch.setColor(Color.WHITE);
             }
         }
 
@@ -638,7 +639,7 @@ public final class GraphicManager {
             flags = ANM_FLAG_VISIBLE | ANM_FLAG_TELEPORT;
             uScrolling = 0.0f;
             vScrolling = 0.0f;
-            color.set(Color.WHITE);
+            color.set(Color.WHITE.cpy());
             alpha = 1.0f;
             anmPosition.set(0.0f, 0.0f);
             anmAngle = 0.0f;

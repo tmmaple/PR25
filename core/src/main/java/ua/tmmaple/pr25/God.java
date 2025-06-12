@@ -119,6 +119,7 @@ public final class God {
         god.musicVolume = god.prefs.getFloat("musicVolume", 1.0f);
         if (language.equals("en")) god.language = LANGUAGE_ENGLISH;
         else if (language.equals("uk")) god.language = LANGUAGE_UKRAINIAN;
+        god.setLanguage(god.language);
 
         god.setWindowMode(god.windowScale);
         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.None);

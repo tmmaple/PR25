@@ -102,7 +102,7 @@ public class StageTest extends Stage {
             Task.keyframe(
                 en -> {
                     en.setHitbox(48.0f, 48.0f);
-                    en.setDrop(50, 50);
+                    en.setDrop(3, 3);
                     en.setSprite(getAnm(1), "Dragonfly");
                     en.setSpriteRotation(true);
                     en.setHitbox(32, 32);
@@ -181,7 +181,7 @@ public class StageTest extends Stage {
             Task.keyframe(
                 en -> {
                     en.setHitbox(48.0f, 48.0f);
-                    en.setDrop(50, 50);
+                    en.setDrop(3, 3);
                     en.setSprite(getAnm(1), "Dragonfly");
                     en.setSpriteRotation(true);
                     en.setHitbox(32, 32);

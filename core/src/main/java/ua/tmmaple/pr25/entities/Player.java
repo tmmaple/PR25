@@ -32,6 +32,7 @@ public class Player {
     private static final float DIAGONAL_SPEED = 3.53553390593f;
     private static final float FOCUS_SPEED_MULTIPLIER = 0.25f;
 
+    private static final short GAME_OVER_COOLDOWN = 30;
     private static final short RESPAWN_INVINCIBILITY_COOLDOWN = 90;
     private static final short DEATH_BOMB_COOLDOWN = 12;
 
@@ -56,6 +57,7 @@ public class Player {
 
     private final Vector2 orbOffset;
 
+    private short gameOverCooldown;
     private short invincibilityCooldown;
     private short deathBombCooldown;
 
@@ -106,6 +108,8 @@ public class Player {
     }
 
     public void graze() {
+        if (deathbombing() || gameOverCooldown > 0)
+            return;
         grazeVM.interrupt((byte) 1);
         GameplayStats.global.graze();
         if (grazeSoundCooldown == 0) {
@@ -138,15 +142,20 @@ public class Player {
     }
 
     public void damage() {
-        if (invincibilityCooldown > 0)
+        if (gameOverCooldown > 0 || invincibilityCooldown > 0)
             return;
         Audio.global.playSound("plrDeath.ogg", 1.0f);
         if (GameplayStats.global.canBomb())
             deathBombCooldown = DEATH_BOMB_COOLDOWN;
         else {
-            VfxManager.global.spawnPlayerDeath(position);
-            GameplayManager.global.gameOver();
+            kill();
         }
+    }
+
+    private void kill() {
+        VfxManager.global.spawnPlayerDeath(position);
+        BulletManager.global.destroyEnemyBulletsInRadius(position, 640.0f);
+        gameOverCooldown = GAME_OVER_COOLDOWN;
     }
 
     public void respawn() {
@@ -166,6 +175,13 @@ public class Player {
             --grazeSoundCooldown;
         if (!GameplayManager.global.canUpdate())
             return Flow.FLOW_RESULT_CONTINUE;
+        if (gameOverCooldown > 0) {
+            --gameOverCooldown;
+            if (gameOverCooldown == 0) {
+                GameplayManager.global.gameOver();
+            }
+            return Flow.FLOW_RESULT_CONTINUE;
+        }
         boolean bomb = God.global.inputState(God.INPUT_BOMB) == God.INPUT_STATE_JUST_PRESSED;
         if (bomb && GameplayStats.global.canBomb()) {
             if (deathBombCooldown > 0)
@@ -175,10 +191,8 @@ public class Player {
         }
         if (deathBombCooldown > 0) {
             --deathBombCooldown;
-            if (deathBombCooldown == 0) {
-                VfxManager.global.spawnPlayerDeath(position);
-                GameplayManager.global.gameOver();
-            }
+            if (deathBombCooldown == 0)
+                kill();
             return Flow.FLOW_RESULT_CONTINUE;
         }
         boolean up = God.global.inputState(God.INPUT_MOVE_UP) == God.INPUT_STATE_PRESSED;
@@ -290,6 +304,8 @@ public class Player {
     }
 
     private int draw() {
+        if (gameOverCooldown > 0)
+            return Flow.FLOW_RESULT_CONTINUE;
         spriteVM.position.set(position);
         grazeVM.position.set(position);
         leftOrbVM.position.set(new Vector2(-orbOffset.x, orbOffset.y));
@@ -298,7 +314,7 @@ public class Player {
         rightOrbVM.draw();
         spriteVM.draw();
         grazeVM.draw();
-        return 0;
+        return Flow.FLOW_RESULT_CONTINUE;
     }
 
     private int added() {

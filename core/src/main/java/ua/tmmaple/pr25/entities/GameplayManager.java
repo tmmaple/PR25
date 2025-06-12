@@ -19,6 +19,7 @@ public final class GameplayManager {
 
     private short deathbombCooldown;
 
+    private int coins;
     private boolean loading;
 
     public static int register() {
@@ -41,6 +42,7 @@ public final class GameplayManager {
         BombManager.global = new BombManager();
         Background.global = new Background();
         VfxManager.global = new VfxManager();
+        Hud.global = new Hud();
     }
 
     public boolean canUpdate() {
@@ -60,7 +62,7 @@ public final class GameplayManager {
             BombManager.register();
             Background.register();
             VfxManager.register();
-
+            Hud.register();
         }
         if (deathbombCooldown > 0) {
             --deathbombCooldown;
@@ -79,6 +81,8 @@ public final class GameplayManager {
     private int added() {
         Player.load();
         BulletManager.load();
+        Hud.load();
+        coins = 0;
         loading = true;
         return 0;
     }
@@ -92,6 +96,7 @@ public final class GameplayManager {
         Player.shutdown();
         EnemyManager.shutdown();
         VfxManager.shutdown();
+        Hud.shutdown();
         return 0;
     }
 }
