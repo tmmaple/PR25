@@ -1,13 +1,9 @@
 package ua.tmmaple.pr25.entities;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.Logger;
 import ua.tmmaple.pr25.assets.Assets;
-import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.stages.StageTest;
-import ua.tmmaple.pr25.util.Tweener;
 
 public final class GameplayManager {
     private static final short DEATHBOMB_COOLDOWN = (short) 10;
@@ -19,34 +15,31 @@ public final class GameplayManager {
 
     public static GameplayManager global;
 
-    private static Flow.FlowNode<GameplayManager> updateNode;
-    private static Flow.FlowNode<GameplayManager> drawNode;
+    private static Flow.FlowNode<GameplayManager> node;
 
     private short deathbombCooldown;
 
     private boolean loading;
 
     public static int register() {
-        updateNode = new Flow.FlowNode<>(global, GameplayManager::update, GameplayManager::added, GameplayManager::removed);
-        drawNode = new Flow.FlowNode<>(global, GameplayManager::draw);
-        Flow.global.addToUpdate(updateNode, 5);
-        Flow.global.addToDraw(drawNode, 5);
+        node = new Flow.FlowNode<>(global, GameplayManager::update, GameplayManager::added, GameplayManager::removed);
+        Flow.global.addToUpdate(node, 3);
         return 0;
     }
 
     public static void shutdown() {
-        Flow.global.cut(updateNode);
-        Flow.global.cut(drawNode);
+        Flow.global.cut(node);
     }
 
     public GameplayManager() {
-        Background.global = new Background();
-        BombManager.global = new BombManager();
-        Player.global = new Player();
-        EnemyManager.global = new EnemyManager();
-        DropManager.global = new DropManager();
         StageManager.global = new StageManager();
         GameplayStats.global = new GameplayStats();
+        Player.global = new Player();
+        BulletManager.global = new BulletManager();
+        EnemyManager.global = new EnemyManager();
+        DropManager.global = new DropManager();
+        BombManager.global = new BombManager();
+        Background.global = new Background();
         VfxManager.global = new VfxManager();
     }
 
@@ -57,16 +50,17 @@ public final class GameplayManager {
     private int update() {
         if (loading && Assets.global.isLoaded()) {
             loading = false;
-            GameplayStats.register();
-            Background.register();
-            BombManager.register();
-            Player.register();
-            BulletManager.register();
-            EnemyManager.register();
-            DropManager.register();
-            VfxManager.register();
             StageManager.register();
             StageManager.global.load(new StageTest());
+            GameplayStats.register();
+            Player.register();
+            EnemyManager.register();
+            BulletManager.register();
+            DropManager.register();
+            BombManager.register();
+            Background.register();
+            VfxManager.register();
+
         }
         if (deathbombCooldown > 0) {
             --deathbombCooldown;
@@ -74,10 +68,6 @@ public final class GameplayManager {
                 gameOver();
             }
         }
-        return Flow.FLOW_RESULT_CONTINUE;
-    }
-
-    private int draw() {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 

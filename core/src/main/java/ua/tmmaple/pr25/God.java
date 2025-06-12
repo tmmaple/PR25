@@ -11,6 +11,7 @@ import ua.tmmaple.pr25.entities.GameplayManager;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
 import java.util.Locale;
+import java.util.MissingResourceException;
 
 /**
  * Налаштування гри та її поточний стан.
@@ -91,7 +92,7 @@ public final class God {
      */
     public static int register() {
         Flow.FlowNode<God> node = new Flow.FlowNode<>(global, God::update, God::added, God::removed);
-        return Flow.global.addToUpdate(node, 998);
+        return Flow.global.addToUpdate(node, 2);
     }
 
     /**
@@ -197,6 +198,20 @@ public final class God {
         } else {
             Graphics.DisplayMode mode = Gdx.graphics.getDisplayMode();
             Gdx.graphics.setFullscreenMode(mode);
+        }
+    }
+
+    /**
+     * @return Повертає локалізований текст
+     * @author uwuhasmile
+     */
+    public String getLocalizedString(String id, boolean idIfNotFound) {
+        try {
+            return i18n.get(id);
+        } catch (MissingResourceException e) {
+            if (idIfNotFound)
+                return id;
+            return "???" + id + "???";
         }
     }
 

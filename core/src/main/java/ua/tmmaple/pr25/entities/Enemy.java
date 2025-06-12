@@ -1,9 +1,12 @@
 package ua.tmmaple.pr25.entities;
 
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import ua.tmmaple.pr25.God;
+import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 import ua.tmmaple.pr25.task.Task;
@@ -14,9 +17,15 @@ import ua.tmmaple.pr25.util.Tweener;
 public class Enemy {
     public static final int FLAG_SPRITE_ROTATION = 1 << 1;
     public static final int FLAG_INVINCIBLE = 1 << 2;
-    public static final int FLAG_BOSS = 1 << 3;
+    public static final int FLAG_IGNORE_PLAYER = 1 << 3;
+    public static final int FLAG_NO_COLLISION = 1 << 4;
+    public static final int FLAG_BOSS = 1 << 5;
+    public static final int FLAG_GRAZED = 1 << 6;
 
     GraphicManager.AnmVirtualMachine sprite;
+    private String deathSound;
+    private VfxManager.Vfx deathVfx;
+    private String bossName;
     Vector2 position;
     Enemy parent;
     Array<Enemy> children;
@@ -24,8 +33,8 @@ public class Enemy {
     TimelineTask timelineTask;
     Array<Task> asyncTasks;
     int health;
-    Polygon hitbox;
-    private Gun[] guns;
+    public final Polygon hitbox;
+    private final Gun[] guns;
     private int flags;
     private int scoreDrop;
     private int powerDrop;
@@ -54,6 +63,7 @@ public class Enemy {
         this.velocityTweener = new Tweener.FloatTweener();
         this.angleTweener = new Tweener.FloatTweener();
         this.positionTweener = new Tweener.Vector2Tweener();
+        hitbox = new Polygon(new float[8]);
         velocity = new Vector2();
         centre = new Vector2();
         moveType = MoveType.NONE;
@@ -69,41 +79,59 @@ public class Enemy {
         this.sprite.loadAnm(source);
         this.sprite.loadScriptAndPlay(sprite);
     }
-    public void setHitbox(Polygon hitbox) {
-        this.hitbox = hitbox;
-    }
+
     public void setHitbox(float width, float height) {
-        this.hitbox = new Polygon(new float[] {-width/2, -height/2, width/2, -height/2, width/2, height/2, -width/2, height/2});
+        hitbox.setVertices(new float[] { -width * 0.5f, -height * 0.5f, -width * 0.5f, height * 0.5f, width * 0.5f, height * 0.5f, width * 0.5f, -height * 0.5f });
     }
+
     public void setSpriteRotation(boolean allow) {
         if (allow)
             flags |= FLAG_SPRITE_ROTATION;
         else
             flags &= ~FLAG_SPRITE_ROTATION;
     }
+
+    public void setDeathSound(String deathSound) {
+        this.deathSound = deathSound;
+    }
+
+    public void setDeathVfx(VfxManager.Vfx deathVfx) {
+        if (deathVfx == null)
+            this.deathVfx = VfxManager.Vfx.NONE;
+        else
+            this.deathVfx = deathVfx;
+    }
+
     public void setScoreDrop(int scoreDrop) {
         this.scoreDrop = scoreDrop;
     }
+
     public void setPowerDrop(int powerDrop) {
         this.powerDrop = powerDrop;
     }
+
     public void setDrop(int scoreDrop, int powerDrop) {
         this.scoreDrop = scoreDrop;
         this.powerDrop = powerDrop;
     }
+
     public void createChildRelative(TimelineTask task, float x, float y, int health) {
         children.add(EnemyManager.global.createEnemy(task, x, y, this, health));
     }
+
     private void removeChild(Enemy child) {
         children.removeValue(child, true);
     }
+
     public void createChildAbsolute(TimelineTask task, float x, float y, int health) {
         Vector2 abs = absolutePosition();
         children.add(EnemyManager.global.createEnemy(task, x - abs.x, y - abs.y, this, health));
     }
+
     public void addAsyncTask(Task task) {
         asyncTasks.add(task);
     }
+
     public void createSiblingRelative(TimelineTask task, float x, float y, int health) {
         if (parent == null)
             return;
@@ -202,6 +230,25 @@ public class Enemy {
 
     public void setPosition(float x, float y) {
         this.position.set(x, y);
+    }
+
+    public void setCollision(boolean collision) {
+        if (collision)
+            flags &= ~FLAG_NO_COLLISION;
+        else
+            flags |= FLAG_NO_COLLISION;
+    }
+
+    public void setInvincible(boolean immortal) {
+        if (immortal)
+            flags |= FLAG_INVINCIBLE;
+        else
+            flags &= ~FLAG_INVINCIBLE;
+    }
+
+    public void makeBoss(String name) {
+        flags |= FLAG_BOSS;
+        bossName = name;
     }
 
     public void initGun(int idx) {
@@ -366,7 +413,30 @@ public class Enemy {
     public void destroyGunBullets(int gun) {
         if (gun < 0 || gun >= guns.length)
             throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
-        guns[gun].destroyAll();
+        guns[gun].destroyAll(true);
+    }
+
+    public void destroyGunBullets(int gun, boolean vfx) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].destroyAll(vfx);
+    }
+
+    public String getName() {
+        if ((flags & FLAG_BOSS) == 0) return null;
+        if (bossName == null) return null;
+        return God.global.getLocalizedString(bossName, true);
+    }
+
+    public void setIgnorePlayer(boolean ignore) {
+        if (ignore)
+            flags |= FLAG_IGNORE_PLAYER;
+        else
+            flags &= ~FLAG_IGNORE_PLAYER;
+    }
+
+    public void resetGraze() {
+        flags &= ~FLAG_GRAZED;
     }
 
     public void destroy() {
@@ -375,6 +445,11 @@ public class Enemy {
         velocityTweener.end();
         active = false;
         sprite.delete();
+        if (parent != null)
+            parent.removeChild(this);
+        for (Enemy child : children)
+            child.destroy();
+        asyncTasks.clear();
     }
 
     void update() {
@@ -397,15 +472,15 @@ public class Enemy {
             currentAngle += speed /(xRadius+yRadius/2);
         }
         if (health <= 0) {
-            active = false;
-            parent.removeChild(this);
+            if (deathSound != null && !BombManager.global.isInUse())
+                Audio.global.playSound(deathSound, 1.0f);
+            VfxManager.global.spawn(deathVfx, viewportPosition());
             for (int i=0; i<scoreDrop; i++) DropManager.global.createScoreDrop(sprite.position);
             scoreDrop = 0;
             for (int i=0; i<powerDrop; i++) DropManager.global.createPowerDrop(sprite.position);
             powerDrop = 0;
-            for (Enemy child : children) {
-                child.active = false;
-            }
+            destroy();
+            return;
         }
         if ((flags & FLAG_SPRITE_ROTATION) != 0) {
             if (moveType == MoveType.ORBITAL)
@@ -414,21 +489,45 @@ public class Enemy {
                 sprite.angle = velocity.angleRad();
         }
         if (timelineTask.execute(this) && asyncTasks.size == 0 && children.size == 0) {
-            parent.removeChild(this);
-            active = false;
+            destroy();
+            return;
         }
         for (Task task : asyncTasks) if (task.execute(this)) asyncTasks.removeValue(task, true);
-        // sprite.position.set(position);
-        if (hitbox!=null) {
-            hitbox.setPosition(sprite.position.x, sprite.position.y);
-                hitbox.setRotation(velocity.angleRad());
+        if (hasCollision()) {
+            hitbox.setPosition(viewportPosition().x, viewportPosition().y);
+            if ((flags & FLAG_IGNORE_PLAYER) == 0) {
+                if (Intersector.intersectPolygons(Player.global.hitbox,  hitbox, null)) {
+                    Player.global.damage();
+                } else if (Intersector.intersectPolygons(Player.global.grazeBox, hitbox, null) && (flags & FLAG_GRAZED) == 0) {
+                    flags |= FLAG_GRAZED;
+                    Player.global.graze();
+                }
+            }
         }
+        sprite.position.set(viewportPosition());
         sprite.execute();
         for (Gun gun: guns) gun.update();
     }
 
+    public void damage(int damage) {
+        if ((flags & FLAG_NO_COLLISION) != 0)
+            return;
+        VfxManager.global.spawnDust(viewportPosition(), 0.0f, 6, 0.5f, 2.0f);
+        if (!canGetHit()) return;
+        health -= damage;
+        if (health < 0)
+            damage = 0;
+    }
+
+    public boolean hasCollision() {
+        return (flags & FLAG_NO_COLLISION) == 0;
+    }
+
+    private boolean canGetHit() {
+        return (flags & FLAG_NO_COLLISION) == 0 && (flags & FLAG_INVINCIBLE) == 0;
+    }
+
     void draw() {
-        sprite.position.set(viewportPosition());
         sprite.draw();
     }
 

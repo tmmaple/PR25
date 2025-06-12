@@ -40,10 +40,8 @@ public final class Flow {
         node.priority = priority;
 
         int i = 0;
-        FlowNode<?> current = null;
-        while (i < toUpdateSize && (current = toUpdate[i]).priority <= priority) { ++i; }
+        while (i < toUpdateSize && toUpdate[i].priority >= priority) { ++i; }
 
-        if (current != null && current.priority > priority) ++i;
         if (i == toUpdateSize)
             toUpdate[toUpdateSize++] = node;
         else {
@@ -65,10 +63,8 @@ public final class Flow {
         node.priority = priority;
 
         int i = 0;
-        FlowNode<?> current = null;
-        while (i < toDrawSize && (current = toDraw[i]).priority <= priority) { ++i; }
+        while (i < toDrawSize && toDraw[i].priority >= priority) { ++i; }
 
-        if (current != null && current.priority > priority) ++i;
         if (i == toDrawSize)
             toDraw[toDrawSize++] = node;
         else {

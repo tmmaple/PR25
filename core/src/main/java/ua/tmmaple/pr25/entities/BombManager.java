@@ -29,8 +29,8 @@ public final class BombManager {
             return;
         updateNode = new Flow.FlowNode<>(global, BombManager::update, BombManager::added, BombManager::removed);
         drawNode = new Flow.FlowNode<>(global, BombManager::draw);
-        Flow.global.addToUpdate(updateNode, 2);
-        Flow.global.addToDraw(drawNode, 5);
+        Flow.global.addToUpdate(updateNode, 6);
+        Flow.global.addToDraw(drawNode, 8);
     }
 
     public static void shutdown() {
@@ -92,7 +92,7 @@ public final class BombManager {
             if (nextClearLeft == 0) {
                 nextClearLeft = CLEAR_INTERVAL;
                 BulletManager.global.destroyEnemyBulletsInRadius(Player.global.position, CLEAR_RADIUS);
-                if (EnemyManager.global.killAllInRadius(Player.global.position, CLEAR_RADIUS)) {
+                if (EnemyManager.global.damageAllInRadius(Player.global.position, CLEAR_RADIUS, 100)) {
                     Audio.global.playSound("bombClear.ogg", 1.0f);
                     Background.global.shakeCamera(12);
                 }

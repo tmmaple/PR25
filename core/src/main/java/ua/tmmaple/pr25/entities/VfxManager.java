@@ -11,6 +11,7 @@ public final class VfxManager {
     public static VfxManager global;
 
     public enum Vfx {
+        NONE,
         DUST_PIECES,
         ENEMY_DAMAGE,
         ENEMY_BLUE_DEATH,
@@ -38,8 +39,8 @@ public final class VfxManager {
         if (updateNode != null) return;
         updateNode = new Flow.FlowNode<>(global, VfxManager::update, VfxManager::added, VfxManager::removed);
         drawNode = new Flow.FlowNode<>(global, VfxManager::draw);
-        Flow.global.addToUpdate(updateNode, 8);
-        Flow.global.addToDraw(drawNode, 16);
+        Flow.global.addToUpdate(updateNode, 4);
+        Flow.global.addToDraw(drawNode, 3);
     }
 
     public static void shutdown() {
@@ -51,14 +52,13 @@ public final class VfxManager {
     }
 
     public VfxManager() {
-        particles = new Particle[64];
+        particles = new Particle[256];
         for (int i = 0; i < particles.length; ++i)
             particles[i] = new Particle(i);
     }
 
     public void spawnDust(Vector2 center, float startAngle, int count, float radius, float speed) {
-        if (anm == null)
-            return;
+        if (anm == null) return;
         if (count > particles.length)
             count = particles.length;
         float angleStep = MathUtils.PI2 / count;
@@ -73,16 +73,84 @@ public final class VfxManager {
     }
 
     public void spawnPlayerDeath(Vector2 center) {
-        if (anm == null)
-            return;
+        if (anm == null) return;
         float angleStep = MathUtils.PI2 / 32;
         for (int i = 0; i < 32; ++i) {
             Particle p = pull();
             p.vm.loadScriptAndPlay("PlayerDeath");
-            p.angle = MathUtils.degRad * 4.0f + angleStep * i;
+            p.angle = MathUtils.degRad * 30f + angleStep * i;
             p.position.set(center).add(2.0f * MathUtils.cos(p.angle), 2.0f * MathUtils.sin(p.angle));
             p.timeLeft = (short) 24;
             p.speed = 6.0f;
+        }
+    }
+
+    public void spawnEnemyDamage(Vector2 position) {
+        if (anm == null) return;
+        Particle p = pull();
+        p.vm.loadScriptAndPlay("EnemyDamage");
+        p.position.set(position);
+        p.timeLeft = (short) 12;
+    }
+
+    public void spawnEnemyDeath(Vector2 position, String script) {
+        if (anm == null) return;
+        Particle p = pull();
+        p.vm.loadScriptAndPlay(script);
+        p.position.set(position);
+        p.timeLeft = (short) 24;
+    }
+
+    public void spawnMidbossDeath(Vector2 position, String script) {
+        if (anm == null) return;
+        float angleStep = MathUtils.PI2 / 10;
+        for (int i = 0; i < 10; ++i) {
+            Particle p = pull();
+            p.vm.loadScriptAndPlay(script);
+            p.movementType = MovementType.ORBITAL;
+            p.angle = MathUtils.degRad * 40.0f + angleStep * i;
+            p.position.set(position);
+            p.radiusX = 48.0f;
+            p.radiusY = 48.0f;
+            p.timeLeft = (short) 30;
+            p.speed = MathUtils.degRad * 2.0f;
+        }
+    }
+
+    public void spawnBossDeath(Vector2 position, String script) {
+        if (anm == null) return;
+        float angleStep = MathUtils.PI2 / 32;
+        for (int i = 0; i < 32; ++i) {
+            Particle p = pull();
+            p.vm.loadScriptAndPlay(script);
+            p.movementType = MovementType.ORBITAL;
+            p.angle = MathUtils.degRad * -25.0f + angleStep * i;
+            p.position.set(position);
+            p.radiusX = 72.0f;
+            p.radiusY = 72.0f;
+            p.timeLeft = (short) 30;
+            p.speed = MathUtils.degRad * 2.0f;
+        }
+    }
+
+    public void spawn(Vfx vfx, Vector2 position) {
+        switch (vfx) {
+            case NONE: return;
+            case DUST_PIECES:
+                spawnDust(position, 0.0f, 5, 2.0f, 5.0f);
+                break;
+            case ENEMY_DAMAGE:
+                spawnEnemyDamage(position);
+                break;
+            case ENEMY_BLUE_DEATH:
+                spawnBossDeath(position, "EnemyDeathBlue");
+                break;
+            case ENEMY_ORANGE_DEATH:
+                spawnEnemyDeath(position, "EnemyDeathOrange");
+                break;
+            case MIDBOSS_BLUE_DEATH:
+                spawnBossDeath(position, "EnemyDeathOrange");
+                break;
         }
     }
 

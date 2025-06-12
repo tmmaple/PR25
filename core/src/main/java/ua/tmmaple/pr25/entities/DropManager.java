@@ -28,8 +28,8 @@ public class DropManager {
             DropManager.global.scoreDropPool[i] = DropManager.global.new ScoreDrop(Assets.global.get(Anm.class,"game/plr.anm"), "SmallBullet"); //Тимчасово
             DropManager.global.powerDropPool[i] = DropManager.global.new PowerDrop(Assets.global.get(Anm.class,"game/plr.anm"), "BigBullet"); //Поки нема спрайта дропів
         }
-        Flow.global.addToUpdate(updateNode, 20);
-        Flow.global.addToDraw(drawNode, 20);
+        Flow.global.addToUpdate(updateNode, 7);
+        Flow.global.addToDraw(drawNode, 4);
     }
     public static void shutdown(){
         Flow.global.cut(updateNode);
@@ -111,7 +111,7 @@ public class DropManager {
             position = new Vector2();
             hitbox = new Polygon(new float[] {-2, -2, -2, 2, 2, 2, 2, -2}); //Поміняти розмір коли буде готовий спрайт
             active = false;
-            speedLimit = -3;
+            speedLimit = -7.0f;
             this.defaultSpeed = speed;
             this.acceleration = acceleration;
         }
@@ -128,13 +128,13 @@ public class DropManager {
 
     class ScoreDrop extends Drop {
         private ScoreDrop(Anm source, String script) {
-            super(source, script, 2, -0.2f);
+            super(source, script, 2.0f, -0.1f);
         }
     }
 
     class PowerDrop extends Drop {
         private PowerDrop(Anm source, String script) {
-            super(source, script, 1, -0.2f);
+            super(source, script, 2.0f, -0.1f);
         }
     }
 }

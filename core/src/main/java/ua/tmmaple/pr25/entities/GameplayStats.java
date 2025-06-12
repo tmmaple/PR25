@@ -27,7 +27,7 @@ public final class GameplayStats {
         if (node != null)
             return;
         node = new Flow.FlowNode<>(global, GameplayStats::update, GameplayStats::added);
-        Flow.global.addToUpdate(node, 2);
+        Flow.global.addToUpdate(node, 11);
     }
 
     public static void shutdown() {

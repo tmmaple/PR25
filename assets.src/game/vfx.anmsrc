@@ -60,7 +60,7 @@ script EnemyDeathBlue {
 6:  source(ENEMY_DEATH_BLUE_1);
 12:  source(ENEMY_DEATH_BLUE_2);
 18: source(ENEMY_DEATH_BLUE_3);
-30: delete;
+60: delete;
 }
 
 script EnemyDeathOrange {
@@ -70,5 +70,5 @@ script EnemyDeathOrange {
 6:  source(ENEMY_DEATH_ORANGE_1);
 12:  source(ENEMY_DEATH_ORANGE_2);
 18: source(ENEMY_DEATH_ORANGE_3);
-30: delete;
+60: delete;
 }
