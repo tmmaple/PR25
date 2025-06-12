@@ -306,6 +306,7 @@ public final class GraphicManager {
                     finalSc.set(sc);
                 }
                 finalPos.add(off);
+                batch.setColor(1.0f, 1.0f, 1.0f, a);
                 batch.draw(region,
                     finalPos.x, finalPos.y,
                     -off.x, -off.y,
