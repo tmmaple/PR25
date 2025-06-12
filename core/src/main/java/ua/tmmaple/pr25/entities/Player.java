@@ -37,7 +37,7 @@ public class Player {
 
     private static final short GRAZE_SOUND_COOLDOWN = 5;
 
-    private static final Vector2 UNFOCUSED_ORB_OFFSET = new Vector2(22.0f, 0.0f);
+    private static final Vector2 UNFOCUSED_ORB_OFFSET = new Vector2(24.0f, 0.0f);
     private static final Vector2 FOCUSED_ORB_OFFSET = new Vector2(12.0f, 24.0f);
 
     public static Player global;
@@ -143,8 +143,10 @@ public class Player {
         Audio.global.playSound("plrDeath.ogg", 1.0f);
         if (GameplayStats.global.canBomb())
             deathBombCooldown = DEATH_BOMB_COOLDOWN;
-        else
+        else {
+            VfxManager.global.spawnPlayerDeath(position);
             GameplayManager.global.gameOver();
+        }
     }
 
     public void respawn() {
@@ -173,8 +175,10 @@ public class Player {
         }
         if (deathBombCooldown > 0) {
             --deathBombCooldown;
-            if (deathBombCooldown == 0)
+            if (deathBombCooldown == 0) {
+                VfxManager.global.spawnPlayerDeath(position);
                 GameplayManager.global.gameOver();
+            }
             return Flow.FLOW_RESULT_CONTINUE;
         }
         boolean up = God.global.inputState(God.INPUT_MOVE_UP) == God.INPUT_STATE_PRESSED;

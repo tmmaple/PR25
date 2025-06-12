@@ -47,6 +47,7 @@ public final class GameplayManager {
         DropManager.global = new DropManager();
         StageManager.global = new StageManager();
         GameplayStats.global = new GameplayStats();
+        VfxManager.global = new VfxManager();
     }
 
     public boolean canUpdate() {
@@ -63,6 +64,7 @@ public final class GameplayManager {
             BulletManager.register();
             EnemyManager.register();
             DropManager.register();
+            VfxManager.register();
             StageManager.register();
             StageManager.global.load(new StageTest());
         }
@@ -99,6 +101,7 @@ public final class GameplayManager {
         BulletManager.shutdown();
         Player.shutdown();
         EnemyManager.shutdown();
+        VfxManager.shutdown();
         return 0;
     }
 }

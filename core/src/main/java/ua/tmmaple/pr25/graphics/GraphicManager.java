@@ -6,15 +6,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import ua.tmmaple.pr25.Game;
-import ua.tmmaple.pr25.entities.BulletManager;
-import ua.tmmaple.pr25.entities.Player;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 import ua.tmmaple.pr25.util.Tweener;
 
@@ -309,7 +306,7 @@ public final class GraphicManager {
                     finalSc.set(sc);
                 }
                 finalPos.add(off);
-                batch.setColor(c.r, c.g, c.b, a);
+                batch.setColor(1.0f, 1.0f, 1.0f, a);
                 batch.draw(region,
                     finalPos.x, finalPos.y,
                     -off.x, -off.y,
