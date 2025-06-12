@@ -144,14 +144,20 @@ public class BulletManager {
     }
 
     public void destroyEnemyBullets() {
-        for (EnemyBullet b : enemyBullets)
-            b.active = false;
+        for (EnemyBullet b : enemyBullets) {
+            if (b.active) {
+                VfxManager.global.spawnDust(b.position, b.getAngle(), 12, 0.0f, 4.0f);
+                b.active = false;
+            }
+        }
     }
 
     public void destroyEnemyBulletsInRadius(Vector2 origin, float radius) {
         for (EnemyBullet b : enemyBullets)
-            if (b.position.dst2(origin) <= radius * radius)
+            if (b.active && b.position.dst2(origin) <= radius * radius) {
+                VfxManager.global.spawnDust(b.position, b.getAngle(), 12, 0.0f, 4.0f);
                 b.active = false;
+            }
     }
 
     private static int update(BulletManager bulletManager) {
@@ -190,6 +196,7 @@ public class BulletManager {
                     if (enemy.hitbox != null && enemy.active) {
                         if (Intersector.intersectPolygons(enemy.hitbox, bullet.collider, null)){
                             enemy.health -= bullet.damage;
+                            VfxManager.global.spawnDust(bullet.position.cpy(), 0.0f, 3, 3.0f, 2.0f);
                             bullet.toPool();
                         }
                     }
@@ -224,7 +231,7 @@ public class BulletManager {
                 if (Intersector.intersectPolygons(bullet.collider, Player.global.hitbox, null)) {
                     bullet.toPool();
                     Player.global.damage();
-                } else if (!bullet.grazed && Intersector.intersectPolygons(bullet.collider, Player.global.grazeBox, null)) {
+                } else if (!BombManager.global.isInUse() && !bullet.grazed && Intersector.intersectPolygons(bullet.collider, Player.global.grazeBox, null)) {
                     Player.global.graze();
                     bullet.grazed = true;
                 }
