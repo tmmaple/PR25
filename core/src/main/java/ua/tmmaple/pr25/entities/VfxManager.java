@@ -78,10 +78,10 @@ public final class VfxManager {
         float angleStep = MathUtils.PI2 / 32;
         for (int i = 0; i < 32; ++i) {
             Particle p = pull();
-            p.vm.loadScriptAndPlay("EnemyDamage");
+            p.vm.loadScriptAndPlay("PlayerDeath");
             p.angle = MathUtils.degRad * 4.0f + angleStep * i;
             p.position.set(center).add(2.0f * MathUtils.cos(p.angle), 2.0f * MathUtils.sin(p.angle));
-            p.timeLeft = (short) 16;
+            p.timeLeft = (short) 24;
             p.speed = 6.0f;
         }
     }
