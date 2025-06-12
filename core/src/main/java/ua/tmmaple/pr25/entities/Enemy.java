@@ -22,7 +22,7 @@ public class Enemy {
     Array<Enemy> children;
     boolean active;
     TimelineTask timelineTask;
-    Array<Task> asynchTasks;
+    Array<Task> asyncTasks;
     int health;
     Polygon hitbox;
     private Gun[] guns;
@@ -58,7 +58,7 @@ public class Enemy {
         centre = new Vector2();
         moveType = MoveType.NONE;
         children = new Array<>();
-        asynchTasks = new Array<>();
+        asyncTasks = new Array<>();
         active = false;
         for (int i = 0; i < guns.length; i++) {
             guns[i] = new Gun(this);
@@ -101,8 +101,8 @@ public class Enemy {
         Vector2 abs = absolutePosition();
         children.add(EnemyManager.global.createEnemy(task, x - abs.x, y - abs.y, this, health));
     }
-    public void addAsynchTask(Task task) {
-        asynchTasks.add(task);
+    public void addAsyncTask(Task task) {
+        asyncTasks.add(task);
     }
     public void createSiblingRelative(TimelineTask task, float x, float y, int health) {
         if (parent == null)
@@ -413,11 +413,11 @@ public class Enemy {
             else
                 sprite.angle = velocity.angleRad();
         }
-        if (timelineTask.execute(this) && asynchTasks.size == 0 && children.size == 0) {
+        if (timelineTask.execute(this) && asyncTasks.size == 0 && children.size == 0) {
             parent.removeChild(this);
             active = false;
         }
-        for (Task task : asynchTasks) if (task.execute(this)) asynchTasks.removeValue(task, true);
+        for (Task task : asyncTasks) if (task.execute(this)) asyncTasks.removeValue(task, true);
         // sprite.position.set(position);
         if (hitbox!=null) {
             hitbox.setPosition(sprite.position.x, sprite.position.y);
