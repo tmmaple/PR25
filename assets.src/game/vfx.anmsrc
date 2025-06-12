@@ -57,18 +57,18 @@ script EnemyDeathBlue {
 0:
     move(16, 0.0, 16.0, INTERPOLATION_LINEAR);
     source(ENEMY_DEATH_BLUE_0);
-4:  source(ENEMY_DEATH_BLUE_1);
-8:  source(ENEMY_DEATH_BLUE_2);
-12: source(ENEMY_DEATH_BLUE_3);
-16: delete;
+6:  source(ENEMY_DEATH_BLUE_1);
+12:  source(ENEMY_DEATH_BLUE_2);
+18: source(ENEMY_DEATH_BLUE_3);
+30: delete;
 }
 
 script EnemyDeathOrange {
 0:
     move(16, 0.0, 16.0, INTERPOLATION_LINEAR);
     source(ENEMY_DEATH_ORANGE_0);
-4:  source(ENEMY_DEATH_ORANGE_1);
-8:  source(ENEMY_DEATH_ORANGE_2);
-12: source(ENEMY_DEATH_ORANGE_3);
-16: delete;
+6:  source(ENEMY_DEATH_ORANGE_1);
+12:  source(ENEMY_DEATH_ORANGE_2);
+18: source(ENEMY_DEATH_ORANGE_3);
+30: delete;
 }

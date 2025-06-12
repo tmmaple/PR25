@@ -273,6 +273,7 @@ public final class GraphicManager {
          */
         public void draw() {
             if (!drawing) throw new PR25RuntimeException("GraphicManager is not drawing");
+            batch.setColor(Color.WHITE);
             if (!absoluteVisible()) return;
             if (region != null) {
                 float flipX = (flags & ANM_FLAG_FLIP_X) != 0 ? -1.0f : 1.0f;
@@ -306,7 +307,8 @@ public final class GraphicManager {
                     finalSc.set(sc);
                 }
                 finalPos.add(off);
-                batch.setColor(1.0f, 1.0f, 1.0f, a);
+                c.a = a;
+                batch.setColor(c);
                 batch.draw(region,
                     finalPos.x, finalPos.y,
                     -off.x, -off.y,
