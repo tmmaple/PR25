@@ -5,15 +5,13 @@ import ua.tmmaple.pr25.Flow;
 public final class GameplayStats {
     public static GameplayStats global;
 
-    private static final byte COINS = 4;
-    private static final int GRAZE_BOMB_THRESHOLD = 50;
+    private static final int GRAZE_BOMB_THRESHOLD = 100;
     private static final short GRAZE_BOMB_REMOVE_COOLDOWN = 10;
 
     private long totalScore;
-    private byte coins;
 
-    private int power;
     private long score;
+    private int power;
     private long graze;
 
     private short grazeBombCounter;
@@ -49,6 +47,7 @@ public final class GameplayStats {
     }
 
     public void graze() {
+        score += 10;
         ++graze;
         grazeBombRemoveCooldown = GRAZE_BOMB_REMOVE_COOLDOWN;
         if (!canBomb())
@@ -60,13 +59,37 @@ public final class GameplayStats {
         totalScore += amount;
     }
 
+    public long getScore() {
+        return score;
+    }
+
+    public long getGraze() {
+        return graze;
+    }
+
+    public long getBombCounter() {
+        return grazeBombCounter;
+    }
+
     public void power(int amount) {
+        if (power >= 100)
+            return;
         power += amount;
+        if (power >= 100)
+            power = 100;
+    }
+
+    public int getPower() {
+        return power;
+    }
+
+    public boolean isFullPower() {
+        return power == 100;
     }
 
     public void reset() {
+        power = 0;
         totalScore = 0L;
-        coins = COINS;
         score = 0L;
         graze = 0L;
         grazeBombCounter = 0;
