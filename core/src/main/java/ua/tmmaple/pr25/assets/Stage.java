@@ -7,6 +7,11 @@ import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.task.TimelineTask;
 
 public abstract class Stage {
+    protected static final byte INTERPOLATION_LINEAR = 0;
+    protected static final byte INTERPOLATION_EASE_IN = 1;
+    protected static final byte INTERPOLATION_EASE_OUT = 2;
+    protected static final byte INTERPOLATION_EASE_IN_OUT = 3;
+
     private StageManager owner;
     protected Background background;
 
