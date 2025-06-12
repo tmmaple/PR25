@@ -82,11 +82,11 @@ public final class Background {
             velocityTweener.update();
             cameraVelocity = velocityTweener.value();
         }
+        cameraShakeOffset.set((1.0f - (float) Math.random() * 2.0f) * cameraShakePower * 4.0f, (1.0f - (float) Math.random() * 2.0f) * cameraShakePower * 4.0f);
         if (cameraShakePower > 0) {
             if (cameraShakeCooldown == 0) {
                 cameraShakeCooldown = 2;
                 --cameraShakePower;
-                cameraShakeOffset.set((1.0f - (float) Math.random() * 2.0f) * cameraShakePower * 4.0f, (1.0f - (float) Math.random() * 2.0f) * cameraShakePower * 4.0f);
             } else
                 --cameraShakeCooldown;
         }
