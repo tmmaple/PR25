@@ -42,6 +42,17 @@ script EnemyDamage {
 12: delete;
 }
 
+script PlayerDeath {
+0:
+    scale(2.0, 2.0);
+    autorotate(true);
+    move(12, 0.0, 8.0, INTERPOLATION_LINEAR);
+    source(ENEMY_DAMAGE_0);
+4:  source(ENEMY_DAMAGE_1);
+8:  source(ENEMY_DAMAGE_2);
+24: delete;
+}
+
 script EnemyDeathBlue {
 0:
     move(16, 0.0, 16.0, INTERPOLATION_LINEAR);
