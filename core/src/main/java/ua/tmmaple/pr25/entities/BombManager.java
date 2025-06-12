@@ -10,7 +10,7 @@ public final class BombManager {
     private static final short DURATION = 420;
     private static final short INVINCIBILITY_DURATION = 460;
     private static final short CLEAR_INTERVAL = 20;
-    private static final float CLEAR_RADIUS = 230.0f;
+    private static final float CLEAR_RADIUS = 128.0f;
 
     public static BombManager global;
 
@@ -62,6 +62,10 @@ public final class BombManager {
         Player.global.makeInvincible(INVINCIBILITY_DURATION);
     }
 
+    public boolean isInUse() {
+        return left > 0;
+    }
+
     public void end() {
         left = (short) 0;
         nextClearLeft = (short) 0;
@@ -89,7 +93,8 @@ public final class BombManager {
                 nextClearLeft = CLEAR_INTERVAL;
                 BulletManager.global.destroyEnemyBulletsInRadius(Player.global.position, CLEAR_RADIUS);
                 if (EnemyManager.global.killAllInRadius(Player.global.position, CLEAR_RADIUS)) {
-                    Background.global.shakeCamera(20);
+                    Audio.global.playSound("bombClear.ogg", 1.0f);
+                    Background.global.shakeCamera(26);
                 }
             }
             if (left == 0)

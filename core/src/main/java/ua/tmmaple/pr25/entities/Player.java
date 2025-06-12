@@ -244,7 +244,7 @@ public class Player {
             orbOffset.set(UNFOCUSED_ORB_OFFSET);
         else
             orbOffset.lerp(UNFOCUSED_ORB_OFFSET, 0.25f);
-        if (shooting) {
+        if (shooting && canFire()) {
             if (smallBulletCooldown == 0)
                 smallBulletCooldown = 4;
             if (bigBulletCooldown == 0)
@@ -322,5 +322,9 @@ public class Player {
         Assets.global.unload("game/plr.anm");
         shapeRenderer.dispose();
         return 0;
+    }
+
+    private boolean canFire() {
+        return !BombManager.global.isInUse();
     }
 }
