@@ -143,13 +143,25 @@ public final class VfxManager {
                 spawnEnemyDamage(position);
                 break;
             case ENEMY_BLUE_DEATH:
-                spawnBossDeath(position, "EnemyDeathBlue");
+                spawnEnemyDeath(position, "EnemyDeathBlue");
                 break;
             case ENEMY_ORANGE_DEATH:
                 spawnEnemyDeath(position, "EnemyDeathOrange");
                 break;
             case MIDBOSS_BLUE_DEATH:
+                spawnMidbossDeath(position, "EnemyDeathBlue");
+                break;
+            case MIDBOSS_ORANGE_DEATH:
+                spawnMidbossDeath(position, "EnemyDeathOrange");
+                break;
+            case BOSS_BLUE_DEATH:
+                spawnBossDeath(position, "EnemyDeathBlue");
+                break;
+            case BOSS_ORANGE_DEATH:
                 spawnBossDeath(position, "EnemyDeathOrange");
+                break;
+            case PLAYER_DEATH:
+                spawnPlayerDeath(position);
                 break;
         }
     }
