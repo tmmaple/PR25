@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.assets.Assets;
+import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
@@ -109,6 +110,8 @@ public class BulletManager {
 
     private Anm anm;
 
+    private short playerHitSoundCooldown;
+
     private static Flow.FlowNode<BulletManager> updateNode;
     private static Flow.FlowNode<BulletManager> drawNode;
 
@@ -124,9 +127,9 @@ public class BulletManager {
 
     public static void register(){
         updateNode = new Flow.FlowNode<>(global, BulletManager::update, BulletManager::added);
-        Flow.global.addToUpdate(updateNode, 2);
+        Flow.global.addToUpdate(updateNode, 8);
         drawNode = new Flow.FlowNode<>(global, BulletManager::draw);
-        Flow.global.addToDraw(drawNode, 555);
+        Flow.global.addToDraw(drawNode, 6);
     }
 
     public static void shutdown() {
@@ -168,6 +171,7 @@ public class BulletManager {
     }
 
     private static int added(BulletManager bulletManager) {
+        bulletManager.playerHitSoundCooldown = (short) 0;
         bulletManager.anm = Assets.global.get(Anm.class, "game/bullets.anm");
         for (int i=0; i<bulletManager.plrSmallBullets.length; i++) {
             bulletManager.plrSmallBullets[i] = bulletManager.new PlayersBullet(Assets.global.get(Anm.class,"game/plr.anm"), "SmallBullet", 2, 15.0f);
@@ -190,59 +194,82 @@ public class BulletManager {
      * Оновлює в усіх пулах ті кулі, які активні
      */
     private void updateBullets() {
+        if (playerHitSoundCooldown > 0)
+            --playerHitSoundCooldown;
+        small_bullets:
         for (PlayersBullet bullet : plrSmallBullets) {
-            if (bullet.active) {
-                for (Enemy enemy: EnemyManager.global.enemies){
-                    if (enemy.hitbox != null && enemy.active) {
-                        if (Intersector.intersectPolygons(enemy.hitbox, bullet.collider, null)){
-                            enemy.health -= bullet.damage;
-                            VfxManager.global.spawnDust(bullet.position.cpy(), 0.0f, 3, 3.0f, 2.0f);
-                            bullet.toPool();
-                        }
+            if (!bullet.active) continue;
+            if (bullet.position.y > GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT + 32.0f) {
+                bullet.toPool();
+                continue;
+            }
+            for (Enemy enemy: EnemyManager.global.enemies){
+                if (!enemy.active || !enemy.hasCollision()) continue;
+                if (Intersector.intersectPolygons(enemy.hitbox, bullet.collider, null)) {
+                    if (playerHitSoundCooldown == (short) 0) {
+                        Audio.global.playSound("plrBulletHit.ogg", 1.0f);
+                        playerHitSoundCooldown = 5;
                     }
+                    VfxManager.global.spawnEnemyDamage(bullet.sprite.absolutePosition());
+                    enemy.damage(bullet.damage);
+                    bullet.toPool();
+                    continue small_bullets;
                 }
-                bullet.collider.setPosition(bullet.position.x, bullet.position.y);
-                bullet.position.add(bullet.velocity);
-                bullet.sprite.position.set(bullet.position);
-                bullet.checkCollision();
-                bullet.sprite.execute();
             }
+            bullet.position.add(bullet.velocity);
+            bullet.collider.setPosition(bullet.position.x, bullet.position.y);
+            bullet.sprite.position.set(bullet.position);
+            bullet.sprite.execute();
         }
+        big_bullets:
         for (PlayersBullet bullet : plrBigBullets) {
-            if (bullet.active) {
-                bullet.position.add(bullet.velocity);
-                bullet.sprite.position.set(bullet.position);
-                bullet.checkCollision();
-                bullet.sprite.execute();
+            if (!bullet.active) continue;
+            if (bullet.position.y > GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT + 32.0f) {
+                bullet.toPool();
+                continue;
             }
+            for (Enemy enemy: EnemyManager.global.enemies){
+                if (!enemy.active || !enemy.hasCollision()) continue;
+                if (Intersector.intersectPolygons(enemy.hitbox, bullet.collider, null)) {
+                    if (playerHitSoundCooldown == (short) 0) {
+                        Audio.global.playSound("plrBulletHit.ogg", 1.0f);
+                        playerHitSoundCooldown = 5;
+                    }
+                    VfxManager.global.spawnEnemyDamage(bullet.sprite.absolutePosition());
+                    enemy.damage(bullet.damage);
+                    bullet.toPool();
+                    continue big_bullets;
+                }
+            }
+            bullet.position.add(bullet.velocity);
+            bullet.collider.setPosition(bullet.position.x, bullet.position.y);
+            bullet.sprite.position.set(bullet.position);
+            bullet.sprite.execute();
         }
         for (EnemyBullet bullet : enemyBullets) {
-            if (bullet.active) {
-                bullet.position.add(bullet.velocity);
-                bullet.collider.setPosition(bullet.position.x, bullet.position.y);
-                bullet.setSpeed(bullet.getSpeed() + bullet.acceleration);
-                bullet.setAngle(bullet.getAngle() + bullet.getAngularSpeed());
-                bullet.setAngularSpeed(bullet.getAngularSpeed() + bullet.angularAcceleration);
-                if (bullet.rotates) {
-                    bullet.collider.setRotation(MathUtils.radDeg * bullet.getAngle());
-                    bullet.sprite.angle = bullet.getAngle();
-                }
-                bullet.sprite.position.set(bullet.position);
-                if (Intersector.intersectPolygons(bullet.collider, Player.global.hitbox, null)) {
-                    bullet.toPool();
-                    Player.global.damage();
-                } else if (!BombManager.global.isInUse() && !bullet.grazed && Intersector.intersectPolygons(bullet.collider, Player.global.grazeBox, null)) {
-                    Player.global.graze();
-                    bullet.grazed = true;
-                }
-                else if (bullet.position.y < GameplayManager.VIEWPORT_START_Y - 32.0
-                || bullet.position.y > GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT + 32.0f
-                || bullet.position.x < GameplayManager.VIEWPORT_START_X - 32.0f
-                || bullet.position.x > GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH + 32.0f) {
-                    bullet.toPool();
-                }
-                bullet.sprite.execute();
+            if (!bullet.active) continue;
+            bullet.position.add(bullet.velocity);
+            bullet.collider.setPosition(bullet.position.x, bullet.position.y);
+            bullet.setSpeed(bullet.getSpeed() + bullet.acceleration);
+            bullet.setAngle(bullet.getAngle() + bullet.getAngularSpeed());
+            bullet.setAngularSpeed(bullet.getAngularSpeed() + bullet.angularAcceleration);
+            if (bullet.rotates) {
+                bullet.collider.setRotation(MathUtils.radDeg * bullet.getAngle());
+                bullet.sprite.angle = bullet.getAngle();
             }
+            bullet.sprite.position.set(bullet.position);
+            if (Intersector.intersectPolygons(bullet.collider, Player.global.hitbox, null)) {
+                bullet.toPool();
+                Player.global.damage();
+            } else if (!BombManager.global.isInUse() && !bullet.grazed && Intersector.intersectPolygons(bullet.collider, Player.global.grazeBox, null)) {
+                Player.global.graze();
+                bullet.grazed = true;
+            } else if (bullet.position.y < GameplayManager.VIEWPORT_START_Y - 32.0
+                    || bullet.position.y > GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT + 32.0f
+                    || bullet.position.x < GameplayManager.VIEWPORT_START_X - 32.0f
+                    || bullet.position.x > GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH + 32.0f)
+                bullet.toPool();
+            bullet.sprite.execute();
         }
     }
 
@@ -332,14 +359,6 @@ public class BulletManager {
             this.sprite.loadScriptAndPlay(sprite);
             this.setVelocity(MathUtils.HALF_PI, speed);
         }
-
-        private void checkCollision() {
-
-            if (position.y > GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT) {
-                toPool();
-            }
-        }
-
     }
     /**
      * Будь-які кулі ворогів

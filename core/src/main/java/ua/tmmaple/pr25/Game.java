@@ -35,7 +35,6 @@ public class Game extends ApplicationAdapter {
 
         Assets.global = new Assets();
         God.global = new God();
-        BulletManager.global = new BulletManager();
 
         accumulator = UPDATE_DELTA;
 

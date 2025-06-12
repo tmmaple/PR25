@@ -186,9 +186,12 @@ public class Gun {
             bullet.setType(BulletManager.BULLET_TYPES[bulletType.ordinal()]);
     }
 
-    public void destroyAll() {
-        for (BulletManager.Bullet bullet : ownedBullets)
+    public void destroyAll(boolean vfx) {
+        for (BulletManager.Bullet bullet : ownedBullets) {
+            if (vfx)
+                VfxManager.global.spawnDust(bullet.position, bullet.getAngle(), 12, 0.0f, 4.0f);
             bullet.toPool();
+        }
         ownedBullets.clear();
     }
 

@@ -78,8 +78,8 @@ public class Player {
             return 0;
         updateNode = new Flow.FlowNode<>(global, Player::update, Player::added, Player::removed);
         drawNode = new Flow.FlowNode<>(global, Player::draw);
-        Flow.global.addToUpdate(updateNode, 6);
-        Flow.global.addToDraw(drawNode, 6);
+        Flow.global.addToUpdate(updateNode, 10);
+        Flow.global.addToDraw(drawNode, 7);
         return 0;
     }
 

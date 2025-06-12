@@ -32,7 +32,7 @@ public final class Assets {
      */
     public static int register() {
         Flow.FlowNode<Assets> node = new Flow.FlowNode<>(global, Assets::update, Assets::added, Assets::removed);
-        return Flow.global.addToUpdate(node, 999);
+        return Flow.global.addToUpdate(node, 1);
     }
 
     /**

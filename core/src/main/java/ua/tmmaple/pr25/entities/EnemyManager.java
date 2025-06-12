@@ -20,8 +20,8 @@ public class EnemyManager {
     public static void register(){
         updateNode = new Flow.FlowNode<>(global, EnemyManager::update);
         drawNode = new Flow.FlowNode<>(global, EnemyManager::draw);
-        Flow.global.addToUpdate(updateNode,3);
-        Flow.global.addToDraw(drawNode,7);
+        Flow.global.addToUpdate(updateNode,9);
+        Flow.global.addToDraw(drawNode,5);
     }
     public static void shutdown(){
         Flow.global.cut(updateNode);
@@ -37,6 +37,12 @@ public class EnemyManager {
             enemies[i].health = health;
             enemies[i].position.set(x, y);
             enemies[i].timelineTask = task;
+            enemies[i].setDeathVfx(VfxManager.Vfx.ENEMY_BLUE_DEATH);
+            enemies[i].setCollision(true);
+            enemies[i].setInvincible(false);
+            enemies[i].setDeathSound("enmDeath.ogg");
+            enemies[i].resetGraze();
+            enemies[i].setIgnorePlayer(false);
         }
     }
     Enemy createEnemy(TimelineTask task, float x, float y, Enemy parent, int health) {
@@ -50,6 +56,12 @@ public class EnemyManager {
             enemies[i].children.clear();
             enemies[i].position.set(x, y);
             enemies[i].timelineTask = task;
+            enemies[i].setDeathVfx(VfxManager.Vfx.ENEMY_BLUE_DEATH);
+            enemies[i].setCollision(true);
+            enemies[i].setInvincible(false);
+            enemies[i].setDeathSound("enmDeath.ogg");
+            enemies[i].resetGraze();
+            enemies[i].setIgnorePlayer(false);
             return enemies[i];
         }
         return null;
@@ -71,11 +83,11 @@ public class EnemyManager {
         return result;
     }
 
-    public boolean killAllInRadius(Vector2 a, float radius) {
+    public boolean damageAllInRadius(Vector2 a, float radius, int damage) {
         boolean result = false;
         for (int i = 0; i < enemies.length; ++i)
             if (enemies[i].active && enemies[i].viewportPosition().dst2(a) <= radius * radius) {
-                enemies[i].destroy();
+                enemies[i].damage(damage);
                 result = true;
             }
         return result;

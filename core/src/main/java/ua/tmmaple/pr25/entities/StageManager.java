@@ -17,11 +17,12 @@ public final class StageManager {
 
     private Stage stage;
     private Enemy root;
+    private boolean loading;
 
     public static void register() {
         node = new Flow.FlowNode<>(global, StageManager::update);
         node.removedListener = StageManager::removed;
-        Flow.global.addToUpdate(node, 20);
+        Flow.global.addToUpdate(node, 12);
     }
 
     public static void shutdown() {
@@ -31,6 +32,7 @@ public final class StageManager {
 
     public void load(Stage stage) {
         unload();
+        loading = true;
         this.stage = stage;
         String[] anmList = stage.anmList();
         for (String anm : anmList)
@@ -60,13 +62,15 @@ public final class StageManager {
     }
 
     private int update() {
-        if (stage != null && Assets.global.isLoaded() && root == null) {
+        if (loading && Assets.global.isLoaded()) {
+            loading = false;
             String[] anmList = stage.anmList();
             anms = new Anm[anmList.length];
             for (int i = 0; i < anmList.length; ++i)
                 this.anms[i] = Assets.global.get(Anm.class, anmList[i]);
             stage.init(this, Background.global);
             root = EnemyManager.global.createEnemy(stage.main(), 0.0f, 0.0f, null, 1);
+            root.setCollision(false);
             Player.global.respawn();
         }
         return Flow.FLOW_RESULT_CONTINUE;

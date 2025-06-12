@@ -32,8 +32,8 @@ public final class Background {
     public static int register() {
         updateNode = new Flow.FlowNode<>(global, Background::update);
         drawNode = new Flow.FlowNode<>(global, Background::draw);
-        Flow.global.addToUpdate(updateNode, 7);
-        Flow.global.addToDraw(drawNode, 5);
+        Flow.global.addToUpdate(updateNode, 5);
+        Flow.global.addToDraw(drawNode, 9);
         return 0;
     }
 
