@@ -27,6 +27,8 @@ public class Enemy {
     Polygon hitbox;
     private Gun[] guns;
     private int flags;
+    private int scoreDrop;
+    private int powerDrop;
 
     enum MoveType {
         LINEAR, ORBITAL, NONE
@@ -79,7 +81,16 @@ public class Enemy {
         else
             flags &= ~FLAG_SPRITE_ROTATION;
     }
-
+    public void setScoreDrop(int scoreDrop) {
+        this.scoreDrop = scoreDrop;
+    }
+    public void setPowerDrop(int powerDrop) {
+        this.powerDrop = powerDrop;
+    }
+    public void setDrop(int scoreDrop, int powerDrop) {
+        this.scoreDrop = scoreDrop;
+        this.powerDrop = powerDrop;
+    }
     public void createChildRelative(TimelineTask task, float x, float y, int health) {
         children.add(EnemyManager.global.createEnemy(task, x, y, this, health));
     }
@@ -388,6 +399,10 @@ public class Enemy {
         if (health <= 0) {
             active = false;
             parent.removeChild(this);
+            for (int i=0; i<scoreDrop; i++) DropManager.global.createScoreDrop(sprite.position);
+            scoreDrop = 0;
+            for (int i=0; i<powerDrop; i++) DropManager.global.createPowerDrop(sprite.position);
+            powerDrop = 0;
             for (Enemy child : children) {
                 child.active = false;
             }
@@ -406,7 +421,7 @@ public class Enemy {
         // sprite.position.set(position);
         if (hitbox!=null) {
             hitbox.setPosition(sprite.position.x, sprite.position.y);
-            hitbox.setRotation(velocity.angleRad());
+                hitbox.setRotation(velocity.angleRad());
         }
         sprite.execute();
         for (Gun gun: guns) gun.update();

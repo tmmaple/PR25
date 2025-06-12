@@ -60,6 +60,10 @@ public final class GameplayStats {
         totalScore += amount;
     }
 
+    public void power(int amount) {
+        power += amount;
+    }
+
     public void reset() {
         totalScore = 0L;
         coins = COINS;
