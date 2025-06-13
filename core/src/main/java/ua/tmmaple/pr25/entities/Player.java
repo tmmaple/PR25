@@ -3,6 +3,7 @@ package ua.tmmaple.pr25.entities;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.RandomXS128;
 import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.God;
@@ -68,6 +69,8 @@ public class Player {
 
     private MovementDirection direction;
 
+    private final RandomXS128 random;
+
     private static Flow.FlowNode<Player> updateNode;
     private static Flow.FlowNode<Player> drawNode;
 
@@ -105,10 +108,11 @@ public class Player {
         orbOffset = new Vector2();
         hitbox = new Polygon(new float[] { -2.0f, -2.0f, -2.0f, 2.0f, 2.0f, 2.0f, 2.0f, -2.0f });
         grazeBox = new Polygon(new float[] { -16.0f, -16.0f, -16.0f, 16.0f, 16.0f, 16.0f, 16.0f, -16.0f });
+        random = new RandomXS128();
     }
 
     public void graze() {
-        if (deathbombing() || gameOverCooldown > 0)
+        if (isDeathBombing() || gameOverCooldown > 0)
             return;
         grazeVM.interrupt((byte) 1);
         GameplayStats.global.graze();
@@ -262,26 +266,51 @@ public class Player {
             orbOffset.set(UNFOCUSED_ORB_OFFSET);
         else
             orbOffset.lerp(UNFOCUSED_ORB_OFFSET, 0.25f);
+        int power = GameplayStats.global.getPower();
         if (shooting && canFire()) {
             if (smallBulletCooldown == 0)
                 smallBulletCooldown = 4;
-            if (bigBulletCooldown == 0)
-                bigBulletCooldown = 30;
+            if (bigBulletCooldown <= 0) {
+                if (power < 20)
+                    bigBulletCooldown = -1;
+                else if (power < 40)
+                    bigBulletCooldown = 60;
+                else if (power < 60)
+                    bigBulletCooldown = 40;
+                else if (power < 100)
+                    bigBulletCooldown = 20;
+                else
+                    bigBulletCooldown = 15;
+            }
         } else
             bigBulletCooldown = 0;
         if (smallBulletCooldown > 0) {
             --smallBulletCooldown;
             if (smallBulletCooldown == 0) {
                 Audio.global.playSound("plrFire.ogg", 1.0f);
-                BulletManager.global.createSmallPlayerBullet(position.cpy().add(orbOffset));
-                BulletManager.global.createSmallPlayerBullet(position.cpy().add(new Vector2(-orbOffset.x, orbOffset.y)));
+                BulletManager.global.createSmallPlayerBullet(position.cpy().add(0.0f, 16.0f));
+                if (power > 10) {
+                    BulletManager.global.createSmallPlayerBullet(position.cpy().add(orbOffset));
+                    BulletManager.global.createSmallPlayerBullet(position.cpy().add(new Vector2(-orbOffset.x, orbOffset.y)));
+                }
             }
         }
         if (bigBulletCooldown > 0) {
             --bigBulletCooldown;
             if (bigBulletCooldown == 0) {
-                BulletManager.global.createBigPlayerBullet(position.cpy().add(orbOffset));
-                BulletManager.global.createBigPlayerBullet(position.cpy().add(new Vector2(-orbOffset.x, orbOffset.y)));
+                if (power < 60) {
+                    BulletManager.global.createBigPlayerBullet(position.cpy().add(orbOffset));
+                    BulletManager.global.createBigPlayerBullet(position.cpy().add(new Vector2(-orbOffset.x, orbOffset.y)));
+                } else {
+                    for (int i = 0; i < 3; ++i) {
+                        float randomX = random.nextFloat(-15.0f, 15.0f);
+                        float randomY = random.nextFloat(-15.0f, 15.0f);
+                        BulletManager.global.createBigPlayerBullet(position.cpy().add(orbOffset.cpy().add(randomX, randomY)));
+                        randomX = random.nextFloat(-15.0f, 15.0f);
+                        randomY = random.nextFloat(-15.0f, 15.0f);
+                        BulletManager.global.createBigPlayerBullet(position.cpy().add(new Vector2(-orbOffset.x, orbOffset.y).add(randomX, randomY)));
+                    }
+                }
             }
         }
         if (invincibilityCooldown > 0) {
@@ -299,7 +328,7 @@ public class Player {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
-    public boolean deathbombing() {
+    public boolean isDeathBombing() {
         return deathBombCooldown > 0;
     }
 

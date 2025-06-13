@@ -94,7 +94,7 @@ public class EnemyManager {
     }
 
     private int update() {
-        if (!GameplayManager.global.canUpdate() || Player.global.deathbombing())
+        if (!GameplayManager.global.canUpdate() || Player.global.isDeathBombing())
             return Flow.FLOW_RESULT_CONTINUE;
         for (Enemy enemy : enemies){
             if(enemy.active) enemy.update();

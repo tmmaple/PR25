@@ -67,7 +67,7 @@ public final class Background {
     }
 
     private int update() {
-        if (!GameplayManager.global.canUpdate() || Player.global.deathbombing())
+        if (!GameplayManager.global.canUpdate() || Player.global.isDeathBombing())
             return Flow.FLOW_RESULT_CONTINUE;
         cameraPosition += cameraVelocity;
         if (!loop)

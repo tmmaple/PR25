@@ -164,7 +164,7 @@ public class BulletManager {
     }
 
     private static int update(BulletManager bulletManager) {
-        if (!GameplayManager.global.canUpdate() || Player.global.deathbombing())
+        if (!GameplayManager.global.canUpdate() || Player.global.isDeathBombing())
             return Flow.FLOW_RESULT_CONTINUE;
         bulletManager.updateBullets();
         return Flow.FLOW_RESULT_CONTINUE;
