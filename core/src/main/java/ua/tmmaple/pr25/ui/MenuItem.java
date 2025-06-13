@@ -167,12 +167,16 @@ public final class MenuItem {
     }
 
     public void focus() {
+        if (focused)
+            return;
         if (usesVm)
             vm.interrupt((byte) 1);
         focused = true;
     }
 
     public void unfocus() {
+        if (!focused)
+            return;
         if (usesVm)
             vm.interrupt((byte) 2);
         focused = false;
