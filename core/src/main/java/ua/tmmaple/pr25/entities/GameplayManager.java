@@ -4,6 +4,7 @@ import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.Logger;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.stages.Stage01;
+import ua.tmmaple.pr25.stages.StageTest;
 
 public final class GameplayManager {
     private static final short DEATHBOMB_COOLDOWN = (short) 10;
@@ -53,7 +54,7 @@ public final class GameplayManager {
         if (loading && Assets.global.isLoaded()) {
             loading = false;
             StageManager.register();
-            StageManager.global.load(new Stage01());
+            StageManager.global.load(new StageTest());
             GameplayStats.register();
             Player.register();
             EnemyManager.register();

@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Align;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.God;
 import ua.tmmaple.pr25.assets.Assets;
+import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 import ua.tmmaple.pr25.graphics.TextManager;
@@ -195,8 +196,8 @@ public final class Hud {
         if (power != GameplayStats.global.getPower()) {
             if (!fullPower && GameplayStats.global.isFullPower()) {
                 fullPower = true;
-                popupVm.delete();
                 popup("fullPower");
+                Audio.global.playSound("fullPower.ogg", 1.0f);
             } else if (!GameplayStats.global.isFullPower())
                 fullPower = false;
             power = GameplayStats.global.getPower();
