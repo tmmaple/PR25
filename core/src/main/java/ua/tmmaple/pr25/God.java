@@ -217,6 +217,21 @@ public final class God {
     }
 
     /**
+     * @return Повертає локалізований текст з форматуванням
+     * @param formatArgs параметри
+     * @author uwuhasmile
+     */
+    public String getFormattedLocalizedString(String id, boolean idIfNotFound, Object... formatArgs) {
+        try {
+            return i18n.format(id, formatArgs);
+        } catch (MissingResourceException e) {
+            if (idIfNotFound)
+                return id;
+            return "???" + id + "???";
+        }
+    }
+
+    /**
      * Встановлює мову.
      * @param language 0 - англійська, 1 - українська
      * @author uwuhasmile

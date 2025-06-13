@@ -639,7 +639,7 @@ public final class GraphicManager {
             flags = ANM_FLAG_VISIBLE | ANM_FLAG_TELEPORT;
             uScrolling = 0.0f;
             vScrolling = 0.0f;
-            color.set(Color.WHITE.cpy());
+            color.set(Color.WHITE);
             alpha = 1.0f;
             anmPosition.set(0.0f, 0.0f);
             anmAngle = 0.0f;
@@ -751,6 +751,7 @@ public final class GraphicManager {
          * @author uwuhasmile
          */
         public boolean absoluteVisible() {
+            if (region == null) return false;
             AnmVirtualMachine o = this;
             boolean result = true;
             while (o != null && result) {
@@ -768,7 +769,7 @@ public final class GraphicManager {
          */
         public Color absoluteColor() {
             AnmVirtualMachine o = this;
-            Color result = Color.WHITE;
+            Color result = Color.WHITE.cpy();
             while (o != null) {
                 result.mul(o.color);
                 o = o.parent;

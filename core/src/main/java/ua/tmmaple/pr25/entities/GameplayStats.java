@@ -102,6 +102,12 @@ public final class GameplayStats {
             grazeBombCounter = 0;
     }
 
+    public void respawn() {
+        graze = 0L;
+        power = 0;
+        grazeBombCounter = 0;
+    }
+
     private int added() {
         reset();
         return 0;
