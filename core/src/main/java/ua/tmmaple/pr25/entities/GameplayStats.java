@@ -59,6 +59,14 @@ public final class GameplayStats {
         totalScore += amount;
     }
 
+    public void power(int amount) {
+        if (power >= 100)
+            return;
+        power += amount;
+        if (power >= 100)
+            power = 100;
+    }
+
     public long getScore() {
         return score;
     }
@@ -69,14 +77,6 @@ public final class GameplayStats {
 
     public long getBombCounter() {
         return grazeBombCounter;
-    }
-
-    public void power(int amount) {
-        if (power >= 100)
-            return;
-        power += amount;
-        if (power >= 100)
-            power = 100;
     }
 
     public int getPower() {
