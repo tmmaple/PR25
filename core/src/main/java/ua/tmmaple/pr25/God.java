@@ -114,7 +114,7 @@ public final class God {
         god.controls[4] = god.prefs.getInteger("keyFire", god.controls[4]);
         god.controls[5] = god.prefs.getInteger("keyBomb", god.controls[5]);
         god.controls[6] = god.prefs.getInteger("keyFocus", god.controls[6]);
-        god.windowScale = god.prefs.getInteger("windowScale", 4);
+        god.windowScale = god.prefs.getInteger("windowScale", 0);
         god.sfxVolume = god.prefs.getFloat("sfxVolume", 1.0f);
         god.musicVolume = god.prefs.getFloat("musicVolume", 1.0f);
         if (language.equals("en")) god.language = LANGUAGE_ENGLISH;

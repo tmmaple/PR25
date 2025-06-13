@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.assets.Assets;
+import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
@@ -19,6 +20,8 @@ public class DropManager {
 
     private static Flow.FlowNode<DropManager> updateNode;
     private static Flow.FlowNode<DropManager> drawNode;
+
+    private short dropSoundCooldown;
 
     public DropManager() {
         scoreDropPool = new ScoreDrop[64];
@@ -57,12 +60,18 @@ public class DropManager {
         }
     }
     private int update() {
+        if (dropSoundCooldown > 0)
+            --dropSoundCooldown;
         for (ScoreDrop scoreDrop : scoreDropPool) {
             if (scoreDrop.active){
                 scoreDrop.sprite.execute();
                 if (Intersector.intersectPolygons(Player.global.grazeBox, scoreDrop.hitbox, null)){
                     GameplayStats.global.score(SCORE_DROP);
                     Hud.global.pickup(scoreDrop.position, SCORE_DROP);
+                    if (dropSoundCooldown == 0) {
+                        Audio.global.playSound("drop.ogg", 1.0f);
+                        dropSoundCooldown = 5;
+                    }
                     scoreDrop.active = false;
                 }
                 scoreDrop.move();
@@ -75,6 +84,10 @@ public class DropManager {
                 if (Intersector.intersectPolygons(Player.global.grazeBox, powerDrop.hitbox, null)){
                     powerDrop.active = false;
                     Hud.global.pickup(powerDrop.position, POWER_DROP);
+                    if (dropSoundCooldown == 0) {
+                        Audio.global.playSound("drop.ogg", 1.0f);
+                        dropSoundCooldown = 5;
+                    }
                     GameplayStats.global.power(POWER_DROP);
                 }
                 powerDrop.move();
