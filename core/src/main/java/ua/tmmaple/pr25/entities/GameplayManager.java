@@ -82,6 +82,7 @@ public final class GameplayManager {
     private int added() {
         Player.load();
         BulletManager.load();
+        DropManager.load();
         Hud.load();
         coins = 0;
         loading = true;
@@ -97,6 +98,7 @@ public final class GameplayManager {
         Player.shutdown();
         EnemyManager.shutdown();
         VfxManager.shutdown();
+        DropManager.shutdown();
         Hud.shutdown();
         return 0;
     }
