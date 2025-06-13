@@ -27,10 +27,10 @@ public final class TextManager {
      * @author uwuhasmile
      */
     public void initialize() {
-        fonts[0] = new BitmapFont(Gdx.files.internal("fonts/ui24.fnt"), Gdx.files.internal("fonts/ui24.png"), false);
-        fonts[1] = new BitmapFont(Gdx.files.internal("fonts/ui24.fnt"), Gdx.files.internal("fonts/ui24Flat.png"), false);
-        fonts[2] = new BitmapFont(Gdx.files.internal("fonts/ui34.fnt"), Gdx.files.internal("fonts/ui34.png"), false);
-        fonts[3] = new BitmapFont(Gdx.files.internal("fonts/ui34.fnt"), Gdx.files.internal("fonts/ui34Flat.png"), false);
+        fonts[0] = new BitmapFont(Gdx.files.internal("fonts/ui24.fnt"), false);
+        fonts[1] = new BitmapFont(Gdx.files.internal("fonts/ui24Flat.fnt"), false);
+        fonts[2] = new BitmapFont(Gdx.files.internal("fonts/ui34.fnt"), false);
+        fonts[3] = new BitmapFont(Gdx.files.internal("fonts/ui34.fnt"), false);
         fonts[4] = new BitmapFont(Gdx.files.internal("fonts/dialogue.fnt"));
         fonts[5] = new BitmapFont(Gdx.files.internal("fonts/digits.fnt"));
     }

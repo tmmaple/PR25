@@ -9,6 +9,9 @@ import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
 public class DropManager {
+    private static final int POWER_DROP = 1;
+    private static final int SCORE_DROP = 500;
+
     public static DropManager global;
 
     private ScoreDrop[] scoreDropPool;
@@ -58,8 +61,8 @@ public class DropManager {
             if (scoreDrop.active){
                 scoreDrop.sprite.execute();
                 if (Intersector.intersectPolygons(Player.global.grazeBox, scoreDrop.hitbox, null)){
-                    GameplayStats.global.score(100); //Скільки дроп має давати очок я не знаю, якщо треба, то поміняти
-                    Hud.global.pickup(scoreDrop.position, 100);
+                    GameplayStats.global.score(SCORE_DROP);
+                    Hud.global.pickup(scoreDrop.position, SCORE_DROP);
                     scoreDrop.active = false;
                 }
                 scoreDrop.move();
@@ -71,8 +74,8 @@ public class DropManager {
                 powerDrop.sprite.execute();
                 if (Intersector.intersectPolygons(Player.global.grazeBox, powerDrop.hitbox, null)){
                     powerDrop.active = false;
-                    Hud.global.pickup(powerDrop.position, 1);
-                    GameplayStats.global.power(1); //Те саме, що і з очками
+                    Hud.global.pickup(powerDrop.position, POWER_DROP);
+                    GameplayStats.global.power(POWER_DROP);
                 }
                 powerDrop.move();
                 if (powerDrop.position.y < 0) powerDrop.active = false;

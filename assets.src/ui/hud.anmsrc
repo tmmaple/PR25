@@ -68,3 +68,14 @@ script BossHealthBar {
     sleep 10;
     delete;
 }
+
+script Popup {
+    visible(false);
+    position(384.0, 0.0);
+    move(30, 0.0, 0.0, INTERPOLATION_EASE_IN);
+    visible(true);
+    sleep 100;
+    move(30, -384.0, 0.0, INTERPOLATION_EASE_OUT);
+    sleep 30;
+    delete;
+}

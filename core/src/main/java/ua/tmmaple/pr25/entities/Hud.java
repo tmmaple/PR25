@@ -23,6 +23,10 @@ public final class Hud {
     private final TextManager.TextSettings pickupSettings;
     private int freePickup;
 
+    private final GraphicManager.AnmVirtualMachine popupVm;
+    private final TextManager.TextSettings popupSettings;
+    private String popup;
+
     private final GraphicManager.AnmVirtualMachine bordersVm;
     private final GraphicManager.AnmVirtualMachine bombVm;
     private final TextManager.TextSettings labelSettings;
@@ -35,6 +39,7 @@ public final class Hud {
     private long bombCounter;
     private boolean canBomb;
     private int power;
+    private boolean fullPower;
 
     public Hud() {
         pickups = new Pickup[32];
@@ -43,6 +48,12 @@ public final class Hud {
         pickupSettings = TextManager.global.new TextSettings();
         pickupSettings.hAlign = Align.left;
         pickupSettings.setFont((byte) 5);
+        popupVm = GraphicManager.global.new AnmVirtualMachine();
+        popupSettings = TextManager.global.new TextSettings();
+        popupSettings.hAlign = Align.center;
+        popupSettings.parent = popupVm;
+        popupSettings.targetWidth = 384;
+        popupSettings.setFont((byte) 0);
         bordersVm = GraphicManager.global.new AnmVirtualMachine();
         bombVm = GraphicManager.global.new AnmVirtualMachine();
         labelSettings = TextManager.global.new TextSettings();
@@ -78,6 +89,16 @@ public final class Hud {
         drawNode = null;
     }
 
+    public void popup(String text) {
+        if (text == null)
+            return;
+        popupVm.delete();
+        popupVm.loadAnm(Assets.global.get(Anm.class, "ui/hud.anm"));
+        popupVm.loadScriptAndPlay("Popup");
+        popupVm.execute();
+        popup = text;
+    }
+
     public void pickup(Vector2 position, long points) {
         Pickup p = pickups[freePickup++];
         p.position.set(position);
@@ -94,6 +115,8 @@ public final class Hud {
             pickups[i].ticks = 0;
         freePickup = 0;
         Anm anm = Assets.global.get(Anm.class, "ui/hud.anm");
+        popupVm.delete();
+        popupVm.position.set(GameplayManager.VIEWPORT_START_X, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT - 96.0f);
         bordersVm.loadAnm(anm);
         bordersVm.loadScriptAndPlay("Borders");
         bordersVm.position.set(0, 0);
@@ -115,6 +138,8 @@ public final class Hud {
             pickupSettings.position.set(p.position);
             pickupSettings.draw(String.format("+%d", p.value));
         }
+        if (popup != null)
+            popupSettings.draw(God.global.getLocalizedString(popup, true));
         valueSettings.color.set(Color.WHITE);
         bordersVm.draw();
         Vector2 pos = BASE.cpy();
@@ -126,7 +151,12 @@ public final class Hud {
         labelSettings.position.set(pos);
         valueSettings.position.set(pos);
         labelSettings.draw(God.global.getLocalizedString("power", false));
-        valueSettings.draw(String.format("%d", power));
+        if (fullPower) {
+            valueSettings.color.set(Color.YELLOW);
+            valueSettings.draw(God.global.getLocalizedString("powerMax", false));
+            valueSettings.color.set(Color.WHITE);
+        } else
+            valueSettings.draw(String.format("%d", power));
         pos.sub(0.0f, VSPACE * 4);
         labelSettings.position.set(pos);
         valueSettings.position.set(pos);
@@ -157,10 +187,20 @@ public final class Hud {
             }
             pickups[i].position.add(0.0f, 0.5f);
         }
+        popupVm.execute();
         if (score < GameplayStats.global.getScore())
             score += 100;
         if (score > GameplayStats.global.getScore())
             score = GameplayStats.global.getScore();
+        if (power != GameplayStats.global.getPower()) {
+            if (!fullPower && GameplayStats.global.isFullPower()) {
+                fullPower = true;
+                popupVm.delete();
+                popup("fullPower");
+            } else if (!GameplayStats.global.isFullPower())
+                fullPower = false;
+            power = GameplayStats.global.getPower();
+        }
         graze = GameplayStats.global.getGraze();
         if (!canBomb && GameplayStats.global.canBomb()) {
             canBomb = true;
@@ -169,8 +209,6 @@ public final class Hud {
             canBomb = false;
             bombVm.interrupt((byte) 1);
         }
-        if (power != GameplayStats.global.getPower())
-            power = GameplayStats.global.getPower();
         bombCounter = GameplayStats.global.getBombCounter();
         bordersVm.execute();
         bombVm.execute();
