@@ -10,149 +10,166 @@ import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
 public class DropManager {
+    private enum DropType {
+        STAR,
+        POWER,
+    }
+
     private static final int POWER_DROP = 1;
     private static final int SCORE_DROP = 500;
+    private static final float TERMINAL_SPEED = -5.0f;
+    private static final float GRAVITY = -0.11f;
 
     public static DropManager global;
 
-    private ScoreDrop[] scoreDropPool;
-    private PowerDrop[] powerDropPool;
+    private Drop[] drops;
+    private int free;
 
     private static Flow.FlowNode<DropManager> updateNode;
     private static Flow.FlowNode<DropManager> drawNode;
 
     private short dropSoundCooldown;
 
+    private Anm anm;
+
     public DropManager() {
-        scoreDropPool = new ScoreDrop[64];
-        powerDropPool = new PowerDrop[64];
+        drops = new Drop[64];
+        for (int i = 0; i < drops.length; ++i)
+            drops[i] = new Drop(i);
     }
-    public static void register(){
-        updateNode = new Flow.FlowNode<>(global, DropManager::update);
+
+    public static void load() {
+        Assets.global.load(Anm.class, "game/drops.anm");
+    }
+
+    public static void register() {
+        updateNode = new Flow.FlowNode<>(global, DropManager::update, DropManager::added, DropManager::removed);
         drawNode = new Flow.FlowNode<>(global, DropManager::draw);
-        for (int i = 0; i < 64; i++) {
-            DropManager.global.scoreDropPool[i] = DropManager.global.new ScoreDrop(Assets.global.get(Anm.class,"game/plr.anm"), "SmallBullet"); //Тимчасово
-            DropManager.global.powerDropPool[i] = DropManager.global.new PowerDrop(Assets.global.get(Anm.class,"game/plr.anm"), "BigBullet"); //Поки нема спрайта дропів
-        }
         Flow.global.addToUpdate(updateNode, 7);
         Flow.global.addToDraw(drawNode, 4);
     }
-    public static void shutdown(){
+
+    public static void shutdown() {
         Flow.global.cut(updateNode);
         Flow.global.cut(drawNode);
     }
-    public void createScoreDrop(Vector2 pos) {
-        int i = 0;
-        while (i < scoreDropPool.length && scoreDropPool[i].active) i++;
-        if (i < scoreDropPool.length) {
-            scoreDropPool[i].active = true;
-            scoreDropPool[i].position.set(pos);
-            scoreDropPool[i].speed = scoreDropPool[i].defaultSpeed;
-        }
+
+    public void spawnStar(Vector2 pos) {
+        Drop d = pull();
+        if (d == null) return;
+        d.type = DropType.STAR;
+        d.speed = 3.0f;
+        d.position.set(pos);
+        d.sprite.loadAnm(anm);
+        d.sprite.loadScriptAndPlay("Star");
     }
-    public void createPowerDrop(Vector2 pos) {
-        int i = 0;
-        while (i < powerDropPool.length && powerDropPool[i].active) i++;
-        if (i < powerDropPool.length) {
-            powerDropPool[i].active = true;
-            powerDropPool[i].position.set(pos);
-            powerDropPool[i].speed = powerDropPool[i].defaultSpeed;
-        }
+
+    public void spawnPower(Vector2 pos) {
+        Drop d = pull();
+        if (d == null) return;
+        d.type = DropType.POWER;
+        d.speed = 3.0f;
+        d.position.set(pos);
+        d.sprite.loadAnm(anm);
+        d.sprite.loadScriptAndPlay("Power");
     }
+
+    private Drop pull() {
+        if (free == drops.length)
+            return null;
+        Drop drop = drops[free++];
+        drop.active = true;
+        while (free < drops.length && drops[free].active)
+            ++free;
+        return drop;
+    }
+
+    private void delete(Drop drop) {
+        drop.active = false;
+        drop.sprite.delete();
+        if (free > drop.idx)
+            free = drop.idx;
+    }
+
+    private int added() {
+        anm = Assets.global.get(Anm.class, "game/drops.anm");
+        for (Drop drop : drops)
+            drop.active = false;
+        return 0;
+    }
+
     private int update() {
+        if (!GameplayManager.global.canUpdate() || Player.global.isDeathBombing())
+            return Flow.FLOW_RESULT_CONTINUE;
         if (dropSoundCooldown > 0)
             --dropSoundCooldown;
-        for (ScoreDrop scoreDrop : scoreDropPool) {
-            if (scoreDrop.active){
-                scoreDrop.sprite.execute();
-                if (Intersector.intersectPolygons(Player.global.grazeBox, scoreDrop.hitbox, null)){
-                    GameplayStats.global.score(SCORE_DROP);
-                    Hud.global.pickup(scoreDrop.position, SCORE_DROP);
-                    if (dropSoundCooldown == 0) {
-                        Audio.global.playSound("drop.ogg", 1.0f);
-                        dropSoundCooldown = 5;
-                    }
-                    scoreDrop.active = false;
+        for (Drop drop : drops) {
+            if (!drop.active) continue;
+            drop.collider.setPosition(drop.position.x, drop.position.y);
+            if (Intersector.intersectPolygons(Player.global.grazeBox, drop.collider, null)) {
+                long points;
+                if (drop.type == DropType.STAR) {
+                    points = SCORE_DROP;
+                    if (drop.position.y < GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT * 0.5f)
+                        points /= 2;
+                    GameplayStats.global.score(points);
+                } else {
+                    points = POWER_DROP;
+                    GameplayStats.global.power((int) points);
                 }
-                scoreDrop.move();
-                if (scoreDrop.position.y < 0) scoreDrop.active = false;
-            }
-        }
-        for (PowerDrop powerDrop : powerDropPool) {
-            if (powerDrop.active){
-                powerDrop.sprite.execute();
-                if (Intersector.intersectPolygons(Player.global.grazeBox, powerDrop.hitbox, null)){
-                    powerDrop.active = false;
-                    Hud.global.pickup(powerDrop.position, POWER_DROP);
-                    if (dropSoundCooldown == 0) {
-                        Audio.global.playSound("drop.ogg", 1.0f);
-                        dropSoundCooldown = 5;
-                    }
-                    GameplayStats.global.power(POWER_DROP);
+                Hud.global.pickup(drop.position, points);
+                if (dropSoundCooldown == 0) {
+                    Audio.global.playSound("drop.ogg", 1.0f);
+                    dropSoundCooldown = 5;
                 }
-                powerDrop.move();
-                if (powerDrop.position.y < 0) powerDrop.active = false;
+                delete(drop);
+                continue;
             }
-        }
-        return 0;
-    }
-    private int draw() {
-        for (ScoreDrop scoreDrop : scoreDropPool) {
-            if (scoreDrop.active){
-                scoreDrop.draw();
+            if (drop.position.y < GameplayManager.VIEWPORT_START_Y - 24.0f) {
+                delete(drop);
+                continue;
             }
-        }
-        for (PowerDrop powerDrop : powerDropPool) {
-            if (powerDrop.active){
-                powerDrop.draw();
-            }
+            drop.speed += GRAVITY;
+            if (drop.speed < TERMINAL_SPEED)
+                drop.speed = TERMINAL_SPEED;
+            drop.position.y += drop.speed;
+            drop.sprite.teleport();
+            drop.sprite.position.set(drop.position);
+            drop.sprite.execute();
         }
         return 0;
     }
 
-    abstract class Drop {
-        GraphicManager.AnmVirtualMachine sprite;
-        Vector2 position;
-        Polygon hitbox;
-        float speed;
-        float defaultSpeed;
-        private float speedLimit;
-        protected float acceleration;
+    private int draw() {
+        for (Drop drop : drops)
+            if (drop.active)
+                drop.sprite.draw();
+        return 0;
+    }
+
+    private int removed() {
+        for (Drop drop : drops)
+            delete(drop);
+        Assets.global.unload("game/drops.anm");
+        return 0;
+    }
+
+    private final class Drop {
+        public final int idx;
+
+        public DropType type;
+        public GraphicManager.AnmVirtualMachine sprite;
+        public final Vector2 position;
+        public final Polygon collider;
+        public float speed;
         boolean active;
 
-        private Drop(Anm source, String script, float speed, float acceleration) {
-            //TODO спрайти дропу
+        private Drop(int idx) {
+            this.idx = idx;
             sprite = GraphicManager.global.new AnmVirtualMachine();
-            sprite.loadAnm(source);
-            sprite.loadScriptAndPlay(script);
-            sprite.scale.scl(2); //Для тесту, щоб відрізняти від реальних куль, прибрати коли буде спрайт
             position = new Vector2();
-            hitbox = new Polygon(new float[] {-2, -2, -2, 2, 2, 2, 2, -2}); //Поміняти розмір коли буде готовий спрайт
+            collider = new Polygon(new float[] { -8.0f, -8.0f, -8.0f, 8.0f, 8.0f, 8.0f, 8.0f, -8.0f });
             active = false;
-            speedLimit = -7.0f;
-            this.defaultSpeed = speed;
-            this.acceleration = acceleration;
-        }
-        protected void move() {
-            position.y += speed;
-            if (speed > speedLimit) speed += acceleration;
-            hitbox.setPosition(position.x, position.y);
-        }
-        protected void draw() {
-            sprite.position.set(position);
-            sprite.draw();
-        }
-    }
-
-    class ScoreDrop extends Drop {
-        private ScoreDrop(Anm source, String script) {
-            super(source, script, 2.0f, -0.1f);
-        }
-    }
-
-    class PowerDrop extends Drop {
-        private PowerDrop(Anm source, String script) {
-            super(source, script, 2.0f, -0.1f);
         }
     }
 }

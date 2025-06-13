@@ -1,0 +1,16 @@
+#import "game/drops.png"
+
+#source(0, 0, 0, 24, 24)
+#define STAR 0
+#source(0, 24, 0, 20, 20)
+#define POWER 1
+
+script Star {
+    source(STAR);
+    pause;
+}
+
+script Power {
+    source(POWER);
+    pause;
+}
