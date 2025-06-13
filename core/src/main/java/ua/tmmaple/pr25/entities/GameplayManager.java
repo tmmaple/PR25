@@ -54,7 +54,7 @@ public final class GameplayManager {
         if (loading && Assets.global.isLoaded()) {
             loading = false;
             StageManager.register();
-            StageManager.global.load(new StageTest());
+            StageManager.global.load(new Stage01());
             GameplayStats.register();
             Player.register();
             EnemyManager.register();
