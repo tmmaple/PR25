@@ -39,6 +39,7 @@ public final class Stage01 extends Stage {
                     background.cameraVelocity = 0.5f;
                     return true;
                 }
+
             ),
             Task.keyframe(
                 200,
