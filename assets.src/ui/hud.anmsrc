@@ -3,7 +3,7 @@
 #source(0, 0, 48, 640, 480)
 #define BORDERS 0
 
-#source(0, 0, 0, 640, 480)
+#source(0, 0, 528, 640, 480)
 #define PAUSE_OVERLAY 1
 
 #source(0, 384, 0, 48, 48)

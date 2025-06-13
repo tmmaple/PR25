@@ -4,7 +4,6 @@ import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.Logger;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.stages.Stage01;
-import ua.tmmaple.pr25.stages.StageTest;
 
 public final class GameplayManager {
     private static final short DEATHBOMB_COOLDOWN = (short) 10;
@@ -18,9 +17,10 @@ public final class GameplayManager {
 
     private static Flow.FlowNode<GameplayManager> node;
 
-    private short deathbombCooldown;
-
     private int coins;
+
+    private int gameState;
+
     private boolean loading;
 
     public static int register() {
@@ -46,8 +46,28 @@ public final class GameplayManager {
         Hud.global = new Hud();
     }
 
+    public int getCoins() {
+        return coins;
+    }
+
     public boolean canUpdate() {
-        return deathbombCooldown == 0;
+        return gameState == 0;
+    }
+
+    public int getGameState() {
+        return gameState;
+    }
+
+    public void pause() {
+        gameState = 1;
+    }
+
+    public void resume() {
+        if (gameState == 2) {
+            Player.global.respawn();
+            GameplayStats.global.respawn();
+        }
+        gameState = 0;
     }
 
     private int update() {
@@ -65,18 +85,12 @@ public final class GameplayManager {
             VfxManager.register();
             Hud.register();
         }
-        if (deathbombCooldown > 0) {
-            --deathbombCooldown;
-            if (deathbombCooldown == 0) {
-                gameOver();
-            }
-        }
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
     public void gameOver() {
-        Player.global.respawn();
-        Logger.info("Game Over");
+        if (--coins > 0)
+            gameState = 2;
     }
 
     private int added() {
@@ -84,7 +98,7 @@ public final class GameplayManager {
         BulletManager.load();
         DropManager.load();
         Hud.load();
-        coins = 0;
+        coins = 4;
         loading = true;
         return 0;
     }

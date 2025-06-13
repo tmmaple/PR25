@@ -5,11 +5,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Align;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.God;
+import ua.tmmaple.pr25.Text;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 import ua.tmmaple.pr25.graphics.TextManager;
+import ua.tmmaple.pr25.ui.MenuItem;
 
 public final class Hud {
     private static final Vector2 BASE = new Vector2(440.0f, 480.0f - 64.0f);
@@ -20,6 +22,8 @@ public final class Hud {
     private static Flow.FlowNode<Hud> updateNode;
     private static Flow.FlowNode<Hud> drawNode;
 
+    private Anm anm;
+
     private final Pickup[] pickups;
     private final TextManager.TextSettings pickupSettings;
     private int freePickup;
@@ -28,12 +32,16 @@ public final class Hud {
     private final TextManager.TextSettings popupSettings;
     private String popup;
 
+    private final GraphicManager.AnmVirtualMachine pauseOverlayVm;
+    private final TextManager.TextSettings pauseTitleSettings;
+    private CharSequence pauseTitle;
+    private final MenuItem resumeButton;
+    private final MenuItem exitButton;
+
     private final GraphicManager.AnmVirtualMachine bordersVm;
     private final GraphicManager.AnmVirtualMachine bombVm;
     private final TextManager.TextSettings labelSettings;
     private final TextManager.TextSettings valueSettings;
-
-    private final GraphicManager.AnmVirtualMachine pauseOverlayVm;
 
     private long score;
     private long graze;
@@ -41,6 +49,8 @@ public final class Hud {
     private boolean canBomb;
     private int power;
     private boolean fullPower;
+
+    private int gameState;
 
     public Hud() {
         pickups = new Pickup[32];
@@ -55,6 +65,34 @@ public final class Hud {
         popupSettings.parent = popupVm;
         popupSettings.targetWidth = 384;
         popupSettings.setFont((byte) 0);
+        pauseOverlayVm = GraphicManager.global.new AnmVirtualMachine();
+        pauseTitleSettings = TextManager.global.new TextSettings();
+        pauseTitleSettings.hAlign = Align.center;
+        pauseTitleSettings.setFont((byte) 2);
+        pauseTitleSettings.targetWidth = 384;
+        pauseTitleSettings.color.set(Color.YELLOW);
+        pauseTitleSettings.position.set(GameplayManager.VIEWPORT_START_X, GameplayManager.VIEWPORT_START_Y + 280.0f);
+        pauseTitleSettings.parent = pauseOverlayVm;
+        resumeButton = new MenuItem()
+            .parent(pauseOverlayVm)
+            .focusedColor(0xFFFF66)
+            .unfocusedColor(0xFFFFFFFF)
+            .focusedFont(4)
+            .unfocusedFont(4)
+            .width(384)
+            .align(Align.center)
+            .position(GameplayManager.VIEWPORT_START_X, GameplayManager.VIEWPORT_START_Y + 220.0f);
+        exitButton = new MenuItem()
+            .parent(pauseOverlayVm)
+            .focusedColor(0xFFFF66)
+            .unfocusedColor(0xFFFFFF)
+            .focusedFont(4)
+            .unfocusedFont(4)
+            .width(384)
+            .align(Align.center)
+            .position(GameplayManager.VIEWPORT_START_X, GameplayManager.VIEWPORT_START_Y + 190.0f)
+            .up(resumeButton);
+        resumeButton.down(exitButton);
         bordersVm = GraphicManager.global.new AnmVirtualMachine();
         bombVm = GraphicManager.global.new AnmVirtualMachine();
         labelSettings = TextManager.global.new TextSettings();
@@ -67,7 +105,6 @@ public final class Hud {
         valueSettings.setFont((byte) 4);
         valueSettings.targetWidth = 190;
         valueSettings.wrap = false;
-        pauseOverlayVm = GraphicManager.global.new AnmVirtualMachine();
     }
 
     public static void load() {
@@ -94,7 +131,7 @@ public final class Hud {
         if (text == null)
             return;
         popupVm.delete();
-        popupVm.loadAnm(Assets.global.get(Anm.class, "ui/hud.anm"));
+        popupVm.loadAnm(anm);
         popupVm.loadScriptAndPlay("Popup");
         popupVm.execute();
         popup = text;
@@ -114,8 +151,9 @@ public final class Hud {
     private int added() {
         for (int i = 0; i < pickups.length; ++i)
             pickups[i].ticks = 0;
+        gameState = 0;
         freePickup = 0;
-        Anm anm = Assets.global.get(Anm.class, "ui/hud.anm");
+        anm = Assets.global.get(Anm.class, "ui/hud.anm");
         popupVm.delete();
         popupVm.position.set(GameplayManager.VIEWPORT_START_X, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT - 96.0f);
         bordersVm.loadAnm(anm);
@@ -129,7 +167,44 @@ public final class Hud {
 
     private int update() {
         updateInGame();
+        if (gameState != GameplayManager.global.getGameState()) {
+            if (gameState == 0)
+                showPauseOverlay();
+            else
+                hidePause();
+            gameState = GameplayManager.global.getGameState();
+            if (gameState == 1)
+                showPauseMenu();
+            else if (gameState == 2)
+                showCoinMenu();
+        }
+        pauseOverlayVm.execute();
+        resumeButton.update();
+        exitButton.update();
         return Flow.FLOW_RESULT_CONTINUE;
+    }
+
+    private void showPauseOverlay() {
+        pauseOverlayVm.loadAnm(anm);
+        pauseOverlayVm.loadScriptAndPlay("PauseOverlay");
+    }
+
+    private void hidePause() {
+        pauseOverlayVm.interrupt((byte) 1);
+        resumeButton.unfocus();
+        exitButton.unfocus();
+    }
+
+    private void showPauseMenu() {
+        pauseTitle = new Text("pause");
+        resumeButton.makeButton(i -> { GameplayManager.global.resume(); }).text(new Text("pauseResume")).focus();
+        exitButton.makeButton(null).text(new Text("pauseExit"));
+    }
+
+    private void showCoinMenu() {
+        pauseTitle = new Text("coins", GameplayManager.global.getCoins());
+        resumeButton.makeButton(i -> { GameplayManager.global.resume(); }).text(new Text("coinsContinue")).focus();
+        exitButton.makeButton(null).text(new Text("coinsExit"));
     }
 
     private int draw() {
@@ -141,6 +216,10 @@ public final class Hud {
         }
         if (popup != null)
             popupSettings.draw(God.global.getLocalizedString(popup, true));
+        pauseOverlayVm.draw();
+        pauseTitleSettings.draw(pauseTitle);
+        resumeButton.draw();
+        exitButton.draw();
         valueSettings.color.set(Color.WHITE);
         bordersVm.draw();
         Vector2 pos = BASE.cpy();
@@ -179,6 +258,10 @@ public final class Hud {
         if (!GameplayManager.global.canUpdate())
             return;
 
+        if (God.global.inputState(God.INPUT_UI_DISCARD) == God.INPUT_STATE_PRESSED) {
+            GameplayManager.global.pause();
+            return;
+        }
         for (int i = 0; i < pickups.length; ++i) {
             if (pickups[i].ticks == 0) continue;
             --pickups[i].ticks;

@@ -23,8 +23,10 @@ public final class Stage01 extends Stage {
     @Override
     public TimelineTask main() {
         // Тут логіка рівня
-        return Task.timeline(
-
+        return Task.timeline(Task.keyframe(enm -> {
+                nextStage(new StageTest());
+                return true;
+            })
         );
     }
 

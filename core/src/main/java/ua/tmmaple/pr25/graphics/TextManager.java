@@ -117,6 +117,7 @@ public final class TextManager {
             Color color = this.color.cpy();
             Vector2 pos = position.cpy();
             if (parent != null) {
+                if (!parent.absoluteVisible()) return;
                 Color parentColor = parent.absoluteColor();
                 color.mul(parentColor.r, parentColor.g, parentColor.b, parent.absoluteAlpha());
                 pos.add(parent.absolutePosition());
@@ -125,7 +126,6 @@ public final class TextManager {
             int start = Math.max(this.start, 0);
             int end = Math.min(this.end, text.length());
             font.draw(GraphicManager.global.batch, text, pos.x, pos.y, start, end, targetWidth, hAlign, wrap);
-            GraphicManager.global.batch.setColor(Color.WHITE.cpy());
         }
     }
 }
