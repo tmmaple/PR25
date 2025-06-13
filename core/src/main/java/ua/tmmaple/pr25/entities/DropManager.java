@@ -59,6 +59,7 @@ public class DropManager {
                 scoreDrop.sprite.execute();
                 if (Intersector.intersectPolygons(Player.global.grazeBox, scoreDrop.hitbox, null)){
                     GameplayStats.global.score(100); //Скільки дроп має давати очок я не знаю, якщо треба, то поміняти
+                    Hud.global.pickup(scoreDrop.position, 100);
                     scoreDrop.active = false;
                 }
                 scoreDrop.move();
@@ -70,6 +71,7 @@ public class DropManager {
                 powerDrop.sprite.execute();
                 if (Intersector.intersectPolygons(Player.global.grazeBox, powerDrop.hitbox, null)){
                     powerDrop.active = false;
+                    Hud.global.pickup(powerDrop.position, 1);
                     GameplayStats.global.power(1); //Те саме, що і з очками
                 }
                 powerDrop.move();

@@ -476,6 +476,7 @@ public class Enemy {
                 Audio.global.playSound(deathSound, 1.0f);
             VfxManager.global.spawn(deathVfx, viewportPosition());
             GameplayStats.global.score(100);
+            Hud.global.pickup(viewportPosition(), 100);
             for (int i=0; i<scoreDrop; i++) DropManager.global.createScoreDrop(viewportPosition().add(14.0f * (i * 0.5f - i), i * 7.0f));
             scoreDrop = 0;
             for (int i=0; i<powerDrop; i++)

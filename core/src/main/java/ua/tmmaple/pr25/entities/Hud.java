@@ -19,6 +19,10 @@ public final class Hud {
     private static Flow.FlowNode<Hud> updateNode;
     private static Flow.FlowNode<Hud> drawNode;
 
+    private final Pickup[] pickups;
+    private final TextManager.TextSettings pickupSettings;
+    private int freePickup;
+
     private final GraphicManager.AnmVirtualMachine bordersVm;
     private final GraphicManager.AnmVirtualMachine bombVm;
     private final TextManager.TextSettings labelSettings;
@@ -33,6 +37,12 @@ public final class Hud {
     private int power;
 
     public Hud() {
+        pickups = new Pickup[32];
+        for (int i = 0; i < pickups.length; ++i)
+            pickups[i] = new Pickup();
+        pickupSettings = TextManager.global.new TextSettings();
+        pickupSettings.hAlign = Align.left;
+        pickupSettings.setFont((byte) 5);
         bordersVm = GraphicManager.global.new AnmVirtualMachine();
         bombVm = GraphicManager.global.new AnmVirtualMachine();
         labelSettings = TextManager.global.new TextSettings();
@@ -68,7 +78,21 @@ public final class Hud {
         drawNode = null;
     }
 
+    public void pickup(Vector2 position, long points) {
+        Pickup p = pickups[freePickup++];
+        p.position.set(position);
+        p.value = points;
+        p.ticks = (short) 40;
+        while (freePickup < pickups.length && pickups[freePickup].ticks > 0)
+            ++freePickup;
+        if (freePickup == pickups.length)
+            freePickup = 0;
+    }
+
     private int added() {
+        for (int i = 0; i < pickups.length; ++i)
+            pickups[i].ticks = 0;
+        freePickup = 0;
         Anm anm = Assets.global.get(Anm.class, "ui/hud.anm");
         bordersVm.loadAnm(anm);
         bordersVm.loadScriptAndPlay("Borders");
@@ -85,6 +109,12 @@ public final class Hud {
     }
 
     private int draw() {
+        for (int i = 0; i < pickups.length; ++i) {
+            Pickup p = pickups[i];
+            if (p.ticks == 0) continue;
+            pickupSettings.position.set(p.position);
+            pickupSettings.draw(String.format("+%d", p.value));
+        }
         valueSettings.color.set(Color.WHITE);
         bordersVm.draw();
         Vector2 pos = BASE.cpy();
@@ -118,6 +148,15 @@ public final class Hud {
         if (!GameplayManager.global.canUpdate())
             return;
 
+        for (int i = 0; i < pickups.length; ++i) {
+            if (pickups[i].ticks == 0) continue;
+            --pickups[i].ticks;
+            if (pickups[i].ticks == 0) {
+                freePickup = i;
+                continue;
+            }
+            pickups[i].position.add(0.0f, 0.5f);
+        }
         if (score < GameplayStats.global.getScore())
             score += 100;
         if (score > GameplayStats.global.getScore())
@@ -141,5 +180,15 @@ public final class Hud {
         bordersVm.delete();
         bombVm.delete();
         return 0;
+    }
+
+    private static final class Pickup {
+        public final Vector2 position;
+        public long value;
+        public short ticks;
+
+        public Pickup() {
+            position = new Vector2();
+        }
     }
 }
