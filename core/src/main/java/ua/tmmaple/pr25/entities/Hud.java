@@ -156,6 +156,8 @@ public final class Hud {
         anm = Assets.global.get(Anm.class, "ui/hud.anm");
         popupVm.delete();
         popupVm.position.set(GameplayManager.VIEWPORT_START_X, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT - 96.0f);
+        resumeButton.anm(anm, "MenuItem");
+        exitButton.anm(anm, "MenuItem");
         bordersVm.loadAnm(anm);
         bordersVm.loadScriptAndPlay("Borders");
         bordersVm.position.set(0, 0);
@@ -301,6 +303,10 @@ public final class Hud {
     private int removed() {
         bordersVm.delete();
         bombVm.delete();
+        pauseOverlayVm.delete();
+        popupVm.delete();
+        resumeButton.destroy();
+        exitButton.destroy();
         return 0;
     }
 

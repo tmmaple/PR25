@@ -751,7 +751,6 @@ public final class GraphicManager {
          * @author uwuhasmile
          */
         public boolean absoluteVisible() {
-            if (region == null) return false;
             AnmVirtualMachine o = this;
             boolean result = true;
             while (o != null && result) {

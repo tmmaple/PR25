@@ -79,3 +79,15 @@ script Popup {
     sleep 30;
     delete;
 }
+
+script MenuItem {
+    position(0.0, -2.0);
+    pause;
+    interrupt 1;
+    position(0.0, -2.0);
+    move(4, 0.0, 0.0, INTERPOLATION_EASE_IN);
+    pause;
+    interrupt 2;
+    position(0.0, 0.0);
+    move(4, 0.0, -2.0, INTERPOLATION_EASE_OUT);
+}
