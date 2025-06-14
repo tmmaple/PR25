@@ -9,6 +9,10 @@ import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
+/**
+ * Керування дропами (предметами, що випадають з ворогів)
+ * @author SkyWarp
+ */
 public class DropManager {
     private enum DropType {
         STAR,
@@ -38,10 +42,18 @@ public class DropManager {
             drops[i] = new Drop(i);
     }
 
+    /**
+     * Завантажує ресурси
+     * @author uwuhasmile
+     */
     public static void load() {
         Assets.global.load(Anm.class, "game/drops.anm");
     }
 
+    /**
+     * Реєструє в списку оновлень та відмалювання.
+     * @author SkyWarp
+     */
     public static void register() {
         updateNode = new Flow.FlowNode<>(global, DropManager::update, DropManager::added, DropManager::removed);
         drawNode = new Flow.FlowNode<>(global, DropManager::draw);
@@ -49,11 +61,20 @@ public class DropManager {
         Flow.global.addToDraw(drawNode, 4);
     }
 
+    /**
+     * Видаляє зі списку оновлень та відмалювання.
+     * @author SkyWarp
+     */
     public static void shutdown() {
         Flow.global.cut(updateNode);
         Flow.global.cut(drawNode);
     }
 
+    /**
+     * Спавнить зірку.
+     * @param pos позиція
+     * @author uwuhasmile
+     */
     public void spawnStar(Vector2 pos) {
         Drop d = pull();
         if (d == null) return;
@@ -64,6 +85,11 @@ public class DropManager {
         d.sprite.loadScriptAndPlay("Star");
     }
 
+    /**
+     * Спавнить предмет потужності.
+     * @param pos позиція
+     * @author uwuhasmile
+     */
     public void spawnPower(Vector2 pos) {
         Drop d = pull();
         if (d == null) return;
@@ -74,6 +100,11 @@ public class DropManager {
         d.sprite.loadScriptAndPlay("Power");
     }
 
+    /**
+     * Забирає дроп з пулу.
+     * @return якщо пул не заповнений, то витягнутий дроп. Інакше null.
+     * @author uwuhasmile
+     */
     private Drop pull() {
         if (free == drops.length)
             return null;
@@ -84,6 +115,10 @@ public class DropManager {
         return drop;
     }
 
+    /**
+     * Повертає кулю в пул.
+     * @author uwuhasmile
+     */
     private void delete(Drop drop) {
         drop.active = false;
         drop.sprite.delete();
@@ -91,6 +126,10 @@ public class DropManager {
             free = drop.idx;
     }
 
+    /**
+     * Ініціалізує всі дропи.
+     * @author uwuhasmile
+     */
     private int added() {
         anm = Assets.global.get(Anm.class, "game/drops.anm");
         for (Drop drop : drops)
@@ -98,6 +137,10 @@ public class DropManager {
         return 0;
     }
 
+    /**
+     * Оновлює всі активні дропи та перевіряє їм колізію з гравцем.
+     * @author SkyWarp
+     */
     private int update() {
         if (!GameplayManager.global.canUpdate() || Player.global.isDeathBombing())
             return Flow.FLOW_RESULT_CONTINUE;
@@ -140,6 +183,10 @@ public class DropManager {
         return 0;
     }
 
+    /**
+     * Відмальовує дропи на екрані.
+     * @author SkyWarp
+     */
     private int draw() {
         for (Drop drop : drops)
             if (drop.active)
@@ -147,13 +194,22 @@ public class DropManager {
         return 0;
     }
 
+    /**
+     * Очищує всі ресурси та дропи після видалення зі списків.
+     * @author uwuhasmile
+     */
     private int removed() {
         for (Drop drop : drops)
             delete(drop);
+        anm = null;
         Assets.global.unload("game/drops.anm");
         return 0;
     }
 
+    /**
+     * Дроп та його параметри.
+     * @author SkyWarp
+     */
     private final class Drop {
         public final int idx;
 
