@@ -3,6 +3,7 @@ package ua.tmmaple.pr25.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.God;
+import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 import ua.tmmaple.pr25.graphics.TextManager;
@@ -197,9 +198,10 @@ public final class MenuItem {
             boolean left = God.global.inputState(God.INPUT_UI_LEFT) == God.INPUT_STATE_JUST_PRESSED;
             boolean up = God.global.inputState(God.INPUT_UI_UP) == God.INPUT_STATE_JUST_PRESSED;
             boolean down = God.global.inputState(God.INPUT_UI_DOWN) == God.INPUT_STATE_JUST_PRESSED;
-            if (type == ItemType.BUTTON && listener != null && accept)
+            if (type == ItemType.BUTTON && listener != null && accept) {
                 listener.pressed(this);
-            else if (listener != null && right) {
+                Audio.global.playSound("accept.ogg", 1.0f);
+            } else if (listener != null && right) {
                 if (type == ItemType.INT_SLIDER) {
                     i0 += i1;
                     if (i0 > i3)
@@ -217,6 +219,7 @@ public final class MenuItem {
                             f0 = f3;
                     listener.floatChanged(this, f0);
                 }
+                Audio.global.playSound("accept.ogg", 1.0f);
             } else if (listener != null && left) {
                 if (type == ItemType.INT_SLIDER) {
                     i0 -= i1;
@@ -235,12 +238,15 @@ public final class MenuItem {
                             f0 = f2;
                     listener.floatChanged(this, f0);
                 }
+                Audio.global.playSound("accept.ogg", 1.0f);
             } else if (this.up != null && up) {
                 unfocus();
                 this.up.focus();
+                Audio.global.playSound("select.ogg", 1.0f);
             } else if (this.down != null && down) {
                 unfocus();
                 this.down.focus();
+                Audio.global.playSound("select.ogg", 1.0f);
             }
         }
         if (usesVm)
