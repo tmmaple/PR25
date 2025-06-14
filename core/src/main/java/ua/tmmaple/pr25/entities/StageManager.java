@@ -7,6 +7,10 @@ import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.audio.Bgm;
 import ua.tmmaple.pr25.graphics.Anm;
 
+/**
+ * Керує стадіями у грі: завантажує та змінює їх.
+ * @author uwuhasmile
+ */
 public final class StageManager {
     public static StageManager global;
 
@@ -19,17 +23,29 @@ public final class StageManager {
     private Enemy root;
     private boolean loading;
 
+    /**
+     * Реєструє у списку оновлень.
+     * @author uwuhasmile
+     */
     public static void register() {
         node = new Flow.FlowNode<>(global, StageManager::update);
         node.removedListener = StageManager::removed;
         Flow.global.addToUpdate(node, 12);
     }
 
+    /**
+     * Видаляє зі списку оновлень.
+     * @author uwuhasmile
+     */
     public static void shutdown() {
         Flow.global.cut(node);
         node = null;
     }
 
+    /**
+     * Ставить наступну стадію на очікування та завантажує її ресурси.
+     * @author uwuhasmile
+     */
     public void load(Stage stage) {
         unload();
         loading = true;
@@ -42,6 +58,10 @@ public final class StageManager {
             Assets.global.load(Bgm.class, bgm);
     }
 
+    /**
+     * Вивантажує поточну стадію.
+     * @author uwuhasmile
+     */
     public void unload() {
         if (stage == null)
             return;
@@ -61,10 +81,18 @@ public final class StageManager {
         root = null;
     }
 
+    /**
+     * @return чи працює стадія. Повертає false, якщо стадія завантажується.
+     * @author uwuhasmile
+     */
     public boolean isActive() {
         return !loading && root != null;
     }
 
+    /**
+     * Оновлює менеджер.
+     * @author uwuhasmile
+     */
     private int update() {
         if (root != null && !root.active)
             root = null;
@@ -83,6 +111,10 @@ public final class StageManager {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * Очищує ресурси.
+     * @author uwuhasmile
+     */
     private int removed() {
         unload();
         return 0;
