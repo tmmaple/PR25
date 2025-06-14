@@ -8,8 +8,9 @@ import ua.tmmaple.pr25.audio.Audio;
 import java.util.Random;
 
 /**
- * Патерн атаки ворога
+ * Створює патерни та візерунки куль ворога
  * @author SkyWarp
+ * @author uwuhasmile
  */
 public class Gun {
     public enum BulletType {
@@ -27,20 +28,305 @@ public class Gun {
         BULLET_16x32_RED, BULLET_16x32_ORANGE, BULLET_16x32_YELLOW, BULLET_16x32_GREEN, BULLET_16x32_BLUE, BULLET_16x32_PURPLE, BULLET_16x32_WHITE
     }
 
+    /**
+     * Тип прицілювання gun'а, впливає спавн та інтерпретацію подальших значень.
+     * @author uwuhasmile
+     */
     public enum Aim {
+        /**
+         * Створює кулі у формі рівнобічної трапеції, спрямованої товстою стороною в заданому напрямі.<br>
+         * Інтерпретація значень:
+         * <ul>
+         *     <li><code>countA</code> - кількість стовпців куль</li>
+         *     <li><code>countB</code> - скільки рядків куль</li>
+         *     <li><code>speedA</code> - швидкість першого випущеного рядка куль</li>
+         *     <li>
+         *         <code>speedB</code> - швидкість останнього випущеного рядка куль.<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>speedA</code> та <code>speedB</code>
+     *          </li>
+         *     <li><code>accelerationA</code> - лінійне прискорення першого випущеого рядка куль</li>
+         *     <li>
+         *         <code>accelerationB</code> - лінійне прискорення першого останнього рядка куль<br>
+         *          Ряди між першим та останнім використовують проміжні значення між <code>accelerationA</code> та <code>accelerationB</code>
+         *     </li>
+         *     <li><code>angleA</code> - напрям першого стовпчику куль, відносно світу</li>
+         *     <li><code>angleB</code> - різниця напрямів між стовпчиками куль</li>
+         *     <li><code>angularSpeedA</code> - швидкість повороту першого випущеного рядка куль</li>
+         *     <li>
+         *         <code>angularSpeedB</code> - швидкість повороту першого випущеного рядка куль<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>angularSpeedA</code> та <code>angularSpeedB</code>
+         *     </li>
+         *     <li><code>angularAccelerationA</code> - прискорення повороту першого випущеного рядка куль</li>
+         *     <li>
+         *         <code>angularAccelerationB</code> - прискорення повороту останнього випущеного рядка куль<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>angularAccelerationA</code> та <code>angularAccelerationB</code>
+         *     </li>
+         *     <li><code>radiusA</code> - радіус спавну першого рядка куль</li>
+         *     <li>
+         *         <code>radiusB</code> - радіус спавну останнього рядка куль<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>radiusA</code> та <code>radiusB</code>
+         *     </li>
+         * </ul>
+         */
         FAN_STATIC,
+        /**
+         * Створює кулі у формі рівнобічної трапеції, спрямованої товстою стороною в напрямі гравця.<br>
+         * Інтерпретація значень:
+         * <ul>
+         *     <li><code>countA</code> - кількість стовпців куль</li>
+         *     <li><code>countB</code> - скільки рядків куль</li>
+         *     <li><code>speedA</code> - швидкість першого випущеного рядка куль</li>
+         *     <li>
+         *         <code>speedB</code> - швидкість останнього випущеного рядка куль.<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>speedA</code> та <code>speedB</code>
+         *          </li>
+         *     <li><code>accelerationA</code> - лінійне прискорення першого випущеого рядка куль</li>
+         *     <li>
+         *         <code>accelerationB</code> - лінійне прискорення першого останнього рядка куль<br>
+         *          Ряди між першим та останнім використовують проміжні значення між <code>accelerationA</code> та <code>accelerationB</code>
+         *     </li>
+         *     <li><code>angleA</code> - напрям першого стовпчику куль, повернений до гравця</li>
+         *     <li><code>angleB</code> - різниця напрямів між стовпчиками куль</li>
+         *     <li><code>angularSpeedA</code> - швидкість повороту першого випущеного рядка куль</li>
+         *     <li>
+         *         <code>angularSpeedB</code> - швидкість повороту першого випущеного рядка куль<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>angularSpeedA</code> та <code>angularSpeedB</code>
+         *     </li>
+         *     <li><code>angularAccelerationA</code> - прискорення повороту першого випущеного рядка куль</li>
+         *     <li>
+         *         <code>angularAccelerationB</code> - прискорення повороту останнього випущеного рядка куль<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>angularAccelerationA</code> та <code>angularAccelerationB</code>
+         *     </li>
+         *     <li><code>radiusA</code> - радіус спавну першого рядка куль</li>
+         *     <li>
+         *         <code>radiusB</code> - радіус спавну останнього рядка куль<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>radiusA</code> та <code>radiusB</code>
+         *     </li>
+         * </ul>
+         */
         FAN_PLAYER,
+        /**
+         * Створює кулі у формі рівнобічної трапеції, спрямованої товстою стороною в заданому напрямі, але з випадковим розміщенням по куту.<br>
+         * Інтерпретація значень:
+         * <ul>
+         *     <li><code>countA</code> - кількість стовпців куль</li>
+         *     <li><code>countB</code> - скільки рядків куль</li>
+         *     <li><code>speedA</code> - швидкість першого випущеного рядка куль</li>
+         *     <li>
+         *         <code>speedB</code> - швидкість останнього випущеного рядка куль.<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>speedA</code> та <code>speedB</code>
+         *          </li>
+         *     <li><code>accelerationA</code> - лінійне прискорення першого випущеого рядка куль</li>
+         *     <li>
+         *         <code>accelerationB</code> - лінійне прискорення першого останнього рядка куль<br>
+         *          Ряди між першим та останнім використовують проміжні значення між <code>accelerationA</code> та <code>accelerationB</code>
+         *     </li>
+         *     <li><code>angleA</code> - центральний напрям рядка куль</li>
+         *     <li><code>angleB</code> - проміжок кутів відносно <code>angleA</code>, в межах якого випадково створюватимуться кулі.</li>
+         *     <li><code>angularSpeedA</code> - швидкість повороту першого випущеного рядка куль</li>
+         *     <li>
+         *         <code>angularSpeedB</code> - швидкість повороту першого випущеного рядка куль<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>angularSpeedA</code> та <code>angularSpeedB</code>
+         *     </li>
+         *     <li><code>angularAccelerationA</code> - прискорення повороту першого випущеного рядка куль</li>
+         *     <li>
+         *         <code>angularAccelerationB</code> - прискорення повороту останнього випущеного рядка куль<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>angularAccelerationA</code> та <code>angularAccelerationB</code>
+         *     </li>
+         *     <li><code>radiusA</code> - радіус спавну першого рядка куль</li>
+         *     <li>
+         *         <code>radiusB</code> - радіус спавну останнього рядка куль<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>radiusA</code> та <code>radiusB</code>
+         *     </li>
+         * </ul>
+         */
         RANDOM_FAN_STATIC,
+        /**
+         * Створює кулі у формі рівнобічної трапеції, спрямованої товстою стороною в заданому напрямі, але з випадковим розміщенням по куту, в сторону гравця.<br>
+         * Інтерпретація значень:
+         * <ul>
+         *     <li><code>countA</code> - кількість стовпців куль</li>
+         *     <li><code>countB</code> - скільки рядків куль</li>
+         *     <li><code>speedA</code> - швидкість першого випущеного рядка куль</li>
+         *     <li>
+         *         <code>speedB</code> - швидкість останнього випущеного рядка куль.<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>speedA</code> та <code>speedB</code>
+         *          </li>
+         *     <li><code>accelerationA</code> - лінійне прискорення першого випущеого рядка куль</li>
+         *     <li>
+         *         <code>accelerationB</code> - лінійне прискорення першого останнього рядка куль<br>
+         *          Ряди між першим та останнім використовують проміжні значення між <code>accelerationA</code> та <code>accelerationB</code>
+         *     </li>
+         *     <li><code>angleA</code> - центральний напрям рядка куль, повернений до гравця</li>
+         *     <li><code>angleB</code> - проміжок кутів відносно <code>angleA</code>, в межах якого випадково створюватимуться кулі.</li>
+         *     <li><code>angularSpeedA</code> - швидкість повороту першого випущеного рядка куль</li>
+         *     <li>
+         *         <code>angularSpeedB</code> - швидкість повороту першого випущеного рядка куль<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>angularSpeedA</code> та <code>angularSpeedB</code>
+         *     </li>
+         *     <li><code>angularAccelerationA</code> - прискорення повороту першого випущеного рядка куль</li>
+         *     <li>
+         *         <code>angularAccelerationB</code> - прискорення повороту останнього випущеного рядка куль<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>angularAccelerationA</code> та <code>angularAccelerationB</code>
+         *     </li>
+         *     <li><code>radiusA</code> - радіус спавну першого рядка куль</li>
+         *     <li>
+         *         <code>radiusB</code> - радіус спавну останнього рядка куль<br>
+         *         Рядки між першим та останнім використовують проміжні значення між <code>radiusA</code> та <code>radiusB</code>
+         *     </li>
+         * </ul>
+         */
         RANDOM_FAN_PLAYER,
+        /**
+         * Створює кулі по колу.<br>
+         * Інтерпретація значень:
+         * <ul>
+         *     <li><code>countA</code> - кількість стовпців куль</li>
+         *     <li><code>countB</code> - скільки рядків куль</li>
+         *     <li><code>speedA</code> - швидкість першого випущеного кільця куль</li>
+         *     <li>
+         *         <code>speedB</code> - швидкість останнього випущеного кільця куль.<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>speedA</code> та <code>speedB</code>
+         *          </li>
+         *     <li><code>accelerationA</code> - лінійне прискорення першого випущеого кільця куль</li>
+         *     <li>
+         *         <code>accelerationB</code> - лінійне прискорення першого останнього кільця куль<br>
+         *          Кільця між першим та останнім використовують проміжні значення між <code>accelerationA</code> та <code>accelerationB</code>
+         *     </li>
+         *     <li><code>angleA</code> - поворот першого кільця куль</li>
+         *     <li><code>angleB</code> - Зміщення кута наступних кілець куль після першого</li>
+         *     <li><code>angularSpeedA</code> - швидкість повороту першого випущеного кільця куль</li>
+         *     <li>
+         *         <code>angularSpeedB</code> - швидкість повороту першого випущеного кільця куль<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>angularSpeedA</code> та <code>angularSpeedB</code>
+         *     </li>
+         *     <li><code>angularAccelerationA</code> - прискорення повороту першого випущеного кільця куль</li>
+         *     <li>
+         *         <code>angularAccelerationB</code> - прискорення повороту останнього випущеного кільця куль<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>angularAccelerationA</code> та <code>angularAccelerationB</code>
+         *     </li>
+         *     <li><code>radiusA</code> - радіус спавну першого кільця куль</li>
+         *     <li>
+         *         <code>radiusB</code> - радіус спавну останнього кільця куль<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>radiusA</code> та <code>radiusB</code>
+         *     </li>
+         * </ul>
+         */
         RING_STATIC,
+        /**
+         * Створює кулі по колу, яке повернуте до гравця. Якщо <code>offsetMode == PLAYER</code>, то при випуску будуть спрямовані на гравця<br>
+         * Інтерпретація значень:
+         * <ul>
+         *     <li><code>countA</code> - кількість стовпців куль</li>
+         *     <li><code>countB</code> - скільки рядків куль</li>
+         *     <li><code>speedA</code> - швидкість першого випущеного кільця куль</li>
+         *     <li>
+         *         <code>speedB</code> - швидкість останнього випущеного кільця куль.<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>speedA</code> та <code>speedB</code>
+         *          </li>
+         *     <li><code>accelerationA</code> - лінійне прискорення першого випущеого кільця куль</li>
+         *     <li>
+         *         <code>accelerationB</code> - лінійне прискорення першого останнього кільця куль<br>
+         *          Кільця між першим та останнім використовують проміжні значення між <code>accelerationA</code> та <code>accelerationB</code>
+         *     </li>
+         *     <li><code>angleA</code> - поворот першого кільця куль, повернений до гравця</li>
+         *     <li><code>angleB</code> - Зміщення кута наступних кілець куль після першого</li>
+         *     <li><code>angularSpeedA</code> - швидкість повороту першого випущеного кільця куль</li>
+         *     <li>
+         *         <code>angularSpeedB</code> - швидкість повороту першого випущеного кільця куль<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>angularSpeedA</code> та <code>angularSpeedB</code>
+         *     </li>
+         *     <li><code>angularAccelerationA</code> - прискорення повороту першого випущеного кільця куль</li>
+         *     <li>
+         *         <code>angularAccelerationB</code> - прискорення повороту останнього випущеного кільця куль<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>angularAccelerationA</code> та <code>angularAccelerationB</code>
+         *     </li>
+         *     <li><code>radiusA</code> - радіус спавну першого кільця куль</li>
+         *     <li>
+         *         <code>radiusB</code> - радіус спавну останнього кільця куль<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>radiusA</code> та <code>radiusB</code>
+         *     </li>
+         * </ul>
+         */
         RING_PLAYER,
+        /**
+         * Створює кулі по колу з випадковими швидкостями.<br>
+         * Інтерпретація значень:
+         * <ul>
+         *     <li><code>countA</code> - кількість стовпців куль</li>
+         *     <li><code>countB</code> - скільки рядків куль</li>
+         *     <li><code>speedA</code> - мінімальна випадкова швидкість кулі</li>
+         *     <li><code>speedB</code> - максимальна випадкова швидкість кулі</li>
+         *     <li><code>accelerationA</code> - лінійне прискорення першого випущеого кільця куль</li>
+         *     <li>
+         *         <code>accelerationB</code> - лінійне прискорення першого останнього кільця куль<br>
+         *          Кільця між першим та останнім використовують проміжні значення між <code>accelerationA</code> та <code>accelerationB</code>
+         *     </li>
+         *     <li><code>angleA</code> - поворот першого кільця куль</li>
+         *     <li><code>angleB</code> - Зміщення кута наступних кілець куль після першого</li>
+         *     <li><code>angularSpeedA</code> - швидкість повороту першого випущеного кільця куль</li>
+         *     <li>
+         *         <code>angularSpeedB</code> - швидкість повороту першого випущеного кільця куль<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>angularSpeedA</code> та <code>angularSpeedB</code>
+         *     </li>
+         *     <li><code>angularAccelerationA</code> - прискорення повороту першого випущеного кільця куль</li>
+         *     <li>
+         *         <code>angularAccelerationB</code> - прискорення повороту останнього випущеного кільця куль<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>angularAccelerationA</code> та <code>angularAccelerationB</code>
+         *     </li>
+         *     <li><code>radiusA</code> - радіус спавну першого кільця куль</li>
+         *     <li>
+         *         <code>radiusB</code> - радіус спавну останнього кільця куль<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>radiusA</code> та <code>radiusB</code>
+         *     </li>
+         * </ul>
+         */
         RANDOM_RING_STATIC,
+        /**
+         * Створює кулі по колу з випадковими швидкостями, повернуте до гравця. Якщо <code>offsetMode == PLAYER</code>, то при випуску будуть спрямовані на гравця<br>
+         * Інтерпретація значень:
+         * <ul>
+         *     <li><code>countA</code> - кількість стовпців куль</li>
+         *     <li><code>countB</code> - скільки рядків куль</li>
+         *     <li><code>speedA</code> - мінімальна випадкова швидкість кулі</li>
+         *     <li><code>speedB</code> - максимальна випадкова швидкість кулі</li>
+         *     <li><code>accelerationA</code> - лінійне прискорення першого випущеого кільця куль</li>
+         *     <li>
+         *         <code>accelerationB</code> - лінійне прискорення першого останнього кільця куль<br>
+         *          Кільця між першим та останнім використовують проміжні значення між <code>accelerationA</code> та <code>accelerationB</code>
+         *     </li>
+         *     <li><code>angleA</code> - поворот першого кільця куль, спрямований на гравця</li>
+         *     <li><code>angleB</code> - Зміщення кута наступних кілець куль після першого</li>
+         *     <li><code>angularSpeedA</code> - швидкість повороту першого випущеного кільця куль</li>
+         *     <li>
+         *         <code>angularSpeedB</code> - швидкість повороту першого випущеного кільця куль<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>angularSpeedA</code> та <code>angularSpeedB</code>
+         *     </li>
+         *     <li><code>angularAccelerationA</code> - прискорення повороту першого випущеного кільця куль</li>
+         *     <li>
+         *         <code>angularAccelerationB</code> - прискорення повороту останнього випущеного кільця куль<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>angularAccelerationA</code> та <code>angularAccelerationB</code>
+         *     </li>
+         *     <li><code>radiusA</code> - радіус спавну першого кільця куль</li>
+         *     <li>
+         *         <code>radiusB</code> - радіус спавну останнього кільця куль<br>
+         *         Кільця між першим та останнім використовують проміжні значення між <code>radiusA</code> та <code>radiusB</code>
+         *     </li>
+         * </ul>
+         */
         RANDOM_RING_PLAYER,
     }
 
+    /**
+     * Типи позиціонування gun.
+     * @author uwuhasmile
+     */
     public enum OffsetMode {
+        /** Створює кулі відносно позиції цього ворога. **/
         ENEMY,
+        /** Створює кулі відносно центру згори ігрового поля. **/
         ABSOLUTE,
+        /** Створює кулі відносно позиції гравця. **/
         PLAYER,
     }
 
@@ -88,6 +374,10 @@ public class Gun {
         init();
     }
 
+    /**
+     * Ініціалізує до початкових параметрів.
+     * @author uwuhasmile
+     */
     public void init() {
         fireSound = null;
         offsetMode = OffsetMode.ENEMY;
@@ -112,16 +402,28 @@ public class Gun {
         delay = 0;
     }
 
+    /**
+     * Починає стрільбу.
+     * @author uwuhasmile
+     */
     public void start() {
         on = true;
         repeatsLeft = repeat;
         currentInterval = delay;
     }
 
+    /**
+     * Зупиняє стрільбу.
+     * @author uwuhasmile
+     */
     public void stop() {
         on = false;
     }
 
+    /**
+     * Оновлює стан таймерів та стріляє, якщо таймери закінчились.
+     * @author uwuhasmile
+     */
     public void update() {
         for (int i = 0; i < ownedBullets.size; ++i) {
             if (!ownedBullets.get(i).active)
@@ -139,53 +441,94 @@ public class Gun {
             --currentInterval;
     }
 
+    /**
+     * Спрямовує випущені кулі на гравця.
+     * @author uwuhasmile
+     */
     public void adjustAimAtPlayer(Vector2 offset) {
         Vector2 position = offset.cpy().add(Player.global.position);
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.setAngle(MathUtils.atan2(position.y - bullet.position.y, position.x - bullet.position.x));
     }
 
+    /**
+     * Спрямовує випущені кулі на <code>position</code>.
+     * @author uwuhasmile
+     */
     public void adjustAimAt(Vector2 position) {
         Vector2 absolutePosition = position.cpy().add(GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT);
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.setAngle(MathUtils.atan2(position.y - bullet.position.y, position.x - bullet.position.x));
     }
 
+    /**
+     * Змінює швидкість випущених куль в полярних координатах.
+     * @author uwuhasmile
+     */
     public void adjustVelocity(float angle, float speed) {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.setVelocity(angle, speed);
     }
 
+    /**
+     * Змінює лінійну швидкість випущених куль.
+     * @author uwuhasmile
+     */
     public void adjustSpeed(float speed) {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.setSpeed(speed);
     }
 
+    /**
+     * Змінює лінійне прискорення випущених куль.
+     * @author uwuhasmile
+     */
     public void adjustAcceleration(float acceleration) {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.acceleration = acceleration;
     }
 
+    /**
+     * Змінює напрям випущених куль.
+     * @author uwuhasmile
+     */
     public void adjustAngle(float angle) {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.setAngle(angle);
     }
 
+    /**
+     * Змінює швидкість повороту випущених куль.
+     * @author uwuhasmile
+     */
     public void adjustAngularSpeed(float angularSpeed) {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.setAngularSpeed(angularSpeed);
     }
 
+    /**
+     * Змінює прискорення повороту випущених куль.
+     * @author uwuhasmile
+     */
     public void adjustAngularAcceleration(float angularAcceleration) {
         for (BulletManager.Bullet bullet : ownedBullets)
             bullet.angularAcceleration = angularAcceleration;
     }
 
+    /**
+     * Змінює тип випущених куль.
+     * @author uwuhasmile
+     */
     public void adjustType(BulletType bulletType) {
         for (BulletManager.EnemyBullet bullet : ownedBullets)
             bullet.setType(BulletManager.BULLET_TYPES[bulletType.ordinal()]);
     }
 
+    /**
+     * Знищує всі кулі.
+     * @param vfx чи програвати візуальні ефекти.
+     * @author uwuhasmile
+     */
     public void destroyAll(boolean vfx) {
         for (BulletManager.Bullet bullet : ownedBullets) {
             if (vfx)
@@ -195,6 +538,10 @@ public class Gun {
         ownedBullets.clear();
     }
 
+    /**
+     * Стріляє кулями в певному патерні на основі заданих раніше параметрів.
+     * @author uwuhasmile
+     */
     private void fire() {
         Vector2 absolutePosition = offset.cpy().add(GameplayManager.VIEWPORT_START_X +GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT);
         switch (offsetMode) {
