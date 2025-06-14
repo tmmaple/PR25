@@ -146,13 +146,13 @@ public final class MainMenu {
 
     private int added() {
         next = 0;
-        startButton.makeButton(this::onStart);
-        languageSelector.makeIntSlider(this::onLanguageChange, God.global.language(), 1, 0, 1, true);
-        windowSelector.makeIntSlider(this::onScalingChange, God.global.windowScale(), 1, 0, 6, true);
-        sfxVolumeSlider.makeFloatSlider(this::onSfxVolumeChange, God.global.sfxVolume(), 0.1f, 0.0f, 1.0f, false);
-        musicVolumeSlider.makeFloatSlider(this::onMusicVolumeChange, God.global.musicVolume(), 0.1f, 0.0f, 1.0f, false);
-        exitButton.makeButton(this::onExit);
         anm = Assets.global.get(Anm.class, "ui/mainMenu.anm");
+        startButton.makeButton(this::onStart).anm(anm, "MenuItem");
+        languageSelector.makeIntSlider(this::onLanguageChange, God.global.language(), 1, 0, 1, true).anm(anm, "MenuItem");
+        windowSelector.makeIntSlider(this::onScalingChange, God.global.windowScale(), 1, 0, 6, true).anm(anm, "MenuItem");
+        sfxVolumeSlider.makeFloatSlider(this::onSfxVolumeChange, God.global.sfxVolume(), 0.1f, 0.0f, 1.0f, false).anm(anm, "MenuItem");
+        musicVolumeSlider.makeFloatSlider(this::onMusicVolumeChange, God.global.musicVolume(), 0.1f, 0.0f, 1.0f, false).anm(anm, "MenuItem");
+        exitButton.makeButton(this::onExit);
         backgroundVm.loadAnm(anm);
         backgroundVm.loadScriptAndPlay("Background");
         logoVm.loadAnm(anm);
