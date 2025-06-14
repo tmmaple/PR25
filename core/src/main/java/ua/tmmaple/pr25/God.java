@@ -199,16 +199,29 @@ public final class God {
         return 0;
     }
 
+    /**
+     * Переходить в головне меню.
+     * @author uwuhasmile
+     */
     public void toMainMenu() {
         pendingGameState = GameState.MAIN_MENU;
         MainMenu.load();
     }
 
+    /**
+     * Починає гру.
+     * @param stage стадія, з якої треба розпочати гру
+     * @author uwuhasmile
+     */
     public void startGame(Stage stage) {
         pendingGameState = GameState.GAME;
         GameplayManager.load(stage);
     }
 
+    /**
+     * Очищує ресурси поточного стану ігрового додатку.
+     * @author uwuhasmile
+     */
     private void shutdownCurrent() {
         switch (gameState) {
             case MAIN_MENU:
@@ -226,6 +239,10 @@ public final class God {
         }
     }
 
+    /**
+     * Позначає гру для виходу.
+     * @author uwuhasmile
+     */
     public void exit() {
         exit = true;
     }
