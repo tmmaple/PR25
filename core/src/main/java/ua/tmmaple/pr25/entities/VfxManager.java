@@ -35,6 +35,10 @@ public final class VfxManager {
     private static Flow.FlowNode<VfxManager> updateNode;
     private static Flow.FlowNode<VfxManager> drawNode;
 
+    public static void load() {
+        Assets.global.load(Anm.class, "game/vfx.anm");
+    }
+
     public static void register() {
         if (updateNode != null) return;
         updateNode = new Flow.FlowNode<>(global, VfxManager::update, VfxManager::added, VfxManager::removed);
@@ -167,14 +171,12 @@ public final class VfxManager {
     }
 
     private int added() {
-        Assets.global.load(Anm.class, "game/vfx.anm");
+        anm = Assets.global.get(Anm.class, "game/vfx.anm");
         clear();
         return 0;
     }
 
     private int update() {
-        if (anm == null && Assets.global.isLoaded("game/vfx.anm"))
-            anm = Assets.global.get(Anm.class, "game/vfx.anm");
         if (!GameplayManager.global.canUpdate())
             return Flow.FLOW_RESULT_CONTINUE;
         for (int i = 0; i < particles.length; ++i) {
