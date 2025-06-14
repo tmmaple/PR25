@@ -123,9 +123,6 @@ public final class Assets {
      */
     private static int update(Assets instance) {
         instance.loaded = instance.manager.update(17);
-        if (!instance.loaded) {
-            Logger.info("Loading assets: " + (int)(instance.manager.getProgress() * 100) + "%");
-        }
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
