@@ -4,8 +4,11 @@ import com.badlogic.gdx.graphics.Color;
 import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.assets.Stage;
 import ua.tmmaple.pr25.graphics.GraphicManager;
-import ua.tmmaple.pr25.stages.Stage01;
 
+/**
+ * Головний клас, що керує грою в стані активного ігрового процесу.
+ * @author uwuhasmile
+ */
 public final class GameplayManager {
     private static final short DEATHBOMB_COOLDOWN = (short) 10;
 
@@ -24,20 +27,33 @@ public final class GameplayManager {
 
     private int gameState;
 
+    /**
+     * Завантажує ресурси гравця, куль, дропів, візуальних ефектів, та HUD.
+     * @author uwuhasmile
+     */
     public static void load(Stage stage) {
         toLoad = stage;
         Player.load();
         BulletManager.load();
         DropManager.load();
+        VfxManager.load();
         Hud.load();
     }
 
+    /**
+     * Реєструє в списку оновлень.
+     * @author uwuhasmile
+     */
     public static int register() {
         node = new Flow.FlowNode<>(global, null, GameplayManager::added, GameplayManager::removed);
         Flow.global.addToUpdate(node, 3);
         return 0;
     }
 
+    /**
+     * Видаляє зі списку оновлень.
+     * @author uwuhasmile
+     */
     public static void shutdown() {
         Flow.global.cut(node);
     }
@@ -55,22 +71,40 @@ public final class GameplayManager {
         Hud.global = new Hud();
     }
 
+    /**
+     * @return кількість монет для продовження гри, що лишились в цій сесії
+     */
     public int getCoins() {
         return coins;
     }
 
+    /**
+     * @return чи можуть ігрові елементи оновлюватись (наприклад, коли гра не стоїть в паузі).
+     */
     public boolean canUpdate() {
         return gameState == 0;
     }
 
-    public int getGameState() {
+    /**
+     * @return 0, якщо гра триває, 1, якщо гра в меню паузи, 2, якщо гра в меню монети
+     * @author uwuhasmile
+     */
+    public int getPauseState() {
         return gameState;
     }
 
+    /**
+     * Ставить гру на паузу
+     * @author uwuhasmile
+     */
     public void pause() {
         gameState = 1;
     }
 
+    /**
+     * Продовжує гру після паузи. Якщо це було меню монет, то респавнить гравця та скидає статистику.
+     * @author uwuhasmile
+     */
     public void resume() {
         if (gameState == 2) {
             GameplayStats.global.coinUsed();
@@ -80,11 +114,19 @@ public final class GameplayManager {
         gameState = 0;
     }
 
+    /**
+     * Якщо ще є монети, то показує відповідне меню. В іншому випадку викидує з гри на екран показу результатів.
+     * @author uwuhasmile
+     */
     public void gameOver() {
         if (--coins > 0)
             gameState = 2;
     }
 
+    /**
+     * Ініціалізація після додавання до списку оновлення.
+     * @author uwuhasmile
+     */
     private int added() {
         StageManager.register();
         StageManager.global.load(toLoad);
@@ -104,6 +146,10 @@ public final class GameplayManager {
         return 0;
     }
 
+    /**
+     * Очищення після видалення зі списку оновлення.
+     * @author uwuhasmile
+     */
     private int removed() {
         GameplayStats.shutdown();
         BombManager.shutdown();
