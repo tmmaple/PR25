@@ -2,6 +2,10 @@ package ua.tmmaple.pr25.entities;
 
 import ua.tmmaple.pr25.Flow;
 
+/**
+ * Статистика гравця під час гри.
+ * @author uwuhasmile
+ */
 public final class GameplayStats {
     public static GameplayStats global;
 
@@ -22,6 +26,10 @@ public final class GameplayStats {
 
     public GameplayStats() { }
 
+    /**
+     * Реєструє в списку оновлень.
+     * @author uwuhasmile
+     */
     public static void register() {
         if (node != null)
             return;
@@ -29,6 +37,10 @@ public final class GameplayStats {
         Flow.global.addToUpdate(node, 11);
     }
 
+    /**
+     * Видаляє зі списку оновлень.
+     * @author uwuhasmile
+     */
     public static void shutdown() {
         if (node == null)
             return;
@@ -36,10 +48,18 @@ public final class GameplayStats {
         node = null;
     }
 
+    /**
+     * @return чи має гравець достатньо очок дотику, щоб можна було скористатися бомбою
+     * @author uwuhasmile
+     */
     public boolean canBomb() {
         return grazeBombCounter == GRAZE_BOMB_THRESHOLD;
     }
 
+    /**
+     * Має викликатись при використанні гравцем бомби, тоді віднімає кількість дотиків, потрібних для здобуття бомби.
+     * @author uwuhasmile
+     */
     public void bombUsed() {
         graze -= grazeBombCounter;
         if (graze < 0)
@@ -48,6 +68,10 @@ public final class GameplayStats {
         ++bombsUsed;
     }
 
+    /**
+     * Зарахувати дотик гравцеві.
+     * @author uwuhasmile
+     */
     public void graze() {
         score += 10;
         ++graze;
@@ -56,10 +80,20 @@ public final class GameplayStats {
             ++grazeBombCounter;
     }
 
+    /**
+     * Зарахувати очки гравцеві.
+     * @param amount кількість очок
+     * @author uwuhasmile
+     */
     public void score(long amount) {
         score += amount;
     }
 
+    /**
+     * Зарахувати потужність гравцеві, якщо вона ще не досягла 100.
+     * @param amount кількість очок потужності
+     * @author uwuhasmile
+     */
     public void power(int amount) {
         if (power >= 100)
             return;
@@ -68,37 +102,70 @@ public final class GameplayStats {
             power = 100;
     }
 
+    /**
+     * @return поточна кількість очок
+     * @author uwuhasmile
+     */
     public long getScore() {
         return score;
     }
 
+    /**
+     * @return поточна кількість очок дотику
+     * @author uwuhasmile
+     */
     public long getGraze() {
         return graze;
     }
 
+    /**
+     * @return поточна кількість очок дотику для використання бомби
+     * @author uwuhasmile
+     */
     public long getBombCounter() {
         return grazeBombCounter;
     }
 
+    /**
+     * @return поточна потужність
+     * @author uwuhasmile
+     */
     public int getPower() {
         return power;
     }
 
+    /**
+     * @return чи досяг гравець максимальної кількості очок потужності
+     * @author uwuhasmile
+     */
     public boolean isFullPower() {
         return power == 100;
     }
 
+    /**
+     * Скидає статистику для нової гри
+     * @author uwuhasmile
+     */
     public void reset() {
         power = 0;
         score = 0L;
         graze = 0L;
         grazeBombCounter = 0;
+        coinsUsed = 0;
     }
 
+    /**
+     * Зараховує використання монети для продовження гри після смерті.
+     * @author uwuhasmile
+     */
     public void coinUsed() {
         ++coinsUsed;
     }
 
+    /**
+     * Нараховує додаткові очки за дотик, та скидає значення до таких для наступного рівня.
+     * @author uwuhasmile
+     */
     public void nextLevel() {
         score += graze * 100;
         graze = 0L;
@@ -106,17 +173,29 @@ public final class GameplayStats {
             grazeBombCounter = 0;
     }
 
+    /**
+     * Скидає очки дотику та потужності після респавну.
+     * @author uwuhasmile
+     */
     public void respawn() {
         graze = 0L;
         power = 0;
         grazeBombCounter = 0;
     }
 
+    /**
+     * Скидає показники до нуля після додавання до списку оновлень (нова гра).
+     * @author uwuhasmile
+     */
     private int added() {
         reset();
         return 0;
     }
 
+    /**
+     * Оновлює таймер очок дотику для використання бомби.
+     * @author uwuhasmile
+     */
     private int update() {
         if (!GameplayManager.global.canUpdate())
             return Flow.FLOW_RESULT_CONTINUE;
