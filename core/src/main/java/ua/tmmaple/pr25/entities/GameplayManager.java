@@ -36,6 +36,7 @@ public final class GameplayManager {
         Player.load();
         BulletManager.load();
         DropManager.load();
+        BombManager.load();
         VfxManager.load();
         Hud.load();
     }

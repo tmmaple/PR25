@@ -121,10 +121,18 @@ public class BulletManager {
         enemyBullets = new EnemyBullet[600];
     }
 
+    /**
+     * Завантажує ресурси.
+     * @author uwuhasmile
+     */
     public static void load() {
         Assets.global.load(Anm.class,"game/bullets.anm");
     }
 
+    /**
+     * Реєструє в списках оновлення та малювання.
+     * @author SkyWarp
+     */
     public static void register(){
         updateNode = new Flow.FlowNode<>(global, BulletManager::update, BulletManager::added);
         Flow.global.addToUpdate(updateNode, 8);
@@ -132,11 +140,19 @@ public class BulletManager {
         Flow.global.addToDraw(drawNode, 6);
     }
 
+    /**
+     * Видаляє зі списків оновлення та малювання.
+     * @author SkyWarp
+     */
     public static void shutdown() {
         Flow.global.cut(updateNode);
         Flow.global.cut(drawNode);
     }
 
+    /**
+     * Очищує екран від усіх куль.
+     * @author uwuhasmile
+     */
     public void clear() {
         for (PlayersBullet b : plrSmallBullets)
             b.active = false;
@@ -146,6 +162,10 @@ public class BulletManager {
             b.active = false;
     }
 
+    /**
+     * Видаляє всі кулі ворога з екрану, з візуальними ефектами.
+     * @author uwuhasmile
+     */
     public void destroyEnemyBullets() {
         for (EnemyBullet b : enemyBullets) {
             if (b.active) {
@@ -155,6 +175,12 @@ public class BulletManager {
         }
     }
 
+    /**
+     * Видаляє всі кулі ворога в певному радіусі, з візуальними ефектами.
+     * @param origin точка, навколо якої мають видалятись кулі
+     * @param radius радіус, в межах якого видалятимуться кулі
+     * @author uwuhasmile
+     */
     public void destroyEnemyBulletsInRadius(Vector2 origin, float radius) {
         for (EnemyBullet b : enemyBullets)
             if (b.active && b.position.dst2(origin) <= radius * radius) {
@@ -163,6 +189,10 @@ public class BulletManager {
             }
     }
 
+    /**
+     * Оновлює менеджер куль
+     * @author SkyWarp
+     */
     private static int update(BulletManager bulletManager) {
         if (!GameplayManager.global.canUpdate() || Player.global.isDeathBombing())
             return Flow.FLOW_RESULT_CONTINUE;
@@ -170,6 +200,10 @@ public class BulletManager {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * Ініціалізує всі кулі.
+     * @author SkyWarp
+     */
     private static int added(BulletManager bulletManager) {
         bulletManager.playerHitSoundCooldown = (short) 0;
         bulletManager.anm = Assets.global.get(Anm.class, "game/bullets.anm");
@@ -185,13 +219,25 @@ public class BulletManager {
         return 0;
     }
 
+    /**
+     * Очищує всі кулі та ресурси.
+     * @author uwuhasmile
+     */
     private static int removed(BulletManager bulletManager) {
+        for (int i=0; i<bulletManager.plrSmallBullets.length; i++)
+            bulletManager.plrSmallBullets[i].sprite.delete();
+        for (int i=0; i<bulletManager.plrBigBullets.length; i++)
+            bulletManager.plrBigBullets[i].sprite.delete();
+        for (int i=0; i<bulletManager.enemyBullets.length; i++)
+            bulletManager.enemyBullets[i].sprite.delete();
+        bulletManager.anm = null;
         Assets.global.unload("game/bullets.anm");
         return 0;
     }
 
     /**
      * Оновлює в усіх пулах ті кулі, які активні
+     * @author SkyWarp
      */
     private void updateBullets() {
         if (playerHitSoundCooldown > 0)
@@ -273,6 +319,10 @@ public class BulletManager {
         }
     }
 
+    /**
+     * Відмальовує всі кулі на екран.
+     * @return SkyWarp
+     */
     private static int draw(BulletManager bulletManager) {
         for (PlayersBullet bullet : bulletManager.plrSmallBullets) {
             if (bullet.active) {
@@ -293,7 +343,8 @@ public class BulletManager {
     }
 
     /**
-     * @param pos Позиція спавну
+     * @param pos позиція спавну
+     * @author SkyWarp
      */
     public void createSmallPlayerBullet(Vector2 pos) {
         int i = 0;
@@ -306,7 +357,8 @@ public class BulletManager {
     }
 
     /**
-     * @param pos Позиція спавну
+     * @param pos позиція спавну
+     * @author SkyWarp
      */
     public void createBigPlayerBullet(Vector2 pos) {
         int i = 0;
@@ -318,6 +370,18 @@ public class BulletManager {
         }
     }
 
+    /**
+     * Створює кулю ворога.
+     * @param pos початкова позиція кулі
+     * @param angle початковий кут кулі
+     * @param speed швидкість кулі
+     * @param acceleration прискорення кулі
+     * @param angularSpeed швидкість повороту кулі
+     * @param angularAcceleration прискорення повороту кулі
+     * @param type тип кулі (впливає на спрайт та розмір колізії)
+     * @return якщо пул куль не заповнено, то буде видана нова куля. Інакше null.
+     * @author uwuhasmile
+     */
     public EnemyBullet createEnemyBullet(Vector2 pos, float angle, float speed, float acceleration, float angularSpeed, float angularAcceleration, int type) {
         int i = 0;
         int max = enemyBullets.length;
@@ -371,6 +435,10 @@ public class BulletManager {
             super(source);
         }
 
+        /**
+         * Встановлює тип кулі.
+         * @author uwuhasmile
+         */
         public void setType(BulletType type) {
             sprite.loadScriptAndPlay(type.sprite);
             this.rotates = type.rotates;
@@ -386,9 +454,12 @@ public class BulletManager {
         }
     }
 
+    /**
+     * Загальний клас кулі
+     * @author SkyWarp
+     * @author uwuhasmile
+     */
     public abstract class Bullet {
-        private static final int LIFETIME = 100000;
-
         public final Polygon collider;
         public final GraphicManager.AnmVirtualMachine sprite;
         public final Vector2 position;
@@ -410,6 +481,12 @@ public class BulletManager {
             sprite.loadAnm(source);
         }
 
+        /**
+         * Встановлює швидкість кулі в полярних координатах.
+         * @param angle кут в радіанах
+         * @param speed лінійна швидкість
+         * @author uwuhasmile
+         */
         public void setVelocity(float angle, float speed) {
             if (speed < 0.0f)
                 speed = 0.0f;
@@ -418,40 +495,71 @@ public class BulletManager {
             velocity.set(1.0f, 0.0f).setAngleRad(angle).scl(speed);
         }
 
+        /**
+         * Встановлює лінійну швидкість кулі.
+         * @author uwuhasmile
+         */
         public void setSpeed(float speed) {
             this.speed = speed;
             velocity.nor().scl(speed);
         }
 
+        /**
+         * Встановлює напрям кулі.
+         * @param angle кут напряму в радіанах
+         * @author uwuhasmile
+         */
         public void setAngle(float angle) {
             this.angle = angle;
             velocity.setAngleRad(angle);
         }
 
+        /**
+         * Встановлює швидкість прискорення кулі.
+         * @param angularSpeed прискорення в радіанах
+         * @author uwuhasmile
+         */
         public void setAngularSpeed(float angularSpeed) {
             this.angularSpeed = angularSpeed;
         }
 
+        /**
+         * @return лінійна швидкість кулі
+         * @author uwuhasmile
+         */
         public float getSpeed() {
             return speed;
         }
 
+        /**
+         * @return напрям кулі в радіанах
+         * @author uwuhasmile
+         */
         public float getAngle() {
             return angle;
         }
 
+        /**
+         * @return кутове прискорення кулі в радіанах
+         * @author uwuhasmile
+         */
         public float getAngularSpeed() {
             return angularSpeed;
         }
 
         /**
          * Переведення в неактивний стан та скидання змінних
+         * @author SkyWarp
          */
         protected void toPool() {
             active = false;
         }
     }
 
+    /**
+     * Тип кулі ворога: спрайт, розмір колізії
+     * @author uwuhasmile
+     */
     public static final class BulletType {
         public final String sprite;
         public final boolean rotates;
