@@ -12,6 +12,10 @@ import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
+/**
+ * Клас об'єкту гравця, зроблений як окрема система у Flow.
+ * @author uwuhasmile
+ */
 public class Player {
     private enum MovementDirection {
         NONE,
@@ -51,8 +55,6 @@ public class Player {
     private final GraphicManager.AnmVirtualMachine rightOrbVM;
     private final GraphicManager.AnmVirtualMachine leftOrbVM;
 
-    private ShapeRenderer shapeRenderer;
-
     public final Polygon hitbox;
     public final Polygon grazeBox;
 
@@ -74,10 +76,18 @@ public class Player {
     private static Flow.FlowNode<Player> updateNode;
     private static Flow.FlowNode<Player> drawNode;
 
+    /**
+     * Завантажує ресурси перед створенням.
+     * @author uwuhasmile
+     */
     public static void load() {
         Assets.global.load(Anm.class,"game/plr.anm");
     }
 
+    /**
+     * Реєструє до списку оновлень та відмалювань.
+     * @author uwuhasmile
+     */
     public static int register() {
         if (updateNode != null)
             return 0;
@@ -88,6 +98,10 @@ public class Player {
         return 0;
     }
 
+    /**
+     * Видаляє зі списку оновлень та відмалювань.
+     * @author uwuhasmile
+     */
     public static void shutdown() {
         Flow.global.cut(updateNode);
         Flow.global.cut(drawNode);
@@ -111,6 +125,11 @@ public class Player {
         random = new RandomXS128();
     }
 
+    /**
+     * Пробує нарахувати дотик при відповідному перетині гравця з кулями або ворогами.
+     * Не зараховується у випадку, коли гровець в стані DeathBombing або помирає.
+     * @author uwuhasmile
+     */
     public void graze() {
         if (isDeathBombing() || gameOverCooldown > 0)
             return;
@@ -122,6 +141,10 @@ public class Player {
         }
     }
 
+    /**
+     * Встановлює напрям руху гравця та змінює анімацію.
+     * @author uwuhasmile
+     */
     private void setDirection(MovementDirection direction) {
         if (this.direction != direction) {
             this.direction = direction;
@@ -145,23 +168,35 @@ public class Player {
         }
     }
 
+    /**
+     * Наносить шкоду гравцю, якщо в того нема тимчасового безсмертя.
+     * Якщо є бомба, то запускає таймер для deathbombing, але звук все одно програється.
+     * @author uwuhasmile
+     */
     public void damage() {
         if (gameOverCooldown > 0 || invincibilityCooldown > 0)
             return;
         Audio.global.playSound("plrDeath.ogg", 1.0f);
         if (GameplayStats.global.canBomb())
             deathBombCooldown = DEATH_BOMB_COOLDOWN;
-        else {
+        else
             kill();
-        }
     }
 
+    /**
+     * Вбиває гравця та запускає маленький таймер перед переходом до екрану програшу.
+     * @author uwuhasmile
+     */
     private void kill() {
         VfxManager.global.spawnPlayerDeath(position);
         BulletManager.global.destroyEnemyBulletsInRadius(position, 640.0f);
         gameOverCooldown = GAME_OVER_COOLDOWN;
     }
 
+    /**
+     * Респавнить гравця на початковій позиції, із тимчасовим безсмертям.
+     * @author uwuhasmile
+     */
     public void respawn() {
         makeInvincible(RESPAWN_INVINCIBILITY_COOLDOWN);
         position.set(GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + Y_SPAWN_OFFSET);
@@ -169,11 +204,20 @@ public class Player {
         deathBombCooldown = (short) 0;
     }
 
+    /**
+     * Тимчасово робить безсмертним.
+     * @author uwuhasmile
+     */
     public void makeInvincible(short ticks) {
         invincibilityCooldown = ticks;
         parentVM.interrupt((byte) 2);
     }
 
+    /**
+     * Головна логіка оновлення гравця, виконується 60 разів на секунду.
+     * Тут виконується рух та стрільба, а також рахунок таймерів.
+     * @author uwuhasmile
+     */
     private int update() {
         if (grazeSoundCooldown > 0)
             --grazeSoundCooldown;
@@ -186,7 +230,7 @@ public class Player {
             }
             return Flow.FLOW_RESULT_CONTINUE;
         }
-        boolean bomb = God.global.inputState(God.INPUT_BOMB) == God.INPUT_STATE_JUST_PRESSED;
+        boolean bomb = God.global.inputState(God.INPUT_BOMB) == God.INPUT_STATE_JUST_PRESSED && canFire();
         if (bomb && GameplayStats.global.canBomb()) {
             if (deathBombCooldown > 0)
                 deathBombCooldown = 0;
@@ -328,10 +372,18 @@ public class Player {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * @return true, якщо гравець має змогу застосувати бомбу після отримання шкоди.
+     * @author uwuhasmile
+     */
     public boolean isDeathBombing() {
         return deathBombCooldown > 0;
     }
 
+    /**
+     * Відмальовує всі спрайти гравця на екран.
+     * @author uwuhasmile
+     */
     private int draw() {
         if (gameOverCooldown > 0)
             return Flow.FLOW_RESULT_CONTINUE;
@@ -346,6 +398,10 @@ public class Player {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * Ініціалізація після додавання до списків.
+     * @author uwuhasmile
+     */
     private int added() {
         Anm anm = Assets.global.get(Anm.class, "game/plr.anm");
         parentVM.loadAnm(anm);
@@ -358,10 +414,13 @@ public class Player {
         leftOrbVM.loadScriptAndPlay("Orb");
         rightOrbVM.loadAnm(anm);
         rightOrbVM.loadScriptAndPlay("Orb");
-        shapeRenderer = new ShapeRenderer();
         return 0;
     }
 
+    /**
+     * Видалення ресурсів після видалення зі списків.
+     * @author uwuhasmile
+     */
     private int removed() {
         parentVM.delete();
         spriteVM.delete();
@@ -369,11 +428,14 @@ public class Player {
         leftOrbVM.delete();
         rightOrbVM.delete();
         Assets.global.unload("game/plr.anm");
-        shapeRenderer.dispose();
         return 0;
     }
 
+    /**
+     * @return чи може гравець стріляти
+     * @author uwuhasmile
+     */
     private boolean canFire() {
-        return !BombManager.global.isInUse();
+        return !BombManager.global.isInUse() && StageManager.global.isActive();
     }
 }
