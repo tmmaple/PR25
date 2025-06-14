@@ -12,6 +12,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 import ua.tmmaple.pr25.graphics.Anm;
 
+/**
+ * Завантажувач ANM.
+ * @author uwuhasmile
+ */
 public final class AnmLoader extends AsynchronousAssetLoader<Anm, AnmLoader.AnmParameter> {
     private Anm.AnmData data;
 
