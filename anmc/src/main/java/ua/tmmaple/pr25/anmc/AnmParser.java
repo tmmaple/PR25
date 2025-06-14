@@ -5,6 +5,10 @@ import ua.tmmaple.pr25.graphics.Anm;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Парсер токенів ANM.
+ * @author uwuhasmile
+ */
 public final class AnmParser {
     private static final int SCOPE_TOP = 1;
     private static final int SCOPE_SCRIPT = 2;
@@ -25,6 +29,10 @@ public final class AnmParser {
         labels = new ArrayList<>();
     }
 
+    /**
+     * Оброблює згенеровані токени.
+     * @author uwuhasmile
+     */
     public void parse(List<AnmToken> tokens) {
         program = AnmIM.createProgram();
         this.input = tokens;
@@ -37,15 +45,28 @@ public final class AnmParser {
             next();
     }
 
+    /**
+     * @return програма, згенерована в результаті обробки токенів
+     * @author uwuhasmile
+     */
     public AnmIM.AnmProgram getProgram() {
         return program;
     }
 
+    /**
+     * Переходить до наступного токену.
+     * @author uwuhasmile
+     */
     private void next() {
         if (match(AnmToken.TOKEN_DIRECTIVE)) directive();
         else script();
     }
 
+    /**
+     * Читає директиву.
+     * @throws AnmParserException якщо подані неправильні дані
+     * @author uwuhasmile
+     */
     private void directive() {
         AnmToken token = previous();
         if (token.iValue == AnmToken.DIRECTIVE_IMPORT) {
@@ -65,6 +86,11 @@ public final class AnmParser {
         }
     }
 
+    /**
+     * Читає оголошення скрипта.
+     * @throws AnmParserException якщо знайдено не оголошення скрипта, або в скрипті є інша помилка
+     * @author uwuhasmile
+     */
     private void script() {
         labels.clear();
         if (!check(AnmToken.TOKEN_KEYWORD) || peek().iValue != AnmToken.KEYWORD_SCRIPT) throw new AnmParserException("Expected script, got " + peek());
@@ -75,6 +101,11 @@ public final class AnmParser {
         scriptBody(script);
     }
 
+    /**
+     * Читає тіло скрипта.
+     * @throws AnmParserException якщо знайдено не оголошення скрипта, або в скрипті є інша помилка
+     * @author uwuhasmile
+     */
     private void scriptBody(AnmIM.AnmScript script) {
         if (!match(AnmToken.TOKEN_START_BLOCK)) throw new AnmParserException("Expected {, got " + previous());
         scope = SCOPE_SCRIPT;
@@ -83,6 +114,11 @@ public final class AnmParser {
         scope = SCOPE_TOP;
     }
 
+    /**
+     * Перетворює всі мітки та часові мітки.
+     * @throws AnmParserException якщо знайдено синтаксичну помилку
+     * @author uwuhasmile
+     */
     private void scriptPreprocess() {
         byteOffset = 0;
         int start = index;
@@ -120,6 +156,11 @@ public final class AnmParser {
         index = start;
     }
 
+    /**
+     * Оброблює тіло скрипта.
+     * @throws AnmParserException якщо знайдено синтаксичну помилку
+     * @author uwuhasmile
+     */
     private void scriptProcess(AnmIM.AnmScript script) {
         byteOffset = 0;
         time = 0;
@@ -138,6 +179,11 @@ public final class AnmParser {
         }
     }
 
+    /**
+     * Оброблює ключове слово.
+     * @throws AnmParserException якщо знайдено синтаксичну помилку
+     * @author uwuhasmile
+     */
     private AnmIM.AnmInstruction keyword() {
         AnmToken token = previous();
         AnmIM.AnmInstruction instruction;
@@ -175,6 +221,11 @@ public final class AnmParser {
         return instruction;
     }
 
+    /**
+     * Оброблює ідентифікатор.
+     * @throws AnmParserException якщо знайдено синтаксичну помилку
+     * @author uwuhasmile
+     */
     private AnmIM.AnmInstruction identifier() {
         AnmToken token = previous();
         AnmIM.AnmInstruction instruction;
@@ -187,6 +238,11 @@ public final class AnmParser {
         return instruction;
     }
 
+    /**
+     * Оброблює аргументи.
+     * @throws AnmParserException якщо знайдено синтаксичну помилку
+     * @author uwuhasmile
+     */
     private AnmIM.AnmValue[] parseArguments(byte... types) {
         if (!match(AnmToken.TOKEN_LEFT_PAREN)) throw new AnmParserException("Expected (, got " + advance());
         AnmIM.AnmValue[] arguments = null;
@@ -204,6 +260,11 @@ public final class AnmParser {
         return arguments;
     }
 
+    /**
+     * Оброблює один аргумент.
+     * @throws AnmParserException якщо знайдено синтаксичну помилку
+     * @author uwuhasmile
+     */
     private AnmIM.AnmValue parseArgument() {
         AnmIM.AnmValue result;
         AnmToken token = advance();
@@ -223,6 +284,10 @@ public final class AnmParser {
         return result;
     }
 
+    /**
+     * Оброблює один аргумент очікуваного типа.
+     * @author uwuhasmile
+     */
     private AnmIM.AnmValue parseArgument(byte type) {
         AnmIM.AnmValue result = parseArgument();
         if (result.type != type)
@@ -235,6 +300,10 @@ public final class AnmParser {
         return result;
     }
 
+    /**
+     * Шукає вже визначену константу.
+     * @author uwuhasmile
+     */
     private AnmIM.AnmValue findConstant(String name) {
         for (int i = 0; i < AnmIM.BUILTIN_CONSTANTS.length; i += 2)
             if (AnmIM.BUILTIN_CONSTANTS[i].equals(name)) return (AnmIM.AnmValue) AnmIM.BUILTIN_CONSTANTS[i + 1];
@@ -243,20 +312,37 @@ public final class AnmParser {
         return null;
     }
 
+    /**
+     * @return чи існує константа з іменем <code>name</code>
+     * @author uwuhasmile
+     */
     private boolean constantExists(String name) {
         return findConstant(name) != null;
     }
 
+    /**
+     * Шукає мітку.
+     * @param label ім'я мітки
+     * @author uwuhasmile
+     */
     private int findLabel(String label) {
         for (int i = 0; i < labels.size(); i += 2)
             if (label.equals(labels.get(i))) return (int) labels.get(i + 1);
         return -1;
     }
 
+    /**
+     * @return чи існує мітка <code>label</code>
+     * @author uwuhasmile
+     */
     private boolean containsLabel(String label) {
         return findLabel(label) != -1;
     }
 
+    /**
+     * @return чи є тип токена одним із типів у <code>types</code>
+     * @author uwuhasmile
+     */
     private boolean match(int... types) {
         for (int type : types)
             if (check(type)) {
@@ -266,24 +352,45 @@ public final class AnmParser {
         return false;
     }
 
+    /**
+     * @return чи є тип токена одним типом <code>type</code>
+     * @author uwuhasmile
+     */
     private boolean check(int type) {
         if (isAtEnd()) return false;
         return peek().type == type;
     }
 
+    /**
+     * Переходить до наступного токену.
+     * @return попередній токен до переходу
+     * @author uwuhasmile
+     */
     private AnmToken advance() {
         if (!isAtEnd()) index++;
         return previous();
     }
 
+    /**
+     * @return поточний токен
+     * @author uwuhasmile
+     */
     private AnmToken peek() {
         return input.get(index);
     }
 
+    /**
+     * @return минулий
+     * @author uwuhasmile
+     */
     private AnmToken previous() {
         return input.get(index - 1);
     }
 
+    /**
+     * @return чи досяг парсер токену <code>TOKEN_EOF</code>
+     * @author uwuhasmile
+     */
     private boolean isAtEnd() {
         return input.get(index).type == AnmToken.TOKEN_EOF;
     }

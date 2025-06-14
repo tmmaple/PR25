@@ -1,5 +1,9 @@
 package ua.tmmaple.pr25.anmc;
 
+/**
+ * Токен, згенерований лексером.
+ * @author uwuhasmile
+ */
 public final class AnmToken {
     public static final int TOKEN_EOF = 0;
     public static final int TOKEN_DIRECTIVE = 1;
