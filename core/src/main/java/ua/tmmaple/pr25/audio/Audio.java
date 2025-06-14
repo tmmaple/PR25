@@ -33,14 +33,12 @@ public final class Audio {
      * @author uwuhasmile
      */
     public void initialize() {
-        ua.tmmaple.pr25.Logger.info("Loading sounds");
         String[] assets = Gdx.files.internal("assets.txt").readString().split("\n");
         for (String f : assets) {
             FileHandle fh =  Gdx.files.internal(f);
             if (fh.isDirectory()) continue;
             if (!fh.extension().equalsIgnoreCase("wav") && !fh.extension().equalsIgnoreCase("ogg"))
                 continue;
-            ua.tmmaple.pr25.Logger.info("Loading " + fh.name());
             Sound sound = Gdx.audio.newSound(fh);
             sounds.put(fh.name(), sound);
         }
