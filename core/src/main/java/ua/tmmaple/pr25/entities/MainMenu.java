@@ -11,6 +11,10 @@ import ua.tmmaple.pr25.graphics.TextManager;
 import ua.tmmaple.pr25.stages.Stage01;
 import ua.tmmaple.pr25.ui.MenuItem;
 
+/**
+ * Головне меню гри, працює як окрема система.
+ * @author uwuhasmile
+ */
 public final class MainMenu {
     private static final float VSPACING = 26.0f;
 
@@ -124,10 +128,18 @@ public final class MainMenu {
         exitButton.up(musicVolumeSlider);
     }
 
+    /**
+     * Завантаження ресурсів.
+     * @author uwuhasmile
+     */
     public static void load() {
         Assets.global.load(Anm.class, "ui/mainMenu.anm");
     }
 
+    /**
+     * Реєструє у списку оновлення та відмалювання.
+     * @author uwuhasmile
+     */
     public static void register() {
         if (updateNode != null) return;
         updateNode = new Flow.FlowNode<>(global, MainMenu::update, MainMenu::added, MainMenu::removed);
@@ -136,6 +148,10 @@ public final class MainMenu {
         Flow.global.addToDraw(drawNode, 1);
     }
 
+    /**
+     * Видаляє зі списку оновлення та відмалювання.
+     * @author uwuhasmile
+     */
     public static void shutdown() {
         if (updateNode == null) return;
         Flow.global.cut(updateNode);
@@ -144,6 +160,10 @@ public final class MainMenu {
         drawNode = null;
     }
 
+    /**
+     * Ініціалізує всі графічні елементи та кнопки.
+     * @author uwuhasmile
+     */
     private int added() {
         next = 0;
         anm = Assets.global.get(Anm.class, "ui/mainMenu.anm");
@@ -167,6 +187,10 @@ public final class MainMenu {
         return 0;
     }
 
+    /**
+     * Оновлює графічні елементи та кнопки.
+     * @author uwuhasmile
+     */
     private int update() {
         menuVm.execute();
         startButton.update();
@@ -200,6 +224,10 @@ public final class MainMenu {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * Малює головне меню на екран.
+     * @author uwuhasmile
+     */
     private int draw() {
         backgroundVm.draw();
         logoVm.draw();
@@ -214,33 +242,61 @@ public final class MainMenu {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * Запускає гру з першої стадії через кнопку.
+     * @author uwuhasmile
+     */
     private void onStart(MenuItem button) {
         next(0);
     }
 
+    /**
+     * Змінює мову гри через слайдер.
+     * @author uwuhasmile
+     */
     private void onLanguageChange(MenuItem slider, int value) {
         God.global.setLanguage(value);
     }
 
+    /**
+     * Змінює розмір вікна гри через слайдер.
+     * @author uwuhasmile
+     */
     private void onScalingChange(MenuItem slider, int value) {
         God.global.setWindowMode(value);
         slider.text(new Text("window", value));
     }
 
+    /**
+     * Змінює гучність звуків через слайдер.
+     * @author uwuhasmile
+     */
     private void onSfxVolumeChange(MenuItem slider, float value) {
         God.global.setSfxVolume(value);
         slider.text(new Text("sfx", value));
     }
 
+    /**
+     * Змінює гучність музики через слайдер.
+     * @author uwuhasmile
+     */
     private void onMusicVolumeChange(MenuItem slider, float value) {
         God.global.setMusicVolume(value);
         slider.text(new Text("music", value));
     }
 
+    /**
+     * Виходить з гри через кнопку.
+     * @author uwuhasmile
+     */
     private void onExit(MenuItem button) {
         next(1);
     }
 
+    /**
+     * Запускає процес переходу до іншого екрану, а також запускає відповідні анімації.
+     * @author uwuhasmile
+     */
     private void next(int next) {
         startButton.unfocus();
         languageSelector.unfocus();
@@ -257,6 +313,10 @@ public final class MainMenu {
         state = MainMenuState.EXITING;
     }
 
+    /**
+     * Видаляє ресурси.
+     * @author uwuhasmile
+     */
     private int removed() {
         anm = null;
         startButton.destroy();
