@@ -3,10 +3,12 @@ package ua.tmmaple.pr25.audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
+import jdk.jfr.internal.Logger;
 import ua.tmmaple.pr25.God;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 /**
@@ -31,12 +33,14 @@ public final class Audio {
      * @author uwuhasmile
      */
     public void initialize() {
-        FileHandle root = Gdx.files.internal("sounds");
-        if (!root.exists() || !root.isDirectory()) return;
-        for (FileHandle fh : root.list()) {
+        ua.tmmaple.pr25.Logger.info("Loading sounds");
+        String[] assets = Gdx.files.internal("assets.txt").readString().split("\n");
+        for (String f : assets) {
+            FileHandle fh =  Gdx.files.internal(f);
             if (fh.isDirectory()) continue;
             if (!fh.extension().equalsIgnoreCase("wav") && !fh.extension().equalsIgnoreCase("ogg"))
                 continue;
+            ua.tmmaple.pr25.Logger.info("Loading " + fh.name());
             Sound sound = Gdx.audio.newSound(fh);
             sounds.put(fh.name(), sound);
         }
