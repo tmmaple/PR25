@@ -172,7 +172,7 @@ public final class MainMenu {
         windowSelector.makeIntSlider(this::onScalingChange, God.global.windowScale(), 1, 0, 6, true).anm(anm, "MenuItem");
         sfxVolumeSlider.makeFloatSlider(this::onSfxVolumeChange, God.global.sfxVolume(), 0.1f, 0.0f, 1.0f, false).anm(anm, "MenuItem");
         musicVolumeSlider.makeFloatSlider(this::onMusicVolumeChange, God.global.musicVolume(), 0.1f, 0.0f, 1.0f, false).anm(anm, "MenuItem");
-        exitButton.makeButton(this::onExit);
+        exitButton.makeButton(this::onExit).anm(anm, "MenuItem");
         backgroundVm.loadAnm(anm);
         backgroundVm.loadScriptAndPlay("Background");
         logoVm.loadAnm(anm);
