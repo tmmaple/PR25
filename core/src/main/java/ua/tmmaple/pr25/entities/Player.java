@@ -333,7 +333,7 @@ public class Player {
             if (smallBulletCooldown == 0) {
                 Audio.global.playSound("plrFire.ogg", 1.0f);
                 BulletManager.global.createSmallPlayerBullet(position.cpy().add(0.0f, 16.0f));
-                if (power > 10) {
+                if (power >= 10) {
                     BulletManager.global.createSmallPlayerBullet(position.cpy().add(orbOffset));
                     BulletManager.global.createSmallPlayerBullet(position.cpy().add(new Vector2(-orbOffset.x, orbOffset.y)));
                 }
@@ -391,8 +391,10 @@ public class Player {
         grazeVM.position.set(position);
         leftOrbVM.position.set(new Vector2(-orbOffset.x, orbOffset.y));
         rightOrbVM.position.set(new Vector2(orbOffset.x, orbOffset.y));
-        leftOrbVM.draw();
-        rightOrbVM.draw();
+        if (GameplayStats.global.getPower() >= 10) {
+            leftOrbVM.draw();
+            rightOrbVM.draw();
+        }
         spriteVM.draw();
         grazeVM.draw();
         return Flow.FLOW_RESULT_CONTINUE;
