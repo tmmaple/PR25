@@ -416,6 +416,9 @@ public class Player {
         leftOrbVM.loadScriptAndPlay("Orb");
         rightOrbVM.loadAnm(anm);
         rightOrbVM.loadScriptAndPlay("Orb");
+        gameOverCooldown = 0;
+        deathBombCooldown = 0;
+        invincibilityCooldown = 0;
         return 0;
     }
 
