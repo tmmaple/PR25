@@ -1,24 +1,48 @@
 package ua.tmmaple.pr25;
 
+/**
+ * Локалізований текст. Звертається до завантаженої таблиці даних локалізації та повертає відповідний рядок.
+ * @author uwuhasmile
+ */
 public final class Text implements CharSequence {
     private final String id;
     private final boolean idIfNotFound;
     private final Object[] args;
 
+    /**
+     * @param id ідентифікатор текста в таблиці
+     * @param idIfNotFound якщо такого не знайдено, то замість """???<code>id</code>???" повертати <code>id</code>
+     * @param formatArgs аргументи для форматування тексту
+     * @author uwuhasmile
+     */
     public Text(String id, boolean idIfNotFound, Object... formatArgs) {
         this.id = id;
         this.idIfNotFound = idIfNotFound;
         this.args = formatArgs;
     }
 
+    /**
+     * @param id ідентифікатор текста в таблиці
+     * @param idIfNotFound якщо такого не знайдено, то замість """???<code>id</code>???" повертати <code>id</code>
+     * @author uwuhasmile
+     */
     public Text(String id, boolean idIfNotFound) {
         this(id, idIfNotFound, (Object[]) null);
     }
 
+    /**
+     * @param id ідентифікатор текста в таблиці
+     * @param formatArgs аргументи для форматування тексту
+     * @author uwuhasmile
+     */
     public Text(String id, Object... formatArgs) {
         this(id, false, formatArgs);
     }
 
+    /**
+     * @param id ідентифікатор текста в таблиці
+     * @author uwuhasmile
+     */
     public Text(String id) {
         this(id, false);
     }
