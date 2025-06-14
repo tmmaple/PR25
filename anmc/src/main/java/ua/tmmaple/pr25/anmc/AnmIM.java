@@ -6,6 +6,10 @@ import ua.tmmaple.pr25.util.Tweener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Доступ до елементів генерації репрезентації програми для подальшої компіляції в байткод.
+ * @author uwuhasmile
+ */
 public interface AnmIM {
     Object[] BUILTIN_CONSTANTS = {
         "UV_NONE", new AnmValue(Anm.ANM_UV_NONE), "UV_REPEAT", new AnmValue(Anm.ANM_UV_REPEAT), "UV_MIRROR", new AnmValue(Anm.ANM_UV_MIRROR),
@@ -24,10 +28,18 @@ public interface AnmIM {
     byte VALUE_TYPE_FLOAT = 2;
     byte VALUE_TYPE_BYTE_OFFSET = 3;
 
+    /**
+     * @return новостворена пуста програма для подальшого наповнення інструкціями
+     * @author uwuhasmile
+     */
     static AnmProgram createProgram() {
         return new AnmProgram();
     }
 
+    /**
+     * Тимчасова репрезентація програми ANM.
+     * @author uwuhasmile
+     */
     final class AnmProgram {
         public final List<String> imports;
         public final List<AnmSource> sources;
@@ -40,11 +52,19 @@ public interface AnmIM {
             scripts = new ArrayList<>();
         }
 
+        /**
+         * Додає імпорт зображення (зазвичай .png).
+         * @author uwuhasmile
+         */
         public void addImport(String path) {
             if (imports.contains(path)) throw new AnmParserException("Duplicate import: " + path);
             imports.add(path);
         }
 
+        /**
+         * Додає регіон зображення.
+         * @author uwuhasmile
+         */
         public void addSource(byte from, int x, int y, int width, int height) {
             if (imports.size() <= from) throw new AnmParserException("Invalid source: " + from);
             for (AnmSource source : sources)
@@ -52,6 +72,10 @@ public interface AnmIM {
             sources.add(new AnmSource(from, x, y, width, height));
         }
 
+        /**
+         * Додає скрипт.
+         * @author uwuhasmile
+         */
         public AnmScript addScript(String name) {
             for (AnmScript script : scripts)
                 if (script.name.equals(name)) throw new AnmParserException("Duplicate script: " + name);
@@ -61,6 +85,10 @@ public interface AnmIM {
         }
     }
 
+    /**
+     * Регіон зображення.
+     * @author uwuhasmile
+     */
     final class AnmSource {
         public final byte from;
         public final int x;
@@ -81,6 +109,10 @@ public interface AnmIM {
         }
     }
 
+    /**
+     * Скрипт-анімація всередині ANM.
+     * @author uwuhasmile
+     */
     final class AnmScript {
         public final String name;
         public final List<AnmInstruction> instructions;
@@ -91,6 +123,10 @@ public interface AnmIM {
         }
     }
 
+    /**
+     * Інструкція скрипта ANM.
+     * @author uwuhasmile
+     */
     final class AnmInstruction {
         public final short time;
         public final int opcode;
@@ -105,48 +141,97 @@ public interface AnmIM {
         }
     }
 
+    /**
+     * Значення (літерал) всередині ANM.
+     * @author uwuhasmile
+     */
     final class AnmValue {
         public final byte type;
         public final int iValue;
         public final float fValue;
 
+        /**
+         * Створює значення типу <code>VALUE_TYPE_BYTE</code>
+         * @param bValue байтове значення
+         * @author uwuhasmile
+         */
         public AnmValue(byte bValue) {
             this(VALUE_TYPE_BYTE, bValue, 0.0f);
         }
 
+        /**
+         * Створює значення типу <code>VALUE_TYPE_INT</code>
+         * @param iValue цілочисленне значення
+         * @author uwuhasmile
+         */
         public AnmValue(int iValue) {
             this(VALUE_TYPE_INTEGER, iValue, 0.0f);
         }
 
+        /**
+         * Створює значення типу <code>VALUE_TYPE_FLOAT</code>
+         * @param fValue десяткове значення
+         * @author uwuhasmile
+         */
         public AnmValue(float fValue) {
             this(VALUE_TYPE_FLOAT, 0, fValue);
         }
 
+        /**
+         * Створює значення типу <code>VALUE_TYPE_OFFSET</code> (компілятор перетворить його на відносну позицію іншої інструкції в файлі)
+         * @param iValue абсолютна позиція інструкції, в байтах
+         * @author uwuhasmile
+         */
         public static AnmValue byteOffset(int iValue) {
             return new AnmValue(VALUE_TYPE_BYTE_OFFSET, iValue, 0.0f);
         }
 
+        /**
+         * @param type тип
+         * @param iValue цілочисленне значення
+         * @param fValue десяткове значення
+         * @author uwuhasmile
+         */
         private AnmValue(byte type, int iValue, float fValue) {
             this.type = type;
             this.iValue = iValue;
             this.fValue = fValue;
         }
 
+        /**
+         * @return значення, як байт.
+         * @throws AnmParserException якщо несумісний тип (<code>VALUE_TYPE_FLOAT</code>)
+         * @author uwuhasmile
+         */
         public byte asByte() {
             if (type == VALUE_TYPE_FLOAT) throw new AnmParserException("Can't convert float to byte");
             return (byte) iValue;
         }
 
+        /**
+         * @return значення, як ціле число.
+         * @throws AnmParserException якщо несумісний тип (<code>VALUE_TYPE_FLOAT</code>)
+         * @author uwuhasmile
+         */
         public int asInteger() {
             if (type == VALUE_TYPE_FLOAT) throw new AnmParserException("Can't convert float to integer");
             return iValue;
         }
 
+        /**
+         * @return значення, як десяткове число.
+         * @author uwuhasmile
+         */
         public float asFloat() {
             if (type == VALUE_TYPE_FLOAT) return fValue;
             return (float) iValue;
         }
 
+        /**
+         * @return значення, як офсет байтів.
+         * @throws AnmParserException якщо не <code>VALUE_TYPE_BYTE_OFFSET</code>
+         * @author uwuhasmile
+         */
         public int asByteOffset() {
             if (type != VALUE_TYPE_BYTE_OFFSET) throw new AnmParserException("Not a byte offset");
             return iValue;

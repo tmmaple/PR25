@@ -4,12 +4,22 @@ import ua.tmmaple.pr25.graphics.Anm;
 
 import java.io.*;
 
+/**
+ * Фінальний компілятор у файл.
+ * @author uwuhasmile
+ */
 public final class AnmCompiler {
     private DataOutputStream dos;
 
     private AnmIM.AnmProgram program;
     private File output;
 
+    /**
+     * Компілює згенеровану раніше програму в байткод.
+     * @param program згенерована програма
+     * @param output файл, в який записати байткод
+     * @author uwuhasmile
+     */
     public void compile(AnmIM.AnmProgram program, File output) {
         this.program = program;
         output.mkdirs();

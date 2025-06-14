@@ -8,6 +8,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
+/**
+ * Запускає компілятор ANM.
+ * @author uwuhasmile
+ */
 public final class AnmCompilerLauncher {
     private String from;
     private String to;
@@ -37,6 +41,13 @@ public final class AnmCompilerLauncher {
         compiler = new AnmCompiler();
     }
 
+    /**
+     * Запускає.
+     * @param from тека, звідки беруться <code>.anmsrc</code>
+     * @param to тека, куди будуть зберігатись скомпільовані <code>.anm</code>
+     * @return 1, якщо помилка, 0, якщо успіх
+     * @author uwuhasmile
+     */
     private int run(String from, String to) {
         from = from.replace('\\', '/');
         to = to.replace('\\', '/');
@@ -56,6 +67,12 @@ public final class AnmCompilerLauncher {
         return 0;
     }
 
+    /**
+     * Компілює певний файл, або рекурсивно компілює теку.
+     * Компілює тільки <code>.anmsrc</code>
+     * @param file файл або тека
+     * @author uwuhasmile
+     */
     private void compile(File file) throws IOException {
         if (file.isDirectory()) {
             File[] files = file.listFiles(filter);

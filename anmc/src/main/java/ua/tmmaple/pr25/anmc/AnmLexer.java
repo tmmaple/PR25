@@ -2,6 +2,10 @@ package ua.tmmaple.pr25.anmc;
 
 import java.util.ArrayList;
 
+/**
+ * Лексер ANM.
+ * @author uwuhasmile
+ */
 public final class AnmLexer {
     private static final String[] directives = {
         null, "import", "source", "define",
@@ -28,6 +32,10 @@ public final class AnmLexer {
         errors = new ArrayList<>();
     }
 
+    /**
+     * Токенізує вхідний текст.
+     * @author uwuhasmile
+     */
     public void tokenize(String input) {
         tokens.clear();
         errors.clear();
@@ -46,6 +54,11 @@ public final class AnmLexer {
         tokens.add(AnmToken.eof(line, column));
     }
 
+    /**
+     * Сканує токен.
+     * @throws AnmLexerException якщо неправильний символ або сталась інша лексична помилка
+     * @author uwuhasmile
+     */
     private void scanToken() {
         startIndex = index;
         startLine = line;
@@ -80,6 +93,11 @@ public final class AnmLexer {
         }
     }
 
+    /**
+     * Сканує директиву.
+     * @throws AnmLexerException якщо директиви не існує
+     * @author uwuhasmile
+     */
     private void directive(int startLine, int startColumn) {
         StringBuilder b = new StringBuilder();
         while (Character.isAlphabetic(peek()))
@@ -93,6 +111,11 @@ public final class AnmLexer {
         throw new AnmLexerException("Invalid directive: " + directive, startLine, startColumn);
     }
 
+    /**
+     * Сканує рядковий літерал.
+     * @throws AnmLexerException якщо неправильний escape sequence або раптовий кінець файлу
+     * @author uwuhasmile
+     */
     private void string() {
         StringBuilder b = new StringBuilder();
         while (peek() != '"' && !isAtEnd()) {
@@ -111,6 +134,10 @@ public final class AnmLexer {
         tokens.add(AnmToken.string(b.toString(), startLine, startColumn));
     }
 
+    /**
+     * Сканує ідентифікатор.
+     * @authow uwuhasmile
+     */
     private void id() {
         while (Character.isAlphabetic(peek()) || Character.isDigit(peek()) || peek() == '_') advance();
         int keyword = 0;
@@ -127,6 +154,10 @@ public final class AnmLexer {
             tokens.add(AnmToken.id(content, startLine, startColumn));
     }
 
+    /**
+     * Сканує число.
+     * @author uwuhasmile
+     */
     private void number() {
         while (Character.isDigit(peek())) advance();
         if (peek() == '.') {
@@ -137,11 +168,20 @@ public final class AnmLexer {
             tokens.add(AnmToken.integer(Integer.parseInt(new String(input, startIndex, index - startIndex)), startLine, startColumn));
     }
 
+    /**
+     * @return поточний символ, або <code>\0</code>
+     * @author uwuhasmile
+     */
     private char peek() {
         if (isAtEnd()) return '\0';
         return input[index];
     }
 
+    /**
+     * Переходить до наступного символу.
+     * @return поточний символ до переходу, або <code>\0</code>
+     * @author uwuhasmile
+     */
     private char advance() {
         char c = input[index++];
         if (c == '\n') {
@@ -152,6 +192,10 @@ public final class AnmLexer {
         return c;
     }
 
+    /**
+     * @return чи було прочитано весь текст.
+     * @author uwuhasmile
+     */
     private boolean isAtEnd() {
         return index >= input.length;
     }
