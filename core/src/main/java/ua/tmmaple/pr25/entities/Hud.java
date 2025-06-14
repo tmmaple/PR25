@@ -13,6 +13,10 @@ import ua.tmmaple.pr25.graphics.GraphicManager;
 import ua.tmmaple.pr25.graphics.TextManager;
 import ua.tmmaple.pr25.ui.MenuItem;
 
+/**
+ * Інтерфейс користувача під час активного ігрового процесу.
+ * @author uwuhasmile
+ */
 public final class Hud {
     private static final Vector2 BASE = new Vector2(440.0f, 480.0f - 64.0f);
     private static final float VSPACE = 32.0f;
@@ -107,10 +111,18 @@ public final class Hud {
         valueSettings.wrap = false;
     }
 
+    /**
+     * Завантажує ресурси.
+     * @author uwuhasmile
+     */
     public static void load() {
         Assets.global.load(Anm.class, "ui/hud.anm");
     }
 
+    /**
+     * Реєструє в список оновлень та відмалювання.
+     * @author uwuhasmile
+     */
     public static void register() {
         if (updateNode != null) return;
         updateNode = new Flow.FlowNode<>(global, Hud::update, Hud::added, Hud::removed);
@@ -119,6 +131,10 @@ public final class Hud {
         Flow.global.addToDraw(drawNode, 3);
     }
 
+    /**
+     * Видаляє зі списків оновлення та відмалювання.
+     * @author uwuhasmile
+     */
     public static void shutdown() {
         if (updateNode == null) return;
         Flow.global.cut(updateNode);
@@ -127,6 +143,10 @@ public final class Hud {
         drawNode = null;
     }
 
+    /**
+     * Показує виїжджаюче повідомлення.
+     * @author uwuhasmile
+     */
     public void popup(String text) {
         if (text == null)
             return;
@@ -137,6 +157,10 @@ public final class Hud {
         popup = text;
     }
 
+    /**
+     * Показує кількість при підборі очок.
+     * @author uwuhasmile
+     */
     public void pickup(Vector2 position, long points) {
         Pickup p = pickups[freePickup++];
         p.position.set(position);
@@ -148,6 +172,10 @@ public final class Hud {
             freePickup = 0;
     }
 
+    /**
+     * Ініціалізація.
+     * @author uwuhasmile
+     */
     private int added() {
         for (int i = 0; i < pickups.length; ++i)
             pickups[i].ticks = 0;
@@ -167,6 +195,10 @@ public final class Hud {
         return 0;
     }
 
+    /**
+     * Оновлення.
+     * @author uwuhasmile
+     */
     private int update() {
         updateInGame();
         if (gameState != GameplayManager.global.getPauseState()) {
@@ -186,29 +218,49 @@ public final class Hud {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * Показує оверлей паузи. Використовується як у, власне, меню паузи, так і в меню продовження після смерті.
+     * @author uwuhasmile
+     */
     private void showPauseOverlay() {
         pauseOverlayVm.loadAnm(anm);
         pauseOverlayVm.loadScriptAndPlay("PauseOverlay");
     }
 
+    /**
+     * Ховає паузу.
+     * @author uwuhasmile
+     */
     private void hidePause() {
         pauseOverlayVm.interrupt((byte) 1);
         resumeButton.unfocus();
         exitButton.unfocus();
     }
 
+    /**
+     * Показує меню паузи.
+     * @author uwuhasmile
+     */
     private void showPauseMenu() {
         pauseTitle = new Text("pause");
         resumeButton.makeButton(i -> GameplayManager.global.resume()).text(new Text("pauseResume")).focus();
         exitButton.makeButton(i -> God.global.toMainMenu()).text(new Text("pauseExit"));
     }
 
+    /**
+     * Показує меню монети (меню продовження гри після смерті).
+     * @author uwuhasmile
+     */
     private void showCoinMenu() {
         pauseTitle = new Text("coins", GameplayManager.global.getCoins());
         resumeButton.makeButton(i -> { GameplayManager.global.resume(); }).text(new Text("coinsContinue")).focus();
         exitButton.makeButton(null).text(new Text("coinsExit"));
     }
 
+    /**
+     * Відмальовує.
+     * @author uwuhasmile
+     */
     private int draw() {
         for (int i = 0; i < pickups.length; ++i) {
             Pickup p = pickups[i];
@@ -256,6 +308,11 @@ public final class Hud {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * Оновлює елементи, що показують ігрову інформацію.
+     * Не оновлюється, якщо на паузі.
+     * @author uwuhasmile
+     */
     private void updateInGame() {
         if (!GameplayManager.global.canUpdate())
             return;
@@ -300,6 +357,10 @@ public final class Hud {
         bombVm.execute();
     }
 
+    /**
+     * Очищує ресурси.
+     * @author uwuhasmile
+     */
     private int removed() {
         anm = null;
         bordersVm.delete();
@@ -312,6 +373,10 @@ public final class Hud {
         return 0;
     }
 
+    /**
+     * Текст, що показує кількість очок підібраного дропу.
+     * @author uwuhasmile
+     */
     private static final class Pickup {
         public final Vector2 position;
         public long value;
