@@ -1,0 +1,68 @@
+#import "ui/mainMenu.png"
+
+#source(0, 0, 0, 640, 480)
+#define BACKGROUND 0
+#source(0, 640, 0, 485, 164)
+#define LOGO 1
+#source(0, 1125, 0, 193, 161)
+#define LEAF 2
+
+script Leaf {
+    source(LEAF);
+	anchorMode(ANCHOR_BOTTOM_RIGHT);
+	position(0.0, 16.0);
+	angle(-0.436332313);
+	move(60, 636.0, 4.0, INTERPOLATION_EASE_OUT);
+	rotate(60, 0.0, INTERPOLATION_EASE_OUT);
+	pause;
+	interrupt 1;
+	position(636.0, 4.0);
+	angle(0.0);
+	move(20, 800.0, 4.0, INTERPOLATION_EASE_IN);
+	rotate(20, 1.07, INTERPOLATION_EASE_OUT);
+	sleep 20;
+	delete;
+}
+
+script Background {
+    anchorMode(ANCHOR_BOTTOM_LEFT);
+    sleep 100;
+    source(BACKGROUND);
+    alpha(0.0);
+    fade(20, 1.0, INTERPOLATION_LINEAR);
+    pause;
+    interrupt 1;
+    alpha(1.0);
+    fade(50, 0.0, INTERPOLATION_LINEAR);
+    sleep 50;
+    delete;
+}
+
+script Logo {
+    anchorMode(ANCHOR_TOP_MIDDLE);
+    sleep 80;
+    position(320.0, 425.0);
+    source(LOGO);
+    alpha(0.0);
+    fade(10, 1.0, INTERPOLATION_LINEAR);
+    pause;
+    interrupt 1;
+    alpha(1.0);
+    fade(40, 0.0, INTERPOLATION_LINEAR);
+    sleep 40;
+    delete;
+}
+
+script Menu {
+    alpha(0.0);
+    sleep 120;
+    position(0.0, 200.0);
+    move(30, 0.0, 240.0, INTERPOLATION_EASE_OUT);
+    fade(30, 1.0, INTERPOLATION_LINEAR);
+    pause;
+    interrupt 1;
+    move(20, 0.0, 200.0, INTERPOLATION_EASE_IN);
+    fade(30, 0.0, INTERPOLATION_LINEAR);
+    sleep 30;
+    delete;
+}

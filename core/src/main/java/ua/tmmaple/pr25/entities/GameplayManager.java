@@ -1,8 +1,9 @@
 package ua.tmmaple.pr25.entities;
 
+import com.badlogic.gdx.graphics.Color;
 import ua.tmmaple.pr25.Flow;
-import ua.tmmaple.pr25.Logger;
-import ua.tmmaple.pr25.assets.Assets;
+import ua.tmmaple.pr25.assets.Stage;
+import ua.tmmaple.pr25.graphics.GraphicManager;
 import ua.tmmaple.pr25.stages.Stage01;
 
 public final class GameplayManager {
@@ -17,14 +18,22 @@ public final class GameplayManager {
 
     private static Flow.FlowNode<GameplayManager> node;
 
+    private static Stage toLoad;
+
     private int coins;
 
     private int gameState;
 
-    private boolean loading;
+    public static void load(Stage stage) {
+        toLoad = stage;
+        Player.load();
+        BulletManager.load();
+        DropManager.load();
+        Hud.load();
+    }
 
     public static int register() {
-        node = new Flow.FlowNode<>(global, GameplayManager::update, GameplayManager::added, GameplayManager::removed);
+        node = new Flow.FlowNode<>(global, null, GameplayManager::added, GameplayManager::removed);
         Flow.global.addToUpdate(node, 3);
         return 0;
     }
@@ -64,28 +73,11 @@ public final class GameplayManager {
 
     public void resume() {
         if (gameState == 2) {
+            GameplayStats.global.coinUsed();
             Player.global.respawn();
             GameplayStats.global.respawn();
         }
         gameState = 0;
-    }
-
-    private int update() {
-        if (loading && Assets.global.isLoaded()) {
-            loading = false;
-            StageManager.register();
-            StageManager.global.load(new Stage01());
-            GameplayStats.register();
-            Player.register();
-            EnemyManager.register();
-            BulletManager.register();
-            DropManager.register();
-            BombManager.register();
-            Background.register();
-            VfxManager.register();
-            Hud.register();
-        }
-        return Flow.FLOW_RESULT_CONTINUE;
     }
 
     public void gameOver() {
@@ -94,12 +86,21 @@ public final class GameplayManager {
     }
 
     private int added() {
-        Player.load();
-        BulletManager.load();
-        DropManager.load();
-        Hud.load();
+        StageManager.register();
+        StageManager.global.load(toLoad);
+        toLoad = null;
+        GameplayStats.register();
+        Player.register();
+        EnemyManager.register();
+        BulletManager.register();
+        DropManager.register();
+        BombManager.register();
+        Background.register();
+        VfxManager.register();
+        Hud.register();
+        gameState = 0;
         coins = 4;
-        loading = true;
+        GraphicManager.global.backgroundColor.set(Color.BLACK);
         return 0;
     }
 
