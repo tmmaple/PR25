@@ -120,14 +120,14 @@ public final class God {
         god.controls[4] = god.prefs.getInteger("keyFire", god.controls[4]);
         god.controls[5] = god.prefs.getInteger("keyBomb", god.controls[5]);
         god.controls[6] = god.prefs.getInteger("keyFocus", god.controls[6]);
-        god.windowScale = god.prefs.getInteger("windowScale", 0);
+        int scale = god.prefs.getInteger("windowScale", 0);
         god.sfxVolume = god.prefs.getFloat("sfxVolume", 1.0f);
         god.musicVolume = god.prefs.getFloat("musicVolume", 1.0f);
         if (language.equals("en")) god.language = LANGUAGE_ENGLISH;
         else if (language.equals("uk")) god.language = LANGUAGE_UKRAINIAN;
         god.setLanguage(god.language);
 
-        god.setWindowMode(god.windowScale);
+        god.setWindowMode(scale);
         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.None);
         return 0;
     }
@@ -255,6 +255,8 @@ public final class God {
      */
     public void setWindowMode(int scale) {
         scale = scale < 0 ? 0 : (scale > 6 ? 6 : scale);
+        if (windowScale == scale && scale > 0)
+            return;
         windowScale = scale;
         if (scale > 0) {
             switch (scale) {
