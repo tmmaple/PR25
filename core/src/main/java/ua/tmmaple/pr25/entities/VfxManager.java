@@ -7,9 +7,17 @@ import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
+/**
+ * Керує візуальними ефектами під час гри.
+ * @author uwuhasmile
+ */
 public final class VfxManager {
     public static VfxManager global;
 
+    /**
+     * Тип візуальних ефектів (частинок).
+     * @author uwuhasmile
+     */
     public enum Vfx {
         NONE,
         DUST_PIECES,
@@ -35,10 +43,18 @@ public final class VfxManager {
     private static Flow.FlowNode<VfxManager> updateNode;
     private static Flow.FlowNode<VfxManager> drawNode;
 
+    /**
+     * Завантажує ресурси.
+     * @author uwuhasmile
+     */
     public static void load() {
         Assets.global.load(Anm.class, "game/vfx.anm");
     }
 
+    /**
+     * Реєструє у списку оновлень та відмалювань.
+     * @author uwuhasmile
+     */
     public static void register() {
         if (updateNode != null) return;
         updateNode = new Flow.FlowNode<>(global, VfxManager::update, VfxManager::added, VfxManager::removed);
@@ -47,6 +63,10 @@ public final class VfxManager {
         Flow.global.addToDraw(drawNode, 3);
     }
 
+    /**
+     * Видаляє зі списку оновлень та відмалювань.
+     * @author uwuhasmile
+     */
     public static void shutdown() {
         if (updateNode == null) return;
         Flow.global.cut(updateNode);
@@ -61,6 +81,15 @@ public final class VfxManager {
             particles[i] = new Particle(i);
     }
 
+    /**
+     * Спавнить частинки пилу.
+     * @param center центральна точка, з якої будуть вилітати пилинки
+     * @param startAngle кут, під яким будуть спавнитись пилинки
+     * @param count кількість пилинок
+     * @param radius радіус відносно center, на якому будуть створюватись пилинки
+     * @param speed швидкість пилинок
+     * @author uwuhasmile
+     */
     public void spawnDust(Vector2 center, float startAngle, int count, float radius, float speed) {
         if (anm == null) return;
         if (count > particles.length)
@@ -76,6 +105,11 @@ public final class VfxManager {
         }
     }
 
+    /**
+     * Спавнить частинки смерті гравця.
+     * @param center позиція, де помер гравець, і навколо якої будуть частинки
+     * @author uwuhasmile
+     */
     public void spawnPlayerDeath(Vector2 center) {
         if (anm == null) return;
         float angleStep = MathUtils.PI2 / 32;
@@ -89,6 +123,11 @@ public final class VfxManager {
         }
     }
 
+    /**
+     * Спавнить частинки шкоди ворогу.
+     * @param position позиція, де ворогу була нанесена шкода, де буде створена частинка
+     * @author uwuhasmile
+     */
     public void spawnEnemyDamage(Vector2 position) {
         if (anm == null) return;
         Particle p = pull();
@@ -97,6 +136,12 @@ public final class VfxManager {
         p.timeLeft = (short) 12;
     }
 
+    /**
+     * Спавнить частинки смерті ворога.
+     * @param position позиція, де помер ворог, та навколо якої будуть частинки
+     * @param script ANM-скрипт спрайту частинки
+     * @author uwuhasmile
+     */
     public void spawnEnemyDeath(Vector2 position, String script) {
         if (anm == null) return;
         Particle p = pull();
@@ -105,6 +150,12 @@ public final class VfxManager {
         p.timeLeft = (short) 24;
     }
 
+    /**
+     * Спавнить частинки смерті мідбоса.
+     * @param position позиція, де помер ворог, та навколо якої будуть частинки
+     * @param script ANM-скрипт спрайту частинки
+     * @author uwuhasmile
+     */
     public void spawnMidbossDeath(Vector2 position, String script) {
         if (anm == null) return;
         float angleStep = MathUtils.PI2 / 10;
@@ -121,6 +172,12 @@ public final class VfxManager {
         }
     }
 
+    /**
+     * Спавнить частинки смерті боса.
+     * @param position позиція, де помер ворог, та навколо якої будуть частинки
+     * @param script ANM-скрипт спрайту частинки
+     * @author uwuhasmile
+     */
     public void spawnBossDeath(Vector2 position, String script) {
         if (anm == null) return;
         float angleStep = MathUtils.PI2 / 32;
@@ -137,6 +194,12 @@ public final class VfxManager {
         }
     }
 
+    /**
+     * Спавнить візуальний ефект в певній позиції.
+     * @param vfx тип візуального ефекту
+     * @param position позиція, де помер ворог, та навколо якої будуть частинки
+     * @author uwuhasmile
+     */
     public void spawn(Vfx vfx, Vector2 position) {
         switch (vfx) {
             case NONE: return;
@@ -170,12 +233,20 @@ public final class VfxManager {
         }
     }
 
+    /**
+     * Ініціалізація.
+     * @author uwuhasmile
+     */
     private int added() {
         anm = Assets.global.get(Anm.class, "game/vfx.anm");
         clear();
         return 0;
     }
 
+    /**
+     * Оновлення всіх частинок та таймерів.
+     * @author uwuhasmile
+     */
     private int update() {
         if (!GameplayManager.global.canUpdate())
             return Flow.FLOW_RESULT_CONTINUE;
@@ -206,6 +277,10 @@ public final class VfxManager {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * Відмалювання всіх частинок.
+     * @author uwuhasmile
+     */
     private int draw() {
         for (int i = 0; i < particles.length; ++i) {
             Particle p = particles[i];
@@ -215,6 +290,10 @@ public final class VfxManager {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * Очищення ресурсів.
+     * @author uwuhasmile
+     */
     private int removed() {
         clear();
         anm = null;
@@ -222,12 +301,20 @@ public final class VfxManager {
         return 0;
     }
 
+    /**
+     * Очищення від всіх частинок.
+     * @author uwuhasmile
+     */
     public void clear() {
         for (Particle particle : particles)
             particle.reset();
         free = 0;
     }
 
+    /**
+     * Витягає частинку з пулу. Якщо частинки закінчились, то старі будуть перевикористані, тож вони зникнуть з екрану.
+     * @author uwuhasmile
+     */
     private Particle pull() {
         if (anm == null)
             return null;
@@ -242,11 +329,19 @@ public final class VfxManager {
         return particle;
     }
 
+    /**
+     * Повертає частинку до пулу.
+     * @author uwuhasmile
+     */
     private void put(Particle particle) {
         particle.reset();
         free = particle.idx;
     }
 
+    /**
+     * Одна частинка.
+     * @author uwuhasmile
+     */
     private final class Particle {
         public final int idx;
 
@@ -266,6 +361,10 @@ public final class VfxManager {
             position = new Vector2();
         }
 
+        /**
+         * Скидає частинку до параметрів за замовчуванням.
+         * @author uwuhasmile
+         */
         public void reset() {
             movementType = MovementType.DIRECTIONAL;
             angle = 0.0f;
