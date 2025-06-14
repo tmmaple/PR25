@@ -169,12 +169,12 @@ public final class Hud {
 
     private int update() {
         updateInGame();
-        if (gameState != GameplayManager.global.getGameState()) {
+        if (gameState != GameplayManager.global.getPauseState()) {
             if (gameState == 0)
                 showPauseOverlay();
             else
                 hidePause();
-            gameState = GameplayManager.global.getGameState();
+            gameState = GameplayManager.global.getPauseState();
             if (gameState == 1)
                 showPauseMenu();
             else if (gameState == 2)
