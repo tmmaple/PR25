@@ -97,7 +97,7 @@ public final class Flow {
         } else if (type == 2) {
             --toDrawSize;
             while (i < toDrawSize) { toDraw[i] = toDraw[++i]; }
-        } else throw new PR25RuntimeException("Node doesn't exist in update or draw list");
+        } else return 0;
 
         return node.removed();
     }

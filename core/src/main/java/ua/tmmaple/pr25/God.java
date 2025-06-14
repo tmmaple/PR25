@@ -7,7 +7,11 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.utils.I18NBundle;
+import jdk.tools.jmod.Main;
+import ua.tmmaple.pr25.assets.Assets;
+import ua.tmmaple.pr25.assets.Stage;
 import ua.tmmaple.pr25.entities.GameplayManager;
+import ua.tmmaple.pr25.entities.MainMenu;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
 import java.util.Locale;
@@ -17,7 +21,7 @@ import java.util.MissingResourceException;
  * Налаштування гри та її поточний стан.
  */
 public final class God {
-    private enum State {
+    private enum GameState {
         INIT,
         MAIN_MENU,
         GAME,
@@ -57,7 +61,8 @@ public final class God {
         new Locale("uk", "UA"),
     };
 
-    private State state;
+    private GameState gameState;
+    private GameState pendingGameState;
 
     public final int[] controls = {
         Input.Keys.UP, Input.Keys.DOWN, Input.Keys.LEFT, Input.Keys.RIGHT,
@@ -78,12 +83,16 @@ public final class God {
 
     private Preferences prefs;
 
+    private boolean exit;
+
     public God() {
         i18nHandle = Gdx.files.internal("i18n/content");
         windowScale = 0;
         sfxVolume = 1.0f;
         musicVolume = 1.0f;
-        state = State.INIT;
+        gameState = GameState.INIT;
+        MainMenu.global = new MainMenu();
+        GameplayManager.global = new GameplayManager();
     }
 
     /**
@@ -101,9 +110,6 @@ public final class God {
      * @author uwuhasmile
      */
     private static int added(God god) {
-        GameplayManager.global = new GameplayManager();
-        GameplayManager.register();
-
         I18NBundle.setExceptionOnMissingKey(false);
         god.prefs = Gdx.app.getPreferences("pr25_settings");
         String language = god.prefs.getString("language", "en");
@@ -131,7 +137,22 @@ public final class God {
      * @author uwuhasmile
      */
     private static int update(God god) {
+        if (god.exit)
+            return Flow.FLOW_RESULT_EXIT;
         god.updateControls();
+        if (god.pendingGameState != null && Assets.global.isLoaded()) {
+            god.shutdownCurrent();
+            god.gameState = god.pendingGameState;
+            god.pendingGameState = null;
+            switch (god.gameState) {
+                case MAIN_MENU:
+                    MainMenu.register();
+                    break;
+                case GAME:
+                    GameplayManager.register();
+                    break;
+            }
+        }
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
@@ -178,6 +199,37 @@ public final class God {
         return 0;
     }
 
+    public void toMainMenu() {
+        pendingGameState = GameState.MAIN_MENU;
+        MainMenu.load();
+    }
+
+    public void startGame(Stage stage) {
+        pendingGameState = GameState.GAME;
+        GameplayManager.load(stage);
+    }
+
+    private void shutdownCurrent() {
+        switch (gameState) {
+            case MAIN_MENU:
+                MainMenu.shutdown();
+                break;
+            case GAME:
+                GameplayManager.shutdown();
+                break;
+            case ENDING:
+                break;
+            case CREDITS:
+                break;
+            case RESULT_SCREEN:
+                break;
+        }
+    }
+
+    public void exit() {
+        exit = true;
+    }
+
     /**
      * Встановлює режим вікна.
      * Якщо scale дорівнює 0, то гра переходить в повноекранний режим.
@@ -185,11 +237,11 @@ public final class God {
      * @author uwuhasmile
      */
     public void setWindowMode(int scale) {
-        scale = Math.min(scale, 6);
+        scale = scale < 0 ? 0 : (scale > 6 ? 6 : scale);
         windowScale = scale;
         if (scale > 0) {
             switch (scale) {
-                case 1: Gdx.graphics.setWindowedMode(Game.BASE_WINDOW_WIDTH, Game.BASE_WINDOW_HEIGHT); break;
+                case 1: Gdx.graphics.setWindowedMode(640, 480); break;
                 case 2: Gdx.graphics.setWindowedMode(800, 600); break;
                 case 3: Gdx.graphics.setWindowedMode(1024, 768); break;
                 case 4: Gdx.graphics.setWindowedMode(1280, 960); break;

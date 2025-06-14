@@ -49,6 +49,7 @@ public final class Assets {
      * @author uwuhasmile
      */
     public <T> void load(Class<T> type, String filename) {
+        loaded = false;
         manager.load(filename, type);
     }
 
@@ -58,6 +59,7 @@ public final class Assets {
      * @author uwuhasmile
      */
     public <T> void load(Class<T> type, String filename, AssetLoaderParameters<T> params) {
+        loaded = false;
         manager.load(filename, type, params);
     }
 

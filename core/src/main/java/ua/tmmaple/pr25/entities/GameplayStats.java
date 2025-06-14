@@ -8,11 +8,12 @@ public final class GameplayStats {
     private static final int GRAZE_BOMB_THRESHOLD = 100;
     private static final short GRAZE_BOMB_REMOVE_COOLDOWN = 10;
 
-    private long totalScore;
-
     private long score;
     private int power;
     private long graze;
+
+    private int bombsUsed;
+    private int coinsUsed;
 
     private short grazeBombCounter;
     private short grazeBombRemoveCooldown;
@@ -44,6 +45,7 @@ public final class GameplayStats {
         if (graze < 0)
             graze = 0;
         grazeBombCounter = 0;
+        ++bombsUsed;
     }
 
     public void graze() {
@@ -56,7 +58,6 @@ public final class GameplayStats {
 
     public void score(long amount) {
         score += amount;
-        totalScore += amount;
     }
 
     public void power(int amount) {
@@ -89,14 +90,17 @@ public final class GameplayStats {
 
     public void reset() {
         power = 0;
-        totalScore = 0L;
         score = 0L;
         graze = 0L;
         grazeBombCounter = 0;
     }
 
-    public void resetLevel() {
-        score = 0L;
+    public void coinUsed() {
+        ++coinsUsed;
+    }
+
+    public void nextLevel() {
+        score += graze * 100;
         graze = 0L;
         if (!canBomb())
             grazeBombCounter = 0;

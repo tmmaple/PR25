@@ -199,8 +199,8 @@ public final class Hud {
 
     private void showPauseMenu() {
         pauseTitle = new Text("pause");
-        resumeButton.makeButton(i -> { GameplayManager.global.resume(); }).text(new Text("pauseResume")).focus();
-        exitButton.makeButton(null).text(new Text("pauseExit"));
+        resumeButton.makeButton(i -> GameplayManager.global.resume()).text(new Text("pauseResume")).focus();
+        exitButton.makeButton(i -> God.global.toMainMenu()).text(new Text("pauseExit"));
     }
 
     private void showCoinMenu() {
@@ -301,12 +301,14 @@ public final class Hud {
     }
 
     private int removed() {
+        anm = null;
         bordersVm.delete();
         bombVm.delete();
         pauseOverlayVm.delete();
         popupVm.delete();
         resumeButton.destroy();
         exitButton.destroy();
+        Assets.global.unload("ui/hud.anm");
         return 0;
     }
 

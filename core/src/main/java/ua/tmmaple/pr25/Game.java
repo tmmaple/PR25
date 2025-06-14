@@ -22,9 +22,7 @@ public class Game extends ApplicationAdapter {
     public static final float UPDATE_DELTA = 1.0f / 60.0f;
 
     private float accumulator;
-
-    Player plr;
-    Enemy enemy;
+    private boolean resized;
 
     @Override
     public void create() {
@@ -44,13 +42,15 @@ public class Game extends ApplicationAdapter {
 
         Assets.register();
         God.register();
-        // BulletManager.register();
-        // plr = new Player();
-        // enemy = new Enemy();
+        God.global.toMainMenu();
     }
 
     @Override
     public void render() {
+        if (resized) {
+            resized = false;
+            return;
+        }
         float delta = Gdx.graphics.getDeltaTime();
         if (delta > 0.25f)
             delta = 0.25f;
@@ -79,6 +79,7 @@ public class Game extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
+        resized = true;
         GraphicManager.global.viewport.update(width, height);
     }
 

@@ -39,6 +39,7 @@ public final class MenuItem {
     private boolean loop;
 
     private boolean focused;
+    private boolean justPressed;
 
     private MenuItem up;
     private MenuItem down;
@@ -67,6 +68,7 @@ public final class MenuItem {
         i2 = min;
         i3 = max;
         this.loop = loop;
+        listener.intChanged(this, start);
         return this;
     }
 
@@ -78,6 +80,7 @@ public final class MenuItem {
         f2 = min;
         f3 = max;
         this.loop = loop;
+        listener.floatChanged(this, start);
         return this;
     }
 
@@ -172,6 +175,7 @@ public final class MenuItem {
         if (usesVm)
             vm.interrupt((byte) 1);
         focused = true;
+        justPressed = true;
     }
 
     public void unfocus() {
@@ -185,7 +189,9 @@ public final class MenuItem {
     public void update() {
         if (type == null)
             return;
-        if (focused) {
+        if (justPressed)
+            justPressed = false;
+        else if (focused) {
             boolean accept = God.global.inputState(God.INPUT_UI_ACCEPT) == God.INPUT_STATE_JUST_PRESSED;
             boolean right = God.global.inputState(God.INPUT_UI_RIGHT) == God.INPUT_STATE_JUST_PRESSED;
             boolean left = God.global.inputState(God.INPUT_UI_LEFT) == God.INPUT_STATE_JUST_PRESSED;
@@ -195,42 +201,38 @@ public final class MenuItem {
                 listener.pressed(this);
             else if (listener != null && right) {
                 if (type == ItemType.INT_SLIDER) {
-                    if (i0 == i3 && loop)
-                        i0 = i2;
-                    else if (i0 < i3) {
-                        i0 += i1;
-                        if (i0 > i3)
+                    i0 += i1;
+                    if (i0 > i3)
+                        if (loop)
+                            i0 = i2;
+                        else
                             i0 = i3;
-                    }
                     listener.intChanged(this, i0);
                 } else if (type == ItemType.FLOAT_SLIDER) {
-                    if (f0 == f3 && loop)
-                        f0 = f2;
-                    else if (f0 < f3) {
-                        f0 += f1;
-                        if (f0 > f3)
+                    f0 += f1;
+                    if (f0 > f3)
+                        if (loop)
+                            f0 = f2;
+                        else
                             f0 = f3;
-                    }
                     listener.floatChanged(this, f0);
                 }
             } else if (listener != null && left) {
                 if (type == ItemType.INT_SLIDER) {
-                    if (i0 == i2 && loop)
-                        i0 = i3;
-                    else if (i0 > i2) {
-                        i0 += i1;
-                        if (i0 < i2)
+                    i0 -= i1;
+                    if (i0 < i2)
+                        if (loop)
+                            i0 = i3;
+                        else
                             i0 = i2;
-                    }
                     listener.intChanged(this, i0);
                 } else if (type == ItemType.FLOAT_SLIDER) {
-                    if (f0 == f2 && loop)
-                        f0 = f3;
-                    else if (f0 > f2) {
-                        f0 += f1;
-                        if (f0 < f2)
+                    f0 -= f1;
+                    if (f0 < f2)
+                        if (loop)
+                            f0 = f3;
+                        else
                             f0 = f2;
-                    }
                     listener.floatChanged(this, f0);
                 }
             } else if (this.up != null && up) {
@@ -270,9 +272,8 @@ public final class MenuItem {
     public void destroy() {
         type = null;
         focused = false;
-        text = null;
-        vm.delete();
         if (usesVm) {
+            vm.delete();
             usesVm = false;
             focusedSettings.parent = parentVm;
             unfocusedSettings.parent = parentVm;
