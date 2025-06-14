@@ -6,6 +6,10 @@ import ua.tmmaple.pr25.audio.Audio;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
+/**
+ * Керує бомбою гравця.
+ * @author uwuhasmile
+ */
 public final class BombManager {
     private static final short DURATION = 420;
     private static final short INVINCIBILITY_DURATION = 460;
@@ -19,11 +23,22 @@ public final class BombManager {
 
     private final GraphicManager.AnmVirtualMachine backgroundVm;
     private final GraphicManager.AnmVirtualMachine portraitVm;
-    private boolean loading;
 
     private short left;
     private short nextClearLeft;
 
+    /**
+     * Завантажує ресурси.
+     * @author uwuhasmile
+     */
+    public static void load() {
+        Assets.global.load(Anm.class, "game/bomb.anm");
+    }
+
+    /**
+     * Реєструє в списки оновлення та відмалювання.
+     * @author uwuhasmile
+     */
     public static void register() {
         if (updateNode != null)
             return;
@@ -33,6 +48,10 @@ public final class BombManager {
         Flow.global.addToDraw(drawNode, 8);
     }
 
+    /**
+     * Видаляє зі списків оновлення та відмалювання.
+     * @author uwuhasmile
+     */
     public static void shutdown() {
         if (updateNode == null)
             return;
@@ -47,12 +66,26 @@ public final class BombManager {
         portraitVm = GraphicManager.global.new AnmVirtualMachine();
     }
 
+    /**
+     * Ініціалізує віртуальні машини ANM для відображення фону бомби та портрету.
+     * @author uwuhasmile
+     */
     private int added() {
-        loading = true;
-        Assets.global.load(Anm.class, "game/bomb.anm");
+        Anm anm = Assets.global.get(Anm.class, "game/bomb.anm");
+        backgroundVm.loadAnm(anm);
+        backgroundVm.loadScriptAndPlay("Background");
+        backgroundVm.position.set(GameplayManager.VIEWPORT_START_X, GameplayManager.VIEWPORT_START_Y);
+        portraitVm.loadAnm(anm);
+        portraitVm.loadScriptAndPlay("Portrait");
+        portraitVm.position.set(GameplayManager.VIEWPORT_START_X, GameplayManager.VIEWPORT_START_Y);
         return 0;
     }
 
+    /**
+     * Запускає бомбу та робить гравця безсмертним на певний час.
+     * Не залежить від поточної статистики.
+     * @author uwuhasmile
+     */
     public void use() {
         Audio.global.playSound("bomb.ogg", 1.4f);
         backgroundVm.interrupt((byte) 1);
@@ -62,27 +95,29 @@ public final class BombManager {
         Player.global.makeInvincible(INVINCIBILITY_DURATION);
     }
 
+    /**
+     * @return чи використовується бомба в цей момент часу
+     * @author uwuhasmile
+     */
     public boolean isInUse() {
         return left > 0;
     }
 
+    /**
+     * Закінчує використання бомби.
+     * @author uwuhasmile
+     */
     public void end() {
         left = (short) 0;
         nextClearLeft = (short) 0;
         backgroundVm.interrupt((byte) 2);
     }
 
+    /**
+     * Оновлює стан та таймери бомби, а також віртуальні машини.
+     * @author uwuhasmile
+     */
     private int update() {
-        if (loading && Assets.global.isLoaded("game/bomb.anm")) {
-            Anm anm = Assets.global.get(Anm.class, "game/bomb.anm");
-            loading = false;
-            backgroundVm.loadAnm(anm);
-            backgroundVm.loadScriptAndPlay("Background");
-            backgroundVm.position.set(GameplayManager.VIEWPORT_START_X, GameplayManager.VIEWPORT_START_Y);
-            portraitVm.loadAnm(anm);
-            portraitVm.loadScriptAndPlay("Portrait");
-            portraitVm.position.set(GameplayManager.VIEWPORT_START_X, GameplayManager.VIEWPORT_START_Y);
-        }
         if (!GameplayManager.global.canUpdate())
             return Flow.FLOW_RESULT_CONTINUE;
         if (left > 0) {
@@ -106,13 +141,24 @@ public final class BombManager {
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * Відмальовує віртуальні машини бомби на екран.
+     * @author uwuhasmile
+     */
     private int draw() {
         backgroundVm.draw();
         portraitVm.draw();
         return Flow.FLOW_RESULT_CONTINUE;
     }
 
+    /**
+     * Видаляє віртуальні машини та вивантажує ресурси.
+     * @author uwuhasmile
+     */
     private int removed() {
+        backgroundVm.delete();
+        portraitVm.delete();
+        Assets.global.unload("game/bomb.anm");
         return 0;
     }
 }
