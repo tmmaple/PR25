@@ -449,6 +449,7 @@ public class Enemy {
             parent.removeChild(this);
         for (Enemy child : children)
             child.destroy();
+        timelineTask = null;
         asyncTasks.clear();
     }
 
@@ -471,7 +472,7 @@ public class Enemy {
             position.set(centre.x+xRadius*(float)Math.cos(currentAngle), centre.y+yRadius*(float)Math.sin(currentAngle));
             currentAngle += speed /(xRadius+yRadius/2);
         }
-        if (health <= 0) {
+        if (health == 0 && (flags & FLAG_INVINCIBLE) == 0) {
             if (deathSound != null && !BombManager.global.isInUse())
                 Audio.global.playSound(deathSound, 1.0f);
             VfxManager.global.spawn(deathVfx, viewportPosition());

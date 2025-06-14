@@ -61,7 +61,13 @@ public final class StageManager {
         root = null;
     }
 
+    public boolean isActive() {
+        return !loading && root != null;
+    }
+
     private int update() {
+        if (root != null && !root.active)
+            root = null;
         if (loading && Assets.global.isLoaded()) {
             loading = false;
             String[] anmList = stage.anmList();
@@ -70,6 +76,7 @@ public final class StageManager {
                 this.anms[i] = Assets.global.get(Anm.class, anmList[i]);
             stage.init(this, Background.global);
             root = EnemyManager.global.createEnemy(stage.main(), 0.0f, 0.0f, null, 1);
+            root.setInvincible(true);
             root.setCollision(false);
             Player.global.respawn();
         }
