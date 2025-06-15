@@ -18,7 +18,6 @@ public class Bgm implements Disposable {
     private float loopPoint;
 
     public OnCompletionListener completionListener;
-    public boolean looping;
 
     private Music backing;
     private boolean ownBacking;
@@ -45,18 +44,12 @@ public class Bgm implements Disposable {
      * @author uwuhasmile
      */
     public void play(boolean looping) {
-        this.looping = looping;
         backing.play();
+        backing.setLooping(looping);
         backing.setOnCompletionListener(m -> {
-            if (looping) {
-                m.play();
-                m.setPosition(loopPoint);
-            } else {
-                if (completionListener != null)
-                    completionListener.onCompletion(this);
-            }
+            if (completionListener != null)
+                completionListener.onCompletion(this);
         });
-        backing.setLooping(false);
     }
 
     /**
