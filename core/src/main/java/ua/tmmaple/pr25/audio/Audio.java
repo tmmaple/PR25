@@ -3,12 +3,10 @@ package ua.tmmaple.pr25.audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
-import jdk.jfr.internal.Logger;
 import ua.tmmaple.pr25.God;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 /**
