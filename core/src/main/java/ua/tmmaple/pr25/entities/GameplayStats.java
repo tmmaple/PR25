@@ -163,6 +163,22 @@ public final class GameplayStats {
     }
 
     /**
+     * @return кількість бомб, використаних за гру
+     *
+     */
+    public int getBombsUsed() {
+        return bombsUsed;
+    }
+
+    /**
+     * @return кількість монет, використаних за гру
+     * @author uwuhasmile
+     */
+    public int getCoinsUsed() {
+        return coinsUsed;
+    }
+
+    /**
      * Нараховує додаткові очки за дотик, та скидає значення до таких для наступного рівня.
      * @author uwuhasmile
      */
