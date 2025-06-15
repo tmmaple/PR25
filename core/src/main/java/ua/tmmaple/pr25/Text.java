@@ -7,7 +7,7 @@ package ua.tmmaple.pr25;
 public final class Text implements CharSequence {
     private final String id;
     private final boolean idIfNotFound;
-    private final Object[] args;
+    private Object[] args;
 
     /**
      * @param id ідентифікатор текста в таблиці
@@ -45,6 +45,15 @@ public final class Text implements CharSequence {
      */
     public Text(String id) {
         this(id, false);
+    }
+
+    /**
+     * Переназначає параметри тексту.
+     * @param args параметри
+     * @author uwuhasmile
+     */
+    public void params(Object... args) {
+        this.args = args;
     }
 
     @Override
