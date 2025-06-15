@@ -127,6 +127,7 @@ public final class God {
         else if (language.equals("uk")) god.language = LANGUAGE_UKRAINIAN;
         god.setLanguage(god.language);
 
+        god.windowScale = -1;
         god.setWindowMode(scale);
         Gdx.graphics.setSystemCursor(Cursor.SystemCursor.None);
         return 0;
@@ -255,10 +256,11 @@ public final class God {
      */
     public void setWindowMode(int scale) {
         scale = scale < 0 ? 0 : (scale > 6 ? 6 : scale);
-        if (windowScale == scale && scale > 0)
+        if (windowScale == scale)
             return;
         windowScale = scale;
         if (scale > 0) {
+            Gdx.graphics.setUndecorated(false);
             switch (scale) {
                 case 1: Gdx.graphics.setWindowedMode(640, 480); break;
                 case 2: Gdx.graphics.setWindowedMode(800, 600); break;
@@ -268,8 +270,9 @@ public final class God {
                 case 6: Gdx.graphics.setWindowedMode(1600, 1200); break;
             }
         } else {
-            Graphics.DisplayMode mode = Gdx.graphics.getDisplayMode();
-            Gdx.graphics.setFullscreenMode(mode);
+            Gdx.graphics.setUndecorated(true);
+            Graphics.DisplayMode displayMode = Gdx.graphics.getDisplayMode();
+            Gdx.graphics.setWindowedMode(displayMode.width, displayMode.height);
         }
     }
 
