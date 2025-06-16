@@ -12,6 +12,7 @@ import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.assets.Stage;
 import ua.tmmaple.pr25.entities.GameplayManager;
 import ua.tmmaple.pr25.entities.MainMenu;
+import ua.tmmaple.pr25.entities.Results;
 import ua.tmmaple.pr25.util.PR25RuntimeException;
 
 import java.util.Locale;
@@ -93,6 +94,7 @@ public final class God {
         gameState = GameState.INIT;
         MainMenu.global = new MainMenu();
         GameplayManager.global = new GameplayManager();
+        Results.global = new Results();
     }
 
     /**
@@ -151,6 +153,9 @@ public final class God {
                     break;
                 case GAME:
                     GameplayManager.register();
+                    break;
+                case RESULT_SCREEN:
+                    Results.register();
                     break;
             }
         }
@@ -220,6 +225,15 @@ public final class God {
     }
 
     /**
+     * Закінчує гру з екраном результатів.
+     * @author uwuhasmile
+     */
+    public void results() {
+        pendingGameState = GameState.RESULT_SCREEN;
+        Results.load();
+    }
+
+    /**
      * Очищує ресурси поточного стану ігрового додатку.
      * @author uwuhasmile
      */
@@ -236,6 +250,7 @@ public final class God {
             case CREDITS:
                 break;
             case RESULT_SCREEN:
+                Results.shutdown();
                 break;
         }
     }

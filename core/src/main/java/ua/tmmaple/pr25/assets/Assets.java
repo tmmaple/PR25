@@ -68,8 +68,10 @@ public final class Assets {
      * @author uwuhasmile
      */
     public void unload(String filename) {
-        if (manager.isLoaded(filename))
+        if (manager.isLoaded(filename)) {
             manager.unload(filename);
+            System.gc();
+        }
     }
 
     /**
@@ -79,6 +81,7 @@ public final class Assets {
     public void unload() {
         for (String a : manager.getAssetNames())
             manager.unload(a);
+        System.gc();
     }
 
     /**
@@ -87,6 +90,7 @@ public final class Assets {
      */
     public void flush() {
         manager.clear();
+        System.gc();
     }
 
     /**
@@ -132,6 +136,7 @@ public final class Assets {
      */
     private static int removed(Assets instance) {
         instance.manager.dispose();
+        System.gc();
         return 0;
     }
 }

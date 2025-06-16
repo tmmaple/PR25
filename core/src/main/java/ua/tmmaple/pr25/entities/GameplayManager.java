@@ -2,6 +2,7 @@ package ua.tmmaple.pr25.entities;
 
 import com.badlogic.gdx.graphics.Color;
 import ua.tmmaple.pr25.Flow;
+import ua.tmmaple.pr25.God;
 import ua.tmmaple.pr25.assets.Stage;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 
@@ -122,6 +123,8 @@ public final class GameplayManager {
     public void gameOver() {
         if (--coins > 0)
             gameState = 2;
+        else
+            God.global.results();
     }
 
     /**

@@ -253,8 +253,8 @@ public final class Hud {
      */
     private void showCoinMenu() {
         pauseTitle = new Text("coins", GameplayManager.global.getCoins());
-        resumeButton.makeButton(i -> { GameplayManager.global.resume(); }).text(new Text("coinsContinue")).focus();
-        exitButton.makeButton(null).text(new Text("coinsExit"));
+        resumeButton.makeButton(i -> GameplayManager.global.resume()).text(new Text("coinsContinue")).focus();
+        exitButton.makeButton(i -> God.global.results()).text(new Text("coinsExit"));
     }
 
     /**

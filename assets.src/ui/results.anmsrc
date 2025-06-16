@@ -1,0 +1,25 @@
+#import "ui/results.png"
+
+#source(0, 0, 0, 640, 480)
+
+script Background {
+    anchorMode(ANCHOR_BOTTOM_LEFT);
+    source(0);
+    stop;
+}
+
+script Stats {
+    position(-380.0, 330.0);
+    move(25, 80.0, 330.0, INTERPOLATION_LINEAR);
+    sleep 25;
+    stop;
+}
+
+script BackToMenu {
+    position(60.0, 42.0);
+    pause;
+    interrupt 1;
+    fade(4, 0.0, INTERPOLATION_LINEAR);
+    sleep 4;
+    delete;
+}
