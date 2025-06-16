@@ -83,8 +83,7 @@ public final class Results {
             .focusedColor(Color.rgb888(Color.PINK)).unfocusedColor(Color.rgb888(Color.PINK))
             .text(new Text("resultsBackToMenu"))
             .align(Align.center)
-            .width(500)
-            .makeButton(this::onBackToMenu);
+            .width(500);
     }
 
     /**
@@ -132,6 +131,7 @@ public final class Results {
         statsVm.loadScriptAndPlay("Stats");
         backToMenuVm.loadAnm(anm);
         backToMenuVm.loadScriptAndPlay("BackToMenu");
+        backToMenuButton.makeButton(this::onBackToMenu);
         score = GameplayStats.global.getScore();
         bombs = GameplayStats.global.getBombsUsed();
         coins = GameplayStats.global.getCoinsUsed();
