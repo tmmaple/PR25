@@ -78,7 +78,10 @@ public final class StageManager {
         for (String bgm : bgms)
             Assets.global.unload(bgm);
         stage = null;
-        root = null;
+        if (root != null) {
+            root.destroy();
+            root = null;
+        }
     }
 
     /**

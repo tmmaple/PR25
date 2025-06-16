@@ -828,12 +828,15 @@ public class Enemy {
         velocityTweener.end();
         active = false;
         sprite.delete();
+        moveType = MoveType.NONE;
         if (parent != null)
             parent.removeChild(this);
-        for (Enemy child : children)
-            child.destroy();
+        while (children.size > 0)
+            children.get(0).destroy();
         timelineTask = null;
         asyncTasks.clear();
+        for (Gun gun : guns)
+            gun.stop();
     }
 
     /**
