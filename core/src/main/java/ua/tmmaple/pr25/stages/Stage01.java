@@ -39,7 +39,6 @@ public final class Stage01 extends Stage {
                     background.cameraVelocity = 0.5f;
                     return true;
                 }
-
             ),
             Task.keyframe(
                 200,
@@ -66,16 +65,24 @@ public final class Stage01 extends Stage {
                     return true;
                 }
             ),
+
+
             Task.keyframe(
-                1200,
-                en -> true
+                2000,
+                en -> {
+                    en.createChildAbsolute(boss(), 0.0f, 120.0f, 300);
+                    return true;
+                }
             ),
+
+
             Task.keyframe(
                 10000,
                 en -> true
             )
         );
     }
+
 
     private TimelineTask enemyA() {
         return Task.timeline(
@@ -225,4 +232,61 @@ public final class Stage01 extends Stage {
             )
         );
     }
+    private TimelineTask boss() {
+        return Task.timeline(
+            Task.keyframe(
+                en -> {
+                    en.setHitbox(96.0f, 96.0f);
+                    en.setDrop(10, 100);
+                    en.setSprite(getAnm(1), "Boss");
+                    en.setSpriteRotation(true);
+
+                    en.setVelocity(0f, 0f);
+
+
+                    en.initGun(0);
+                    en.setGunAim(0, Gun.Aim.RING_PLAYER);
+                    en.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_12x12_RED);
+                    en.setGunCount(0, 32, 1);
+                    en.setGunSpeed(0, 2.0f, 1.0f);
+                    en.setGunRadius(0, 80.0f, 80.0f);
+                    en.setGunRepeatInterval(0, 40);
+                    en.setGunRepeating(0, 0);
+                    en.turnGunOn(0);
+                    return true;
+                }
+            ),
+
+            Task.keyframe(
+                200,
+                en -> {
+                    en.changeVelocity(Tweener.INTERPOLATION_LINEAR, -MathUtils.HALF_PI, 1.5f, 200);
+                    return true;
+                }
+            ),
+
+            Task.keyframe(
+                300,
+                en -> {
+                    en.initGun(1);
+                    en.setGunAim(1, Gun.Aim.FAN_PLAYER);
+                    en.setGunBulletType(1, Gun.BulletType.BULLET_16x16_BLUE);
+                    en.setGunCount(1, 8, 1);
+                    en.setGunAngle(1, 0.0f, MathUtils.degRad * 15.0f);
+                    en.setGunSpeed(1, 3.5f, 1.0f);
+                    en.setGunRepeatInterval(1, 20);
+                    en.setGunRepeating(1, 0);
+                    en.turnGunOn(1);
+
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                100000,
+                Task.wait(() -> (short) 1000)
+            )
+        );
+    }
+
+
 }
