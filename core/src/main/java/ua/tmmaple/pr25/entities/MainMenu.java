@@ -46,7 +46,7 @@ public final class MainMenu {
 
     private MainMenuState state;
     private int next;
-    private short left;
+    private short ticksLeft;
 
     public MainMenu() {
         backgroundVm = GraphicManager.global.new AnmVirtualMachine();
@@ -183,7 +183,7 @@ public final class MainMenu {
         menuVm.loadScriptAndPlay("Menu");
         hiScoreText = new Text("menuHiScore", String.format("%08d", 0));
         state = MainMenuState.INTRO;
-        left = 100;
+        ticksLeft = 100;
         return 0;
     }
 
@@ -203,17 +203,17 @@ public final class MainMenu {
         logoVm.execute();
         leafVm.execute();
         if (state == MainMenuState.INTRO) {
-            if (left > 0) {
-                --left;
-                if (left == 0) {
+            if (ticksLeft > 0) {
+                --ticksLeft;
+                if (ticksLeft == 0) {
                     state = MainMenuState.MENU;
                     startButton.focus();
                 }
             }
         } else if (state == MainMenuState.EXITING) {
-            if (left > 0) {
-                --left;
-                if (left == 0) {
+            if (ticksLeft > 0) {
+                --ticksLeft;
+                if (ticksLeft == 0) {
                     if (next == 0)
                         God.global.startGame(new Stage01());
                     else if (next == 1)
@@ -309,7 +309,7 @@ public final class MainMenu {
         logoVm.interrupt((byte) 1);
         leafVm.interrupt((byte) 1);
         this.next = next;
-        left = 40;
+        ticksLeft = 40;
         state = MainMenuState.EXITING;
     }
 
