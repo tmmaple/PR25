@@ -1,0 +1,31 @@
+#import "st02Boss.png"
+
+#source(0, 72, 0, 72, 80)
+#define LYNX_0 0
+#source(0, 216, 0, 72, 80)
+#define LYNX_1 1
+#source(0, 144, 0, 72, 80)
+#define LYNX_2 2
+#source(0, 0, 0, 72, 80)
+#define LYNX_3 3
+#source(0, 288, 64, 16, 16)
+#define BALL 4
+
+script Lynx {
+	interrupt 1;
+idle_start:
+0:	source(LYNX_0);
+6:	source(LYNX_1);
+12: jump idle_start;
+	interrupt 2;
+fly_start:
+0:	source(LYNX_2);
+6:	source(LYNX_3);
+12: jump idle_start;
+}
+
+script Ball {
+	angularSpeed(-0.10471975512);
+	source(BALL);
+	pause;
+}
