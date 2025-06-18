@@ -419,6 +419,8 @@ public class Player {
         gameOverCooldown = 0;
         deathBombCooldown = 0;
         invincibilityCooldown = 0;
+        smallBulletCooldown = 0;
+        bigBulletCooldown = 0;
         return 0;
     }
 
