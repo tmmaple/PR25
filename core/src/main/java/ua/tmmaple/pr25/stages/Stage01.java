@@ -11,7 +11,7 @@ public final class Stage01 extends Stage {
 
     @Override
     public String[] anmList() {
-        return new String[] {
+        return new String[]{
             "stages/st01BG.anm",
             "stages/st01E.anm",
         };
@@ -19,14 +19,11 @@ public final class Stage01 extends Stage {
 
     @Override
     public String[] bgmList() {
-        return new String[] {
-
-        };
+        return new String[]{};
     }
 
     @Override
     public void reset() {
-
     }
 
     @Override
@@ -65,23 +62,20 @@ public final class Stage01 extends Stage {
                     return true;
                 }
             ),
-
-
             Task.keyframe(
                 2000,
                 en -> {
-                    en.createChildAbsolute(boss(), 0.0f, 120.0f, 300);
+                    en.createChildAbsolute(boss(), 30.0f, -140.0f, 300);
                     return true;
                 }
             ),
-
-
             Task.keyframe(
                 10000,
                 en -> true
             )
         );
     }
+
 
 
     private TimelineTask enemyA() {
@@ -234,59 +228,86 @@ public final class Stage01 extends Stage {
     }
     private TimelineTask boss() {
         return Task.timeline(
-            Task.keyframe(
-                en -> {
-                    en.setHitbox(96.0f, 96.0f);
-                    en.setDrop(10, 100);
-                    en.setSprite(getAnm(1), "Boss");
-                    en.setSpriteRotation(true);
 
-                    en.setVelocity(0f, 0f);
+            // 1. Початкові налаштування
+            Task.keyframe(en -> {
+                en.setHitbox(96.0f, 96.0f);
+                en.setDrop(10, 100);
+                en.setSprite(getAnm(1), "Boss");
+                en.setSpriteRotation(true);
+                en.setVelocity(0f, 0f);
 
 
-                    en.initGun(0);
-                    en.setGunAim(0, Gun.Aim.RING_PLAYER);
-                    en.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_12x12_RED);
-                    en.setGunCount(0, 32, 1);
-                    en.setGunSpeed(0, 2.0f, 1.0f);
-                    en.setGunRadius(0, 80.0f, 80.0f);
-                    en.setGunRepeatInterval(0, 40);
-                    en.setGunRepeating(0, 0);
-                    en.turnGunOn(0);
-                    return true;
-                }
-            ),
+                en.initGun(0);
+                en.setGunAim(0, Gun.Aim.RING_PLAYER);
+                en.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_12x12_RED);
+                en.setGunCount(0, 32, 1);
+                en.setGunSpeed(0, 2.0f, 1.0f);
+                en.setGunRadius(0, 80.0f, 80.0f);
+                en.setGunRepeatInterval(0, 40);
+                en.setGunRepeating(0, 0);
+                en.turnGunOn(0);
 
-            Task.keyframe(
-                200,
-                en -> {
-                    en.changeVelocity(Tweener.INTERPOLATION_LINEAR, -MathUtils.HALF_PI, 1.5f, 200);
-                    return true;
-                }
-            ),
+                return true;
+            }),
 
-            Task.keyframe(
-                300,
-                en -> {
-                    en.initGun(1);
-                    en.setGunAim(1, Gun.Aim.FAN_PLAYER);
-                    en.setGunBulletType(1, Gun.BulletType.BULLET_16x16_BLUE);
-                    en.setGunCount(1, 8, 1);
-                    en.setGunAngle(1, 0.0f, MathUtils.degRad * 15.0f);
-                    en.setGunSpeed(1, 3.5f, 1.0f);
-                    en.setGunRepeatInterval(1, 20);
-                    en.setGunRepeating(1, 0);
-                    en.turnGunOn(1);
 
-                    return true;
-                }
-            ),
-            Task.keyframe(
-                100000,
-                Task.wait(() -> (short) 1000)
-            )
+            Task.keyframe(60, en -> {
+                en.initGun(1);
+                en.setGunAim(1, Gun.Aim.FAN_PLAYER);
+                en.setGunBulletType(1, Gun.BulletType.BULLET_16x16_BLUE);
+                en.setGunCount(1, 8, 1);
+                en.setGunAngle(1, 0.0f, MathUtils.degRad * 15.0f);
+                en.setGunSpeed(1, 3.5f, 1.0f);
+                en.setGunRepeatInterval(1, 20);
+                en.setGunRepeating(1, 0);
+                en.turnGunOn(1);
+                return true;
+            }),
+
+            //  Починаємо плавний спуск вниз
+            Task.keyframe(100, en -> {
+                en.changeVelocity(Tweener.INTERPOLATION_LINEAR, -MathUtils.HALF_PI, 1.5f, 60);
+                return true;
+            }),
+
+            // Повна зупинка після спуску
+            Task.keyframe(160, en -> {
+                en.setVelocity(0f, 0f);
+                return true;
+            }),
+
+            // Початок руху по синусоїді
+            Task.keyframe(180, en -> {
+                en.setSpeed(2.5f); // швидкість зміни кута
+                en.moveCircularly(0.0f, 100.0f); // синус-х
+                return true;
+            }),
+
+
+            Task.keyframe(500, Task.repeat(
+                () -> (short) 999,
+                Task.sequence(
+
+                    en -> {
+                        en.adjustGunBulletType(1, Gun.BulletType.BULLET_8x12_ORANGE);
+                        en.setGunRepeatInterval(1, 10);
+                        return true;
+                    },
+                    Task.wait(() -> (short) 120),
+
+                    en -> {
+                        en.adjustGunBulletType(1, Gun.BulletType.BULLET_RINGED_12x12_RED);
+                        en.setGunRepeatInterval(1, 30);
+                        return true;
+                    },
+                    Task.wait(() -> (short) 120)
+                )
+            )),
+
+            // 7. Тримаємо боса активним
+            Task.keyframe(100000, Task.wait(() -> (short) 1000))
         );
     }
-
 
 }
