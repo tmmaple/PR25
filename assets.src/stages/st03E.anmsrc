@@ -1,0 +1,54 @@
+#import "stages/st03E.png"
+
+#source(0, 0, 96, 52, 52)
+#define LEAF_0 0
+
+#source(0, 0, 48, 48, 48)
+#define BUNNY_0 1
+#source(0, 0, 0, 48, 48)
+#define BUNNY_1 2
+#source(0, 52, 100, 48, 48)
+#define BUNNY_2 3
+#source(0, 100, 100, 48, 48)
+#define BUNNY_3 4
+
+#source(0, 48, 4, 48, 32)
+#define FIREFLY_0 5
+#source(0, 100, 68, 48, 32)
+#define FIREFLY_1 6
+#source(0, 96, 4, 48, 32)
+#define FIREFLY_2 7
+#source(0, 48, 36, 48, 32)
+#define FIREFLY_3 8
+#source(0, 52, 68, 48, 32)
+#define FIREFLY_4 9
+#source(0, 96, 36, 48, 32)
+#define FIREFLY_5 10
+
+script Leaf {
+	angularSpeed(0.27925268031);
+	source(LEAF_0);
+	pause;
+}
+
+script Firefly {
+start:
+0: 	source(FIREFLY_3);
+15: source(FIREFLY_4);
+30: source(FIREFLY_5);
+45: jump start;
+	interrupt 1;
+0:	source(FIREFLY_0);
+30: source(FIREFLY_1);
+50: source(FIREFLY_2);
+65: jump start;
+}
+
+script Bunny {
+anim_start:
+0:  source(BUNNY_0);
+8:  source(BUNNY_1);
+16: source(BUNNY_2);
+24: source(BUNNY_3);
+32: jump anim_start;
+}
