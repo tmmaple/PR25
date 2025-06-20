@@ -1,0 +1,43 @@
+#import "stages/st03Boss.png"
+
+#source(0, 0, 32, 72, 48)
+#define EYE_0 0
+#source(0, 0, 128, 72, 48)
+#define EYE_1 1
+#source(0, 0, 224, 72, 48)
+#define EYE_2 2
+#source(0, 0, 80, 72, 48)
+#define EYE_3 3
+#source(0, 0, 176, 72, 48)
+#define EYE_4 4
+
+#source(0, 32, 0, 32, 32)
+#define MINIEYE_0 5
+#source(0, 0, 0, 32, 32)
+#define MINIEYE_1 6
+
+script Eye {
+	pause;
+	interrupt 1;
+closed_start:
+0:	source(EYE_0);
+6:	source(EYE_1);
+12:	jump closed_start;
+
+	interrupt 2;
+0:	source(EYE_0);
+6:	source(EYE_2);
+
+	interrupt 3;
+opened_start:
+12:	source(EYE_3);
+18:	source(EYE_4);
+24:	jump opened_start;
+}
+
+script MiniEye {
+start:
+0:	source(MINIEYE_0);
+6:	source(MINIEYE_1);
+12:	jump start;
+}
