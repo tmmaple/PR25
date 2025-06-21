@@ -1,4 +1,4 @@
-#import "st02Boss.png"
+#import "stages/st02Boss.png"
 
 #source(0, 72, 0, 72, 80)
 #define LYNX_0 0

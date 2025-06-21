@@ -403,6 +403,7 @@ public class Enemy {
      * @author uwuhasmile
      */
     public void setVelocity(float angle, float speed) {
+        currentAngle = angle;
         velocity.set(1.0f, 0.0f).setAngleRad(angle).scl(speed);
         this.speed = speed;
         moveType = MoveType.LINEAR;
@@ -413,6 +414,7 @@ public class Enemy {
      * @author uwuhasmile
      */
     public void setAngle(float angle) {
+        currentAngle = angle;
         this.velocity.setAngleRad(angle);
     }
 
@@ -723,6 +725,17 @@ public class Enemy {
     }
 
     /**
+     * Змінює прискорення вже випущених куль gun'а.
+     * @param gun ідентифікатор gun'а, в межах [0, 6).
+     * @author uwuhasmile
+     */
+    public void adjustGunAcceleration(int gun, float acceleration) {
+        if (gun < 0 || gun >= guns.length)
+            throw new PR25RuntimeException(String.format("Invalid gun index %d", gun));
+        guns[gun].adjustAcceleration(acceleration);
+    }
+
+    /**
      * Змінює напрямок вже випущених куль gun'а.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
      * @author uwuhasmile
@@ -851,7 +864,8 @@ public class Enemy {
         }
         if (angleTweener.isRunning()) {
             angleTweener.update();
-            velocity.setAngleRad(angleTweener.value());
+            currentAngle = angleTweener.value();
+            velocity.setAngleRad(currentAngle);
         }
         if (positionTweener.isRunning()) {
             positionTweener.update();
@@ -876,13 +890,11 @@ public class Enemy {
             destroy();
             return;
         }
-        if ((flags & FLAG_SPRITE_ROTATION) != 0) {
-            if (moveType == MoveType.ORBITAL)
-                sprite.angle = currentAngle + MathUtils.HALF_PI;
-            else
-                sprite.angle = velocity.angleRad();
-        }
-        if (timelineTask.execute(this) && asyncTasks.size == 0 && children.size == 0) {
+        if ((flags & FLAG_SPRITE_ROTATION) != 0)
+            sprite.angle = currentAngle;
+        if (timelineTask != null && timelineTask.execute(this))
+            timelineTask = null;
+        if (timelineTask == null && asyncTasks.size == 0 && children.size == 0) {
             destroy();
             return;
         }

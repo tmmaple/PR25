@@ -44,6 +44,7 @@ script Leaf {
 
 script Nightingale {
 	autorotate(true);
+	angle(1.57079632679);
 start:
 0: 	source(NIGHTINGALE_0);
 15: source(NIGHTINGALE_1);

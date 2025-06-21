@@ -9,8 +9,8 @@ import ua.tmmaple.pr25.Flow;
 public final class GameplayStats {
     public static GameplayStats global;
 
-    private static final int GRAZE_BOMB_THRESHOLD = 100;
-    private static final short GRAZE_BOMB_REMOVE_COOLDOWN = 20;
+    private static final int GRAZE_BOMB_THRESHOLD = 10;
+    private static final short GRAZE_BOMB_REMOVE_COOLDOWN = 120;
 
     private long score;
     private int power;

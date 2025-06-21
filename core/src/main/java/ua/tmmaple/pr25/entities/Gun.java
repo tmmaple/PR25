@@ -431,11 +431,12 @@ public class Gun {
         }
         if (!on) return;
         if (currentInterval == 0) {
-            fire();
             if (repeat == 0 || repeatsLeft > 0) {
                 currentInterval = interval;
                 --repeatsLeft;
-            } else if (repeatsLeft == 0)
+            }
+            fire();
+            if (repeatsLeft == 0)
                 on = false;
         } else
             --currentInterval;
