@@ -36,12 +36,13 @@ script PauseOverlay {
 
 script Bomb {
     anchorMode(ANCHOR_MIDDLE_LEFT);
-    position(-2.0, 0.0);
+    position(0.0, 0.0);
     interrupt 1;
     move(20, 0.0, 0.0, INTERPOLATION_EASE_OUT);
     source(BOMB_INACTIVE);
     pause;
     interrupt 2;
+    position(0.0, 0.0);
     move(20, 16.0, 0.0, INTERPOLATION_EASE_OUT);
     source(BOMB_ACTIVE);
     pause;

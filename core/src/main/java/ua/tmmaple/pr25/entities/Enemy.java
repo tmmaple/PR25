@@ -91,6 +91,15 @@ public class Enemy {
     }
 
     /**
+     * Викликає анімацію ворогу.
+     * @param id id інтеррапта.
+     * @author SkyWarp
+     */
+    public void interrupt(int id) {
+        this.sprite.interrupt((byte) id);
+    }
+
+    /**
      * @param width бажана ширина хітбоксу
      * @param height бажана висота хітбоксу
      * @author SkyWarp
@@ -935,6 +944,14 @@ public class Enemy {
      */
     public boolean hasCollision() {
         return (flags & FLAG_NO_COLLISION) == 0;
+    }
+
+    /**
+     * @return чи живий на даний момент ворог
+     * @author uwuhasmile
+     */
+    public boolean isActive() {
+        return active;
     }
 
     /**

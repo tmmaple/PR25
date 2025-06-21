@@ -116,7 +116,7 @@ public class BulletManager {
     private static Flow.FlowNode<BulletManager> drawNode;
 
     public BulletManager() {
-        plrSmallBullets = new PlayersBullet[32];
+        plrSmallBullets = new PlayersBullet[64];
         plrBigBullets = new PlayersBullet[32];
         enemyBullets = new EnemyBullet[600];
     }
@@ -245,9 +245,12 @@ public class BulletManager {
         small_bullets:
         for (PlayersBullet bullet : plrSmallBullets) {
             if (!bullet.active) continue;
+            bullet.position.add(bullet.velocity);
+            bullet.collider.setPosition(bullet.position.x, bullet.position.y);
+            bullet.sprite.position.set(bullet.position);
+            bullet.sprite.execute();
             if (bullet.position.y > GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT + 32.0f) {
                 bullet.toPool();
-                continue;
             }
             for (Enemy enemy: EnemyManager.global.enemies){
                 if (!enemy.active || !enemy.hasCollision()) continue;
@@ -259,20 +262,18 @@ public class BulletManager {
                     VfxManager.global.spawnEnemyDamage(bullet.sprite.absolutePosition());
                     enemy.damage(bullet.damage);
                     bullet.toPool();
-                    continue small_bullets;
                 }
             }
-            bullet.position.add(bullet.velocity);
-            bullet.collider.setPosition(bullet.position.x, bullet.position.y);
-            bullet.sprite.position.set(bullet.position);
-            bullet.sprite.execute();
         }
         big_bullets:
         for (PlayersBullet bullet : plrBigBullets) {
             if (!bullet.active) continue;
+            bullet.position.add(bullet.velocity);
+            bullet.collider.setPosition(bullet.position.x, bullet.position.y);
+            bullet.sprite.position.set(bullet.position);
+            bullet.sprite.execute();
             if (bullet.position.y > GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT + 32.0f) {
                 bullet.toPool();
-                continue;
             }
             for (Enemy enemy: EnemyManager.global.enemies){
                 if (!enemy.active || !enemy.hasCollision()) continue;
@@ -284,13 +285,8 @@ public class BulletManager {
                     VfxManager.global.spawnEnemyDamage(bullet.sprite.absolutePosition());
                     enemy.damage(bullet.damage);
                     bullet.toPool();
-                    continue big_bullets;
                 }
             }
-            bullet.position.add(bullet.velocity);
-            bullet.collider.setPosition(bullet.position.x, bullet.position.y);
-            bullet.sprite.position.set(bullet.position);
-            bullet.sprite.execute();
         }
         for (EnemyBullet bullet : enemyBullets) {
             if (!bullet.active) continue;
@@ -500,6 +496,10 @@ public class BulletManager {
          * @author uwuhasmile
          */
         public void setSpeed(float speed) {
+            if (speed <= 0.0f)
+                speed = 0.0f;
+            else
+                velocity.set(1.0f, 0.0f).setAngleRad(angle);
             this.speed = speed;
             velocity.nor().scl(speed);
         }
