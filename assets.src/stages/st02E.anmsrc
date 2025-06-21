@@ -71,7 +71,7 @@ idle_start:
 0:	source(MIDBOSS_2);
 6: source(MIDBOSS_3);
 12: source(MIDBOSS_4);
-18: source(MIDBOSS_5);
+18: source(MIDBOSS_3);
 24: jump idle_start;
 	interrupt 2;
 flying_start:

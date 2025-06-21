@@ -1,13 +1,18 @@
 package ua.tmmaple.pr25.stages;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.assets.Stage;
+import ua.tmmaple.pr25.entities.Enemy;
 import ua.tmmaple.pr25.entities.Gun;
+import ua.tmmaple.pr25.entities.VfxManager;
 import ua.tmmaple.pr25.task.Task;
 import ua.tmmaple.pr25.task.TimelineTask;
 
 public class Stage02 extends Stage {
     private float birdX;
+
+    private Enemy midboss;
 
     @Override
     public String[] anmList() {
@@ -152,7 +157,7 @@ public class Stage02 extends Stage {
                         return true;
                     },
                     Task.repeat(
-                        () -> (short) 24,
+                        () -> (short) 16,
                         Task.sequence(
                             e -> {
                                 e.createChildAbsolute(bird02(birdX, random.nextBoolean()), random.nextFloat(-120.0f, 120.0f), random.nextFloat(30.0f, 60.0f), 10);
@@ -163,6 +168,13 @@ public class Stage02 extends Stage {
                         )
                     )
                 )
+            ),
+            Task.keyframe(
+            1000,
+                e -> {
+                    e.createChildRelative(midBoss(), 200.0f, 16.0f, 350);
+                    return true;
+                }
             )
         );
     }
@@ -263,6 +275,7 @@ public class Stage02 extends Stage {
                     e.setGunRadius(0, 8.0f, 4.0f);
                     e.setGunRepeating(0, 1);
                     e.setGunSpeed(0, 4.0f, 2.0f);
+                    e.setGunFireSound(0, "sndNoise04.wav");
                     e.changePosition(INTERPOLATION_EASE_OUT, x, -50.0f, 40);
                     return true;
                 }
@@ -294,6 +307,139 @@ public class Stage02 extends Stage {
                 270,
                 e -> true
             )
+        );
+    }
+
+    private TimelineTask midBoss() {
+        return Task.timeline(
+            Task.keyframe(
+                e -> {
+                    midboss = e;
+                    e.setSprite(getAnm(1), "Midboss");
+                    e.setHitbox(48.0f, 48.0f);
+                    e.setDrop(5, 2);
+                    e.setInvincible(true);
+                    e.setDeathSound("sndNoise06.wav");
+                    e.setDeathVfx(VfxManager.Vfx.MIDBOSS_ORANGE_DEATH);
+
+                    e.initGun(0);
+                    e.setGunFireSound(0, "sndBulletHighMid.wav");
+                    e.setGunBulletType(0, Gun.BulletType.BULLET_8x12_ORANGE);
+                    e.setGunAim(0, Gun.Aim.FAN_PLAYER);
+                    e.setGunCount(0, 5, 3);
+                    e.setGunAngle(0, 0.0f, MathUtils.degRad * 35.0f);
+                    e.setGunSpeed(0, 7.0f, 3.0f);
+                    e.setGunAcceleration(0, -0.1f, -0.05f);
+                    e.setGunRepeating(0, 3);
+                    e.setGunRepeatInterval(0, 6);
+
+                    e.initGun(1);
+                    e.setGunFireSound(1, "sndNoise02.wav");
+                    e.setGunBulletType(1, Gun.BulletType.BULLET_12x12_WHITE);
+                    e.setGunAim(1, Gun.Aim.RING_PLAYER);
+                    e.setGunCount(1, 12, 3);
+                    e.setGunAngle(1, 0.0f, MathUtils.degRad * 28.0f);
+                    e.setGunSpeed(1, 3.0f, 1.0f);
+                    e.setGunAngularSpeed(1, MathUtils.degRad * 12.0f / 30.0f, MathUtils.degRad * 5.0f / 30.0f);
+                    e.setGunRepeating(1, 0);
+                    e.setGunRepeatInterval(1, 40);
+
+                    e.interrupt(2);
+                    e.changePosition(INTERPOLATION_EASE_OUT, 0.0f, -120.0f, 70);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                80,
+                    e -> {
+                    e.setInvincible(false);
+                    e.interrupt(1);
+                    e.makeBoss("???");
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                    100,
+                Task.repeat(
+                    () -> (short) 3,
+                    Task.sequence(
+                        e -> {
+                            e.setInvincible(false);
+                            e.turnGunOn(0);
+                            return true;
+                        },
+                        Task.wait(() -> (short) 40),
+                        e -> {
+                            e.setInvincible(true);
+                            e.changePosition(INTERPOLATION_EASE_OUT, random.nextFloat(-120.0f, 120.0f), 72.0f, 60);
+                            e.interrupt(2);
+                            return true;
+                        },
+                        Task.wait(() -> (short) 60),
+                        e -> {
+                            e.setInvincible(false);
+                            e.adjustGunAcceleration(0, 0.01f);
+                            e.changePosition(INTERPOLATION_EASE_OUT, random.nextFloat(-100.0f, 100.0f), -120.0f, 60);
+                            return true;
+                        },
+                        Task.wait(() -> (short) 60),
+                        e -> {
+                            e.interrupt(1);
+                            e.turnGunOn(0);
+                            return true;
+                        },
+                        Task.wait(() -> (short) 40),
+                        e -> {
+                            e.interrupt(2);
+                            e.setInvincible(true);
+                            e.changePosition(INTERPOLATION_EASE_OUT, random.nextFloat(-120.0f, 120.0f), 72.0f, 60);
+                            return true;
+                        },
+                        Task.wait(() -> (short) 60),
+                        e -> {
+                            e.setInvincible(false);
+                            e.adjustGunAcceleration(0, 0.01f);
+                            e.changePosition(INTERPOLATION_EASE_OUT, random.nextFloat(-60.0f, 60.0f), random.nextFloat(-140.0f, -90.0f), 60);
+                            return true;
+                        },
+                        Task.wait(() -> (short) 60),
+                        e -> {
+                            e.interrupt(1);
+                            return true;
+                        },
+                        Task.wait(() -> (short) 60),
+                        e -> {
+                            e.interrupt(2);
+                            e.moveOrbitally(random.nextFloat(0.0f, MathUtils.PI), 140.0f, 50.0f);
+                            e.changeSpeed(INTERPOLATION_LINEAR, 18.0f, 60);
+                            e.turnGunOn(1);
+                            return true;
+                        },
+                        Task.wait(() -> (short) 240),
+                        e -> {
+                            e.stopMovement();
+                            e.turnGunOff(1);
+                            e.changePosition(INTERPOLATION_EASE_OUT, random.nextFloat(-120.0f, 120.0f), 72.0f, 60);
+                            return true;
+                        },
+                        Task.wait(() -> (short) 60),
+                        e -> {
+                            e.setInvincible(false);
+                            e.changePosition(INTERPOLATION_EASE_OUT, random.nextFloat(-100.0f, 100.0f), -120.0f, 60);
+                            return true;
+                        },
+                        Task.wait(() -> (short) 60)
+                    )
+                )
+            ),
+            Task.keyframe(
+                120,
+                e -> {
+                    e.changePosition(INTERPOLATION_EASE_IN, 400.0f, -80.0f, 90);
+                    return true;
+                }
+            ),
+            Task.keyframe(210, e -> true)
         );
     }
 }
