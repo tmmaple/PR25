@@ -39,27 +39,56 @@ public final class Stage01 extends Stage {
                 }
             ),
             Task.keyframe(
-                200,
+                100,
                 en -> {
                     background.setCameraLimits(128.0f, 192.0f, true);
-                    en.createChildAbsolute(enemyA(), -100.0f, 40.0f, 50);
-                    en.createChildAbsolute(enemyB(), 100.0f, 40.0f, 50);
+                    en.createChildAbsolute(dragonflyB(100), -100.0f, 20.0f, 20);
+                    en.createChildAbsolute(dragonflyB(120), 100.0f, 20.0f, 20);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                300,
+                en -> {
+                    en.createChildAbsolute(dragonflyB(200), -150.0f, 50.0f, 20);
+                    en.createChildAbsolute(dragonflyB(120), 0.0f, 20.0f, 20);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                400,
+                en -> {
+                    en.createChildAbsolute(dragonflyB(150), -80.0f, 40.0f, 20);
+                    en.createChildAbsolute(dragonflyB(80), 90.0f, 20.0f, 20);
+                    en.createChildAbsolute(dragonflyB(50), 140.0f, 20.0f, 20);
                     return true;
                 }
             ),
             Task.keyframe(
                 600,
                 en -> {
-                    en.createChildAbsolute(enemyA(), -100.0f, 20.0f, 50);
-                    en.createChildAbsolute(enemyB(), 100.0f, 20.0f, 50);
+                    en.createChildAbsolute(dragonflyA(), -70.0f, 90.0f, 20);
+                    en.createChildAbsolute(dragonflyA(), 70.0f, 90.0f, 20);
+                    en.createChildAbsolute(dragonflyA(), -100.0f, 60.0f, 20);
+                    en.createChildAbsolute(dragonflyA(), 100.0f, 60.0f, 20);
+                    en.createChildAbsolute(dragonflyA(), -130.0f, 30.0f, 20);
+                    en.createChildAbsolute(dragonflyA(), 130.0f, 30.0f, 20);
                     return true;
                 }
             ),
             Task.keyframe(
                 900,
                 en -> {
-                    en.createChildAbsolute(enemyA(), -120.0f, 0.0f, 20);
-                    en.createChildAbsolute(enemyB(), 120.0f, 0.0f, 20);
+                    en.createChildAbsolute(bunnyA(), -100.0f, 20.0f, 30);
+                    en.createChildAbsolute(bunnyA(), 100.0f, 20.0f, 30);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                1200,
+                en -> {
+                    en.createChildAbsolute(dragonflyA(), -120.0f, 0.0f, 20);
+                    en.createChildAbsolute(bunnyB(), 120.0f, 0.0f, 30);
                     return true;
                 }
             ),
@@ -80,14 +109,12 @@ public final class Stage01 extends Stage {
         );
     }
 
-
-
-    private TimelineTask enemyA() {
+    private TimelineTask dragonflyA() {
         return Task.timeline(
             Task.keyframe(
                 en -> {
                     en.setHitbox(48.0f, 48.0f);
-                    en.setDrop(3, 50);
+                    en.setDrop(3, 3);
                     en.setSprite(getAnm(1), "Dragonfly");
                     en.setSpriteRotation(true);
                     en.setVelocity(-MathUtils.HALF_PI, 2.0f);
@@ -98,61 +125,14 @@ public final class Stage01 extends Stage {
                 60,
                 en -> {
                     en.initGun(0);
-                    en.setGunAim(0, Gun.Aim.RING_PLAYER);
+                    en.setGunAim(0, Gun.Aim.FAN_PLAYER);
                     en.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_12x12_RED);
                     en.setGunAngle(0, 0.0f, 0.0f);
-                    en.setGunCount(0, 8, 2);
-                    en.setGunSpeed(0, 1.0f, 0.5f);
-                    en.setGunRepeating(0, 5);
-                    en.setGunRepeatInterval(0, 20);
+                    en.setGunCount(0, 1, 1);
+                    en.setGunSpeed(0, 3f, 4f);
+                    en.setGunRepeating(0, 0);
+                    en.setGunRepeatInterval(0, 40);
                     en.turnGunOn(0);
-                    return true;
-                }
-            ),
-            Task.keyframe(
-                120,
-                en -> {
-                    en.turnGunOff(0);
-                    en.adjustGunSpeed(0, 4.0f);
-                    en.adjustGunBulletType(0, Gun.BulletType.BULLET_16x16_BLUE);
-                    en.changeVelocity(Tweener.INTERPOLATION_LINEAR, 3.0f, -MathUtils.HALF_PI * 0.25f, 60);
-                    return true;
-                }
-            ),
-            Task.keyframe(
-                130,
-                Task.repeat(
-                    () -> (short) 5,
-                    Task.sequence(
-                        en -> { en.adjustGunAimAtPlayer(0, 0.0f, 0.0f); return true; },
-                        Task.wait(() -> (short) 1)
-                    )
-                )
-            ),
-            Task.keyframe(
-                200,
-                en -> {
-                    en.moveCircularly(-MathUtils.HALF_PI, 50.0f);
-                    en.setSpeed(6.0f);
-                    en.setGunAim(0, Gun.Aim.FAN_PLAYER);
-                    en.setGunSpeed(0, 4.0f, 6.0f);
-                    en.setGunRadius(0, 48.0f, 60.0f);
-                    en.setGunRepeating(0, 60);
-                    en.setGunRepeatInterval(0, 5);
-                    en.setGunCount(0, 4, 1);
-                    en.setGunAngle(0, 0.0f, MathUtils.degRad * 40.0f);
-                    en.setGunBulletType(0, Gun.BulletType.BULLET_8x12_ORANGE);
-                    en.setGunAngularSpeed(0, 0.3f / 60.0f, 0.2f / 60.0f);
-                    en.initGun(1);
-                    en.setGunAim(1, Gun.Aim.RING_PLAYER);
-                    en.setGunCount(1, 20, 1);
-                    en.setGunRadius(1, 64.0f, 64.0f);
-                    en.setGunSpeed(1, 4.0f, 2.0f);
-                    en.setGunBulletType(1, Gun.BulletType.BULLET_RINGED_12x12_RED);
-                    en.setGunRepeatInterval(1, 30);
-                    en.setGunRepeating(1, 0);
-                    en.turnGunOn(0);
-                    en.turnGunOn(1);
                     return true;
                 }
             ),
@@ -163,12 +143,109 @@ public final class Stage01 extends Stage {
         );
     }
 
-    private TimelineTask enemyB() {
+    private TimelineTask dragonflyB(int flyTime) {
         return Task.timeline(
             Task.keyframe(
                 en -> {
                     en.setHitbox(48.0f, 48.0f);
                     en.setDrop(3, 3);
+                    en.setSprite(getAnm(1), "Dragonfly");
+                    en.setSpriteRotation(true);
+                    en.setVelocity(-MathUtils.HALF_PI, 2.0f);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                60,
+                en -> {
+                    en.initGun(0);
+                    en.setGunAim(0, Gun.Aim.FAN_PLAYER);
+                    en.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_12x12_RED);
+                    en.setGunAngle(0, 0f, 0f);
+                    en.setGunCount(0, 1, 1);
+                    en.setGunSpeed(0, 3f, 4f);
+                    en.setGunRepeating(0, 0);
+                    en.setGunRepeatInterval(0, 40);
+                    en.turnGunOn(0);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                flyTime,
+                en -> {
+                    en.stopMovement();
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                100000,
+                Task.wait(() -> (short) 1000)
+            )
+        );
+    }
+
+    private TimelineTask bunnyA() {
+        return Task.timeline(
+            Task.keyframe(
+                en -> {
+                    en.setHitbox(48.0f, 48.0f);
+                    en.setDrop(5, 7);
+                    en.setSprite(getAnm(1), "Bunny");
+                    en.setSpriteRotation(true);
+                    en.setVelocity(-MathUtils.HALF_PI, 2.0f);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                100,
+                en -> {
+                    en.stopMovement();
+                    en.initGun(0);
+                    en.setGunAim(0, Gun.Aim.FAN_STATIC);
+                    en.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_12x12_RED);
+                    en.setGunAngle(0, MathUtils.degRad * 90.0f, MathUtils.degRad * 10f);
+                    en.setGunCount(0, 5, 1);
+                    en.setGunSpeed(0, 2.0f, 2.0f);
+                    en.setGunAngularSpeed(0, 0.02f, 0.02f);
+                    en.setGunRepeating(0, 4);
+                    en.setGunRepeatInterval(0, 20);
+                    en.turnGunOn(0);
+                    en.initGun(1);
+                    en.setGunAim(1, Gun.Aim.FAN_STATIC);
+                    en.setGunBulletType(1, Gun.BulletType.BULLET_RINGED_12x12_RED);
+                    en.setGunAngle(1, MathUtils.degRad * 90.0f, MathUtils.degRad * 10f);
+                    en.setGunCount(1, 5, 1);
+                    en.setGunSpeed(1, 2.0f, 2.0f);
+                    en.setGunAngularSpeed(1, -0.02f, -0.02f);
+                    en.setGunRepeating(1, 4);
+                    en.setGunRepeatInterval(1, 20);
+                    en.turnGunOn(1);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                260,
+                en -> {
+                    en.adjustGunAngularSpeed(0, 0f);
+                    en.adjustGunAngularSpeed(1, 0f);
+                    en.adjustGunAngle(0, -MathUtils.HALF_PI);
+                    en.adjustGunAngle(1, -MathUtils.HALF_PI);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                100000,
+                Task.wait(() -> (short) 1000)
+            )
+        );
+    }
+
+    private TimelineTask bunnyB() {
+        return Task.timeline(
+            Task.keyframe(
+                en -> {
+                    en.setHitbox(48.0f, 48.0f);
+                    en.setDrop(5, 7);
                     en.setSprite(getAnm(1), "Bunny");
                     en.setSpriteRotation(true);
                     en.setVelocity(-MathUtils.HALF_PI, 2.0f);
@@ -180,9 +257,9 @@ public final class Stage01 extends Stage {
                 en -> {
                     en.initGun(0);
                     en.setGunAim(0, Gun.Aim.RING_PLAYER);
-                    en.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_12x12_RED);
+                    en.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_12x12_GREEN);
                     en.setGunAngle(0, 0.0f, MathUtils.degRad * 12.0f);
-                    en.setGunCount(0, 8, 2);
+                    en.setGunCount(0, 5, 2);
                     en.setGunSpeed(0, 1.0f, 0.5f);
                     en.setGunRepeating(0, 5);
                     en.setGunRepeatInterval(0, 20);
@@ -199,16 +276,6 @@ public final class Stage01 extends Stage {
                     en.rotate(Tweener.INTERPOLATION_LINEAR, -MathUtils.HALF_PI * 0.25f, 60);
                     return true;
                 }
-            ),
-            Task.keyframe(
-                130,
-                Task.repeat(
-                    () -> (short) 5,
-                    Task.sequence(
-                        en -> { en.adjustGunAimAtPlayer(0, 0.0f, 0.0f); return true; },
-                        Task.wait(() -> (short) 1)
-                    )
-                )
             ),
             Task.keyframe(
                 130,
@@ -230,6 +297,7 @@ public final class Stage01 extends Stage {
             )
         );
     }
+
     private TimelineTask midBoss() {
         return Task.timeline(
             Task.keyframe(en -> {
