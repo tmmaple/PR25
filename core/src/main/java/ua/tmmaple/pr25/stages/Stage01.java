@@ -42,16 +42,16 @@ public final class Stage01 extends Stage {
                 200,
                 en -> {
                     background.setCameraLimits(128.0f, 192.0f, true);
-                    en.createChildAbsolute(enemyA(), -100.0f, 40.0f, 20);
-                    en.createChildAbsolute(enemyB(), 100.0f, 40.0f, 20);
+                    en.createChildAbsolute(enemyA(), -100.0f, 40.0f, 50);
+                    en.createChildAbsolute(enemyB(), 100.0f, 40.0f, 50);
                     return true;
                 }
             ),
             Task.keyframe(
                 600,
                 en -> {
-                    en.createChildAbsolute(enemyA(), -100.0f, 20.0f, 20);
-                    en.createChildAbsolute(enemyB(), 100.0f, 20.0f, 20);
+                    en.createChildAbsolute(enemyA(), -100.0f, 20.0f, 50);
+                    en.createChildAbsolute(enemyB(), 100.0f, 20.0f, 50);
                     return true;
                 }
             ),
@@ -64,11 +64,11 @@ public final class Stage01 extends Stage {
                 }
             ),
             Task.keyframe(2100, en -> {
-                en.createChildAbsolute(midBoss(), 0.0f, 40.0f, 400);
+                en.createChildAbsolute(midBoss(), 0.0f, 30.0f, 400);
                 return true;
             }),
-            Task.keyframe(2800, en -> {
-                en.createChildAbsolute(boss(), 30.0f, 40.0f, 600);
+            Task.keyframe(2900, en -> {
+                en.createChildAbsolute(boss(), 50.0f, 30.0f, 600);
                 return true;
             }),
 
@@ -238,19 +238,13 @@ public final class Stage01 extends Stage {
                 en.setSprite(getAnm(1), "Midboss");
                 en.setSpriteRotation(true);
 
-                en.setVelocity(-MathUtils.HALF_PI, 3.0f);
+                // Плавний спуск на позицію
+                en.changePosition(Tweener.INTERPOLATION_EASE_OUT, 0.0f, -100.0f, 60);
                 return true;
             }),
 
-            // Зупинити після входу
-            Task.keyframe(60, en -> {
-                en.setVelocity(0f, 0f);
-                return true;
-            }),
-
-            // Почати рух по колу + атака
             Task.keyframe(100, en -> {
-                en.setSpeed(2.0f);
+                en.setSpeed(3.0f);
                 en.moveCircularly(0.0f, 80.0f);
                 en.initGun(0);
                 en.setGunAim(0, Gun.Aim.FAN_PLAYER);
@@ -290,13 +284,9 @@ public final class Stage01 extends Stage {
                 en.setDrop(10, 100);
                 en.setSprite(getAnm(1), "Boss");
                 en.setSpriteRotation(true);
-                // Виліт вниз
-                en.setVelocity(-MathUtils.HALF_PI, 3.5f);
-                return true;
-            }),
 
-            Task.keyframe(60, en -> {
-                en.setVelocity(0f, 0f); // зупинка
+                // Плавний спуск вниз
+                en.changePosition(Tweener.INTERPOLATION_EASE_OUT, 0.0f, -80.0f, 60);
                 return true;
             }),
 
