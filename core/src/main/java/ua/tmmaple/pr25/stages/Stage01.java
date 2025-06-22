@@ -222,6 +222,24 @@ public final class Stage01 extends Stage {
                 stopMusic();
                 playMusic(1);
                 en.createChildAbsolute(boss(), 50.0f, 30.0f, 2000);
+                en.addAsyncTask(Task.sequence(
+                    Task.whileLoop(
+                        () -> !en.children.isEmpty(),
+                        Task.wait(()->(short) 20)
+                    ),
+                    Task.sequence(
+                        e-> {
+                            fadeMusic(10);
+                            background.resetCameraLimits();
+                            return true;
+                        },
+                        Task.wait(()->(short) 500),
+                        e-> {
+                            this.nextStage(new Stage02());
+                            return true;
+                        }
+                    )
+                ));
                 return true;
             }),
             Task.keyframe(

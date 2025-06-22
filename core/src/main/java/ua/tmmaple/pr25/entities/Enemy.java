@@ -32,7 +32,7 @@ public class Enemy {
     private String bossName;
     Vector2 position;
     Enemy parent;
-    Array<Enemy> children;
+    public Array<Enemy> children;
     boolean active;
     TimelineTask timelineTask;
     Array<Task> asyncTasks;
