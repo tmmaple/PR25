@@ -87,6 +87,7 @@ public final class Stage01 extends Stage {
                 }
             ),
             Task.keyframe(1500, en -> {
+                BulletManager.global.destroyEnemyBullets();
                 en.addAsyncTask(Task.repeat(
                     () -> (short) 6,
                     Task.sequence(
@@ -165,8 +166,15 @@ public final class Stage01 extends Stage {
             }),
             Task.keyframe(4400, en -> {
                 BulletManager.global.destroyEnemyBullets();
+                en.createChildAbsolute(bunnyA(), 0.0f, 10.0f, 30);
+                en.createChildAbsolute(bunnyB(), 100.0f, 20.0f, 30);
+                en.createChildAbsolute(bunnyB(), -100.0f, 20.0f, 30);
+                return true;
+            }),
+            Task.keyframe(4700, en -> {
+                BulletManager.global.destroyEnemyBullets();
                 en.addAsyncTask(Task.repeat(
-                    () -> (short) 10,
+                    () -> (short) 8,
                     Task.sequence(
                         e -> {
                             e.createChildAbsolute(dragonflyC(), -230, random.nextFloat(-30, 30), 10);
@@ -176,7 +184,7 @@ public final class Stage01 extends Stage {
                     )
                 ));
                 en.addAsyncTask(Task.repeat(
-                    () -> (short) 10,
+                    () -> (short) 8,
                     Task.sequence(
                         e -> {
                             e.createChildAbsolute(dragonflyD(), 230, random.nextFloat(-30, 30), 10);
@@ -185,9 +193,6 @@ public final class Stage01 extends Stage {
                         Task.wait(() -> (short) 60)
                     )
                 ));
-                en.createChildAbsolute(bunnyA(), 0.0f, 10.0f, 30);
-                en.createChildAbsolute(bunnyB(), 100.0f, 20.0f, 30);
-                en.createChildAbsolute(bunnyB(), -100.0f, 20.0f, 30);
                 return true;
             }),
             Task.keyframe(5300, en -> {
@@ -256,12 +261,12 @@ public final class Stage01 extends Stage {
                     en.setDrop(1, 2);
                     en.setSprite(getAnm(1), "Dragonfly");
                     en.setSpriteRotation(true);
-                    en.setVelocity(-MathUtils.HALF_PI, 4.0f);
+                    en.setVelocity(-MathUtils.HALF_PI, 3.0f);
                     return true;
                 }
             ),
             Task.keyframe(
-                flyTime,
+                60,
                 en -> {
                     en.stopMovement();
                     en.initGun(0);
@@ -277,9 +282,10 @@ public final class Stage01 extends Stage {
                 }
             ),
             Task.keyframe(
-                flyTime+350,
+                flyTime,
                 en -> {
-                    en.changeVelocity(Tweener.INTERPOLATION_EASE_IN, 3f, MathUtils.PI, 20);
+                    float direction = random.nextBoolean() ? 0 : MathUtils.PI;
+                    en.changeVelocity(Tweener.INTERPOLATION_EASE_IN, 3f, direction, 20);
                     return true;
                 }
             ),
