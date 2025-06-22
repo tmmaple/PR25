@@ -48,37 +48,25 @@ public final class Stage01 extends Stage {
                 100,
                 en -> {
                     background.setCameraLimits(128.0f, 192.0f, true);
-                    en.createChildAbsolute(dragonflyB(50), -100.0f, 20.0f, 20);
-                    en.createChildAbsolute(dragonflyB(60), 100.0f, 20.0f, 20);
+                    en.createChildAbsolute(dragonflyB(40), -100.0f, 20.0f, 20);
+                    en.createChildAbsolute(dragonflyB(50), 100.0f, 20.0f, 20);
                     return true;
                 }
             ),
             Task.keyframe(
                 350,
                 en -> {
-                    en.createChildAbsolute(dragonflyB(100), -150.0f, 50.0f, 20);
-                    en.createChildAbsolute(dragonflyB(60), 0.0f, 20.0f, 20);
+                    en.createChildAbsolute(dragonflyB(30), -120.0f, 50.0f, 20);
+                    en.createChildAbsolute(dragonflyB(50), 0.0f, 20.0f, 20);
                     return true;
                 }
             ),
             Task.keyframe(
                 450,
                 en -> {
-                    en.createChildAbsolute(dragonflyB(70), -80.0f, 40.0f, 20);
-                    en.createChildAbsolute(dragonflyB(40), 90.0f, 20.0f, 20);
-                    en.createChildAbsolute(dragonflyB(30), 140.0f, 20.0f, 20);
-                    return true;
-                }
-            ),
-            Task.keyframe(
-                620,
-                en -> {
-                    en.createChildAbsolute(dragonflyA(), -70.0f, 90.0f, 20);
-                    en.createChildAbsolute(dragonflyA(), 70.0f, 90.0f, 20);
-                    en.createChildAbsolute(dragonflyA(), -100.0f, 60.0f, 20);
-                    en.createChildAbsolute(dragonflyA(), 100.0f, 60.0f, 20);
-                    en.createChildAbsolute(dragonflyA(), -130.0f, 30.0f, 20);
-                    en.createChildAbsolute(dragonflyA(), 130.0f, 30.0f, 20);
+                    en.createChildAbsolute(dragonflyB(60), -80.0f, 40.0f, 20);
+                    en.createChildAbsolute(dragonflyB(30), 90.0f, 20.0f, 20);
+                    en.createChildAbsolute(dragonflyB(20), 120.0f, 20.0f, 20);
                     return true;
                 }
             ),
@@ -93,6 +81,7 @@ public final class Stage01 extends Stage {
             Task.keyframe(
                 1200,
                 en -> {
+                    BulletManager.global.destroyEnemyBullets();
                     en.createChildAbsolute(dragonflyA(), -120.0f, 0.0f, 20);
                     en.createChildAbsolute(bunnyB(), 120.0f, 0.0f, 30);
                     return true;
@@ -103,7 +92,7 @@ public final class Stage01 extends Stage {
                     () -> (short) 6,
                     Task.sequence(
                         e -> {
-                            e.createChildAbsolute(dragonflyC(), -220, random.nextFloat(-30, 30), 20);
+                            e.createChildAbsolute(dragonflyC(), -220, random.nextFloat(-30, 30), 10);
                             return true;
                         },
                         Task.wait(() -> (short) 80)
@@ -113,7 +102,7 @@ public final class Stage01 extends Stage {
                     () -> (short) 6,
                     Task.sequence(
                         e -> {
-                            e.createChildAbsolute(dragonflyD(), 220, random.nextFloat(-30, 30), 20);
+                            e.createChildAbsolute(dragonflyD(), 220, random.nextFloat(-30, 30), 10);
                             return true;
                         },
                         Task.wait(() -> (short) 80)
@@ -125,10 +114,10 @@ public final class Stage01 extends Stage {
                 2000,
                 en -> {
                     en.addAsyncTask(Task.repeat(
-                        () -> (short) 10,
+                        () -> (short) 9,
                         Task.sequence(
                             e -> {
-                                e.createChildAbsolute(dragonflyB(random.nextInt(10, 60)), random.nextFloat(-120, 120), 20, 20);
+                                e.createChildAbsolute(dragonflyB(random.nextInt(10, 50)), random.nextFloat(-120, 120), 20, 20);
                                 return true;
                             },
                             Task.wait(() -> (short) 80)
@@ -143,13 +132,13 @@ public final class Stage01 extends Stage {
                 return true;
             }),
             Task.keyframe( 3600, en -> {
-                en.createChildAbsolute(dragonflyC(), -200.0f, -30.0f, 20);
-                en.createChildAbsolute(dragonflyD(), 200.0f, -30.0f, 20);
+                en.createChildAbsolute(dragonflyC(), -220.0f, -30.0f, 20);
+                en.createChildAbsolute(dragonflyD(), 220.0f, -30.0f, 20);
                 en.addAsyncTask(Task.repeat(
                     () -> (short) 6,
                     Task.sequence(
                         e -> {
-                            e.createChildAbsolute(dragonflyA(), random.nextFloat(-140, 140), 20.0f, 20);
+                            e.createChildAbsolute(dragonflyA(), random.nextFloat(-120, 120), 20.0f, 20);
                             return true;
                         },
                         Task.wait(() -> (short) 80)
@@ -157,37 +146,49 @@ public final class Stage01 extends Stage {
                 ));
                return true;
             }),
+            Task.keyframe(
+                3800,
+                en -> {
+                    en.createChildAbsolute(dragonflyA(), -60.0f, 90.0f, 20);
+                    en.createChildAbsolute(dragonflyA(), 60.0f, 90.0f, 20);
+                    en.createChildAbsolute(dragonflyA(), -80.0f, 60.0f, 20);
+                    en.createChildAbsolute(dragonflyA(), 80.0f, 60.0f, 20);
+                    en.createChildAbsolute(dragonflyA(), -100.0f, 30.0f, 20);
+                    en.createChildAbsolute(dragonflyA(), 100.0f, 30.0f, 20);
+                    return true;
+                }
+            ),
             Task.keyframe(4100, en -> {
                 en.createChildAbsolute(bunnyB(), -120.0f, 0.0f, 30);
                 en.createChildAbsolute(bunnyB(), 120.0f, 0.0f, 30);
+
                 return true;
             }),
             Task.keyframe(4400, en -> {
+                BulletManager.global.destroyEnemyBullets();
                 en.addAsyncTask(Task.repeat(
-                    () -> (short) 8,
+                    () -> (short) 10,
                     Task.sequence(
                         e -> {
-                            e.createChildAbsolute(dragonflyC(), -220, random.nextFloat(-30, 30), 20);
+                            e.createChildAbsolute(dragonflyC(), -230, random.nextFloat(-30, 30), 10);
                             return true;
                         },
-                        Task.wait(() -> (short) 80)
+                        Task.wait(() -> (short) 60)
                     )
                 ));
                 en.addAsyncTask(Task.repeat(
-                    () -> (short) 8,
+                    () -> (short) 10,
                     Task.sequence(
                         e -> {
-                            e.createChildAbsolute(dragonflyD(), 220, random.nextFloat(-30, 30), 20);
+                            e.createChildAbsolute(dragonflyD(), 230, random.nextFloat(-30, 30), 10);
                             return true;
                         },
-                        Task.wait(() -> (short) 80)
+                        Task.wait(() -> (short) 60)
                     )
                 ));
                 en.createChildAbsolute(bunnyA(), 0.0f, 10.0f, 30);
-                return true;
-            }),
-            Task.keyframe(5100, en -> {
-
+                en.createChildAbsolute(bunnyB(), 100.0f, 20.0f, 30);
+                en.createChildAbsolute(bunnyB(), -100.0f, 20.0f, 30);
                 return true;
             }),
             Task.keyframe(5300, en -> {
@@ -223,14 +224,21 @@ public final class Stage01 extends Stage {
                 60,
                 en -> {
                     en.initGun(0);
-                    en.setGunAim(0, Gun.Aim.FAN_PLAYER);
+                    en.setGunAim(0, Gun.Aim.FAN_STATIC);
                     en.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_12x12_RED);
-                    en.setGunAngle(0, 0.0f, 0.0f);
-                    en.setGunCount(0, 1, 1);
-                    en.setGunSpeed(0, 3f, 4f);
+                    en.setGunAngle(0, -MathUtils.HALF_PI, MathUtils.degRad * 30);
+                    en.setGunCount(0, 2, 3);
+                    en.setGunSpeed(0, 4f, 3f);
                     en.setGunRepeating(0, 0);
-                    en.setGunRepeatInterval(0, 40);
+                    en.setGunRepeatInterval(0, 80);
                     en.turnGunOn(0);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                120,
+                en -> {
+                    en.changeVelocity(Tweener.INTERPOLATION_EASE_IN, 3f, 0f, 20);
                     return true;
                 }
             ),
@@ -258,13 +266,13 @@ public final class Stage01 extends Stage {
                 en -> {
                     en.stopMovement();
                     en.initGun(0);
-                    en.setGunAim(0, Gun.Aim.FAN_PLAYER);
+                    en.setGunAim(0, Gun.Aim.RING_STATIC);
                     en.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_12x12_RED);
-                    en.setGunAngle(0, 0f, 0f);
-                    en.setGunCount(0, 1, 1);
-                    en.setGunSpeed(0, 3f, 4f);
+                    en.setGunAngle(0, -MathUtils.HALF_PI, MathUtils.degRad * 30);
+                    en.setGunCount(0, 4, 4);
+                    en.setGunSpeed(0, 4f, 3f);
                     en.setGunRepeating(0, 0);
-                    en.setGunRepeatInterval(0, 40);
+                    en.setGunRepeatInterval(0, 60);
                     en.turnGunOn(0);
                     return true;
                 }
@@ -284,19 +292,19 @@ public final class Stage01 extends Stage {
                     en.setDrop(3, 3);
                     en.setSprite(getAnm(1), "Dragonfly");
                     en.setSpriteRotation(true);
-                    en.setVelocity(-MathUtils.HALF_PI, 4.0f);
+                    en.setVelocity(-MathUtils.HALF_PI, 2.0f);
                     return true;
                 }
             ),
             Task.keyframe(
                 60,
                 en -> {
-                    en.changeVelocity(Tweener.INTERPOLATION_LINEAR, 4.0f, random.nextFloat(-MathUtils.HALF_PI, MathUtils.HALF_PI), 20);
+                    en.changeVelocity(Tweener.INTERPOLATION_LINEAR, 4.0f, random.nextFloat(-MathUtils.HALF_PI/2, MathUtils.HALF_PI/2), 20);
                     en.initGun(0);
-                    en.setGunAim(0, Gun.Aim.RING_PLAYER);
+                    en.setGunAim(0, Gun.Aim.FAN_STATIC);
                     en.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_12x12_RED);
-                    en.setGunAngle(0, 0.0f, MathUtils.degRad * 10.0f);
-                    en.setGunCount(0, 1, 1);
+                    en.setGunAngle(0, MathUtils.degRad * -20f, MathUtils.degRad * 10.0f);
+                    en.setGunCount(0, 6, 3);
                     en.setGunSpeed(0, 3f, 4f);
                     en.setGunRepeating(0, 0);
                     en.setGunRepeatInterval(0, 60);
@@ -318,19 +326,19 @@ public final class Stage01 extends Stage {
                     en.setDrop(3, 3);
                     en.setSprite(getAnm(1), "Dragonfly");
                     en.setSpriteRotation(true);
-                    en.setVelocity(-MathUtils.HALF_PI, 4.0f);
+                    en.setVelocity(-MathUtils.HALF_PI, 2.0f);
                     return true;
                 }
             ),
             Task.keyframe(
                 60,
                 en -> {
-                    en.changeVelocity(Tweener.INTERPOLATION_LINEAR, 4.0f, random.nextFloat(MathUtils.HALF_PI, MathUtils.HALF_PI+MathUtils.PI), 20);
+                    en.changeVelocity(Tweener.INTERPOLATION_LINEAR, 4.0f, random.nextFloat(MathUtils.degRad * 135f, MathUtils.degRad * 215f), 20);
                     en.initGun(0);
-                    en.setGunAim(0, Gun.Aim.RING_PLAYER);
+                    en.setGunAim(0, Gun.Aim.FAN_STATIC);
                     en.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_12x12_RED);
-                    en.setGunAngle(0, 0.0f, MathUtils.degRad * 10.0f);
-                    en.setGunCount(0, 1, 1);
+                    en.setGunAngle(0, MathUtils.degRad * 110f, MathUtils.degRad * 10.0f);
+                    en.setGunCount(0, 3, 2);
                     en.setGunSpeed(0, 3f, 4f);
                     en.setGunRepeating(0, 0);
                     en.setGunRepeatInterval(0, 60);
@@ -358,7 +366,7 @@ public final class Stage01 extends Stage {
                 }
             ),
             Task.keyframe(
-                100,
+                50,
                 en -> {
                     en.stopMovement();
                     en.initGun(0);
@@ -385,7 +393,7 @@ public final class Stage01 extends Stage {
                 }
             ),
             Task.keyframe(
-                260,
+                220,
                 en -> {
                     en.adjustGunAngularSpeed(0, 0f);
                     en.adjustGunAngularSpeed(1, 0f);
@@ -395,7 +403,7 @@ public final class Stage01 extends Stage {
                 }
             ),
             Task.keyframe(
-                100000,
+                400,
                 Task.wait(() -> (short) 1000)
             )
         );
