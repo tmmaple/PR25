@@ -181,7 +181,7 @@ public final class MainMenu {
         leafVm.loadScriptAndPlay("Leaf");
         menuVm.loadAnm(anm);
         menuVm.loadScriptAndPlay("Menu");
-        hiScoreText = new Text("menuHiScore", String.format("%08d", 0));
+        hiScoreText = new Text("menuHiScore", String.format("%08d", God.global.hiScore()));
         state = MainMenuState.INTRO;
         ticksLeft = 100;
         return 0;

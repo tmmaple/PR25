@@ -47,6 +47,7 @@ public final class Hud {
     private final TextManager.TextSettings labelSettings;
     private final TextManager.TextSettings valueSettings;
 
+    private long hiScore;
     private long score;
     private long graze;
     private long bombCounter;
@@ -179,6 +180,7 @@ public final class Hud {
     private int added() {
         for (int i = 0; i < pickups.length; ++i)
             pickups[i].ticks = 0;
+        hiScore = GameplayStats.global.getHiScore();
         gameState = 0;
         freePickup = 0;
         anm = Assets.global.get(Anm.class, "ui/hud.anm");
@@ -278,7 +280,12 @@ public final class Hud {
         exitButton.draw();
         valueSettings.color.set(Color.WHITE);
         bordersVm.draw();
-        Vector2 pos = BASE.cpy();
+        Vector2 pos = BASE.cpy().add(0.0f, VSPACE);
+        labelSettings.position.set(pos);
+        valueSettings.position.set(pos);
+        labelSettings.draw("HiSc");
+        valueSettings.draw(String.format("%08d", hiScore));
+        pos.sub(0.0f, VSPACE);
         labelSettings.position.set(pos);
         valueSettings.position.set(pos);
         labelSettings.draw(God.global.getLocalizedString("score", false));
@@ -337,6 +344,8 @@ public final class Hud {
             score += 100;
         if (score > GameplayStats.global.getScore())
             score = GameplayStats.global.getScore();
+        if (score > hiScore)
+            hiScore = score;
         if (power != GameplayStats.global.getPower()) {
             if (!fullPower && GameplayStats.global.isFullPower()) {
                 fullPower = true;

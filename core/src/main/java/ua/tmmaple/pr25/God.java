@@ -82,7 +82,10 @@ public final class God {
     private I18NBundle i18n;
     private int language;
 
+    private long hiScore;
+
     private Preferences prefs;
+    private Preferences save;
 
     private boolean exit;
 
@@ -128,6 +131,9 @@ public final class God {
         if (language.equals("en")) god.language = LANGUAGE_ENGLISH;
         else if (language.equals("uk")) god.language = LANGUAGE_UKRAINIAN;
         god.setLanguage(god.language);
+
+        god.save = Gdx.app.getPreferences("pr25_save");
+        god.hiScore = god.save.getLong("hiScore", 0);
 
         god.windowScale = -1;
         god.setWindowMode(scale);
@@ -202,6 +208,9 @@ public final class God {
         god.prefs.putFloat("sfxVolume", god.sfxVolume);
         god.prefs.putFloat("musicVolume", god.musicVolume);
         god.prefs.flush();
+
+        god.save.putLong("hiScore", god.hiScore);
+        god.save.flush();
         return 0;
     }
 
@@ -358,6 +367,14 @@ public final class God {
     }
 
     /**
+     * @param hiScore новий найкращий рахунок
+     * @author uwuhasmile
+     */
+    public void updateHiScore(long hiScore) {
+        this.hiScore = hiScore;
+    }
+
+    /**
      * @return поточний розмір вікна, 0 - повноекранний режим
      * @author uwuhasmile
      */
@@ -387,5 +404,13 @@ public final class God {
      */
     public int language() {
         return language;
+    }
+
+    /**
+     * @return поточний найвищий рахунок
+     * @author uwuhasmile
+     */
+    public long hiScore() {
+        return hiScore;
     }
 }
