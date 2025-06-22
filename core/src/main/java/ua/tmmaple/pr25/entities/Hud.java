@@ -189,6 +189,8 @@ public final class Hud {
         bordersVm.loadAnm(anm);
         bordersVm.loadScriptAndPlay("Borders");
         bordersVm.position.set(0, 0);
+        canBomb = false;
+        bombCounter = 0;
         bombVm.loadAnm(anm);
         bombVm.loadScriptAndPlay("Bomb");
         bombVm.position.set(BASE.cpy().sub(0.0f, VSPACE * 7));
