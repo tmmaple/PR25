@@ -64,8 +64,7 @@ public final class Stage01 extends Stage {
             Task.keyframe(
                 450,
                 en -> {
-                    en.createChildAbsolute(dragonflyB(60), -80.0f, 40.0f, 20);
-                    en.createChildAbsolute(dragonflyB(30), 90.0f, 20.0f, 20);
+                    en.createChildAbsolute(dragonflyB(30), -80.0f, 40.0f, 20);
                     en.createChildAbsolute(dragonflyB(20), 120.0f, 20.0f, 20);
                     return true;
                 }
@@ -213,7 +212,7 @@ public final class Stage01 extends Stage {
             Task.keyframe(
                 en -> {
                     en.setHitbox(48.0f, 48.0f);
-                    en.setDrop(3, 3);
+                    en.setDrop(2, 2);
                     en.setSprite(getAnm(1), "Dragonfly");
                     en.setSpriteRotation(true);
                     en.setVelocity(-MathUtils.HALF_PI, 2.0f);
@@ -229,7 +228,7 @@ public final class Stage01 extends Stage {
                     en.setGunAngle(0, -MathUtils.HALF_PI, MathUtils.degRad * 30);
                     en.setGunCount(0, 2, 3);
                     en.setGunSpeed(0, 4f, 3f);
-                    en.setGunRepeating(0, 0);
+                    en.setGunRepeating(0, 3);
                     en.setGunRepeatInterval(0, 80);
                     en.turnGunOn(0);
                     return true;
@@ -254,7 +253,7 @@ public final class Stage01 extends Stage {
             Task.keyframe(
                 en -> {
                     en.setHitbox(48.0f, 48.0f);
-                    en.setDrop(3, 3);
+                    en.setDrop(1, 2);
                     en.setSprite(getAnm(1), "Dragonfly");
                     en.setSpriteRotation(true);
                     en.setVelocity(-MathUtils.HALF_PI, 4.0f);
@@ -271,9 +270,16 @@ public final class Stage01 extends Stage {
                     en.setGunAngle(0, -MathUtils.HALF_PI, MathUtils.degRad * 30);
                     en.setGunCount(0, 4, 4);
                     en.setGunSpeed(0, 4f, 3f);
-                    en.setGunRepeating(0, 0);
+                    en.setGunRepeating(0, 6);
                     en.setGunRepeatInterval(0, 60);
                     en.turnGunOn(0);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                flyTime+350,
+                en -> {
+                    en.changeVelocity(Tweener.INTERPOLATION_EASE_IN, 3f, MathUtils.PI, 20);
                     return true;
                 }
             ),
@@ -289,7 +295,7 @@ public final class Stage01 extends Stage {
             Task.keyframe(
                 en -> {
                     en.setHitbox(48.0f, 48.0f);
-                    en.setDrop(3, 3);
+                    en.setDrop(1, 2);
                     en.setSprite(getAnm(1), "Dragonfly");
                     en.setSpriteRotation(true);
                     en.setVelocity(-MathUtils.HALF_PI, 2.0f);
@@ -306,7 +312,7 @@ public final class Stage01 extends Stage {
                     en.setGunAngle(0, MathUtils.degRad * -20f, MathUtils.degRad * 10.0f);
                     en.setGunCount(0, 6, 3);
                     en.setGunSpeed(0, 3f, 4f);
-                    en.setGunRepeating(0, 0);
+                    en.setGunRepeating(0, 3);
                     en.setGunRepeatInterval(0, 60);
                     en.turnGunOn(0);
                     return true;
@@ -323,7 +329,7 @@ public final class Stage01 extends Stage {
             Task.keyframe(
                 en -> {
                     en.setHitbox(48.0f, 48.0f);
-                    en.setDrop(3, 3);
+                    en.setDrop(1, 2);
                     en.setSprite(getAnm(1), "Dragonfly");
                     en.setSpriteRotation(true);
                     en.setVelocity(-MathUtils.HALF_PI, 2.0f);
@@ -340,7 +346,7 @@ public final class Stage01 extends Stage {
                     en.setGunAngle(0, MathUtils.degRad * 110f, MathUtils.degRad * 10.0f);
                     en.setGunCount(0, 3, 2);
                     en.setGunSpeed(0, 3f, 4f);
-                    en.setGunRepeating(0, 0);
+                    en.setGunRepeating(0, 3);
                     en.setGunRepeatInterval(0, 60);
                     en.turnGunOn(0);
                     return true;
@@ -358,7 +364,7 @@ public final class Stage01 extends Stage {
             Task.keyframe(
                 en -> {
                     en.setHitbox(48.0f, 48.0f);
-                    en.setDrop(5, 7);
+                    en.setDrop(4, 3);
                     en.setSprite(getAnm(1), "Bunny");
                     en.setSpriteRotation(true);
                     en.setVelocity(-MathUtils.HALF_PI, 3.0f);
@@ -399,6 +405,7 @@ public final class Stage01 extends Stage {
                     en.adjustGunAngularSpeed(1, 0f);
                     en.adjustGunAngle(0, -MathUtils.HALF_PI);
                     en.adjustGunAngle(1, -MathUtils.HALF_PI);
+                    en.changeVelocity(Tweener.INTERPOLATION_LINEAR, 3f, MathUtils.PI, 20);
                     return true;
                 }
             ),
@@ -414,7 +421,7 @@ public final class Stage01 extends Stage {
             Task.keyframe(
                 en -> {
                     en.setHitbox(48.0f, 48.0f);
-                    en.setDrop(5, 7);
+                    en.setDrop(3, 4);
                     en.setSprite(getAnm(1), "Bunny");
                     en.setSpriteRotation(true);
                     en.setVelocity(-MathUtils.HALF_PI, 2.0f);
@@ -471,7 +478,7 @@ public final class Stage01 extends Stage {
         return Task.timeline(
             Task.keyframe(en -> {
                 en.setHitbox(64.0f, 64.0f);
-                en.setDrop(5, 60);
+                en.setDrop(7, 7);
                 en.setSprite(getAnm(1), "Midboss");
                 en.setSpriteRotation(true);
 
@@ -518,7 +525,7 @@ public final class Stage01 extends Stage {
         return Task.timeline(
             Task.keyframe(en -> {
                 en.setHitbox(96.0f, 96.0f);
-                en.setDrop(10, 100);
+                en.setDrop(10, 1);
                 en.setSprite(getAnm(1), "Boss");
                 en.setSpriteRotation(true);
 
