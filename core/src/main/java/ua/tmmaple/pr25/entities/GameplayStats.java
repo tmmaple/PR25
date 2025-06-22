@@ -1,6 +1,7 @@
 package ua.tmmaple.pr25.entities;
 
 import ua.tmmaple.pr25.Flow;
+import ua.tmmaple.pr25.God;
 
 /**
  * Статистика гравця під час гри.
@@ -12,6 +13,7 @@ public final class GameplayStats {
     private static final int GRAZE_BOMB_THRESHOLD = 10;
     private static final short GRAZE_BOMB_REMOVE_COOLDOWN = 120;
 
+    private long hiScore;
     private long score;
     private int power;
     private long graze;
@@ -33,7 +35,7 @@ public final class GameplayStats {
     public static void register() {
         if (node != null)
             return;
-        node = new Flow.FlowNode<>(global, GameplayStats::update, GameplayStats::added);
+        node = new Flow.FlowNode<>(global, GameplayStats::update, GameplayStats::added, GameplayStats::removed);
         Flow.global.addToUpdate(node, 11);
     }
 
@@ -87,6 +89,8 @@ public final class GameplayStats {
      */
     public void score(long amount) {
         score += amount;
+        if (score > hiScore)
+            hiScore = score;
     }
 
     /**
@@ -108,6 +112,14 @@ public final class GameplayStats {
      */
     public long getScore() {
         return score;
+    }
+
+    /**
+     * @return поточна найвища кількість очок
+     * @author uwuhasmile
+     */
+    public long getHiScore() {
+        return hiScore;
     }
 
     /**
@@ -147,6 +159,7 @@ public final class GameplayStats {
      * @author uwuhasmile
      */
     public void reset() {
+        hiScore = God.global.hiScore();
         power = 0;
         score = 0L;
         graze = 0L;
@@ -225,5 +238,14 @@ public final class GameplayStats {
             }
         }
         return Flow.FLOW_RESULT_CONTINUE;
+    }
+
+    /**
+     * Записує остаточний результат
+     * @author uwuhasmile
+     */
+    private int removed() {
+        God.global.updateHiScore(hiScore);
+        return 0;
     }
 }
