@@ -1,7 +1,6 @@
 package ua.tmmaple.pr25.stages;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import ua.tmmaple.pr25.assets.Stage;
 import ua.tmmaple.pr25.entities.Enemy;
 import ua.tmmaple.pr25.entities.Gun;
@@ -175,6 +174,86 @@ public class Stage02 extends Stage {
                     e.createChildRelative(midBoss(), 200.0f, 16.0f, 350);
                     return true;
                 }
+            ),
+            Task.keyframe(
+                1001,
+                Task.repeat(
+                    () -> (short) 400,
+                    Task.sequence(
+                        e -> {
+                            if (midboss == null || !midboss.isActive()) {
+                                float x = random.nextFloat(-140.0f, 140.0f);
+                                e.createChildRelative(leafMidbossDefeated(x), x, 16.0f, 2);
+                                midboss = null;
+                            }
+                            return true;
+                        },
+                        Task.wait(() -> (short) 5)
+                    )
+                )
+            ),
+            Task.keyframe(
+                1500,
+                e -> {
+                    e.addAsyncTask(
+                        Task.repeat(
+                            () -> (short) 200,
+                            Task.sequence(
+                                en -> {
+                                    float x = random.nextFloat(-120.0f, 120.0f);
+                                    en.createChildRelative(bird03(x), x, 16.0f, 5);
+                                    return true;
+                                },
+                                Task.wait(() -> (short) 10)
+                            )
+                        )
+                    );
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                1800,
+                e -> {
+                    for (int i = 0; i < 4; ++i) {
+                        float x = random.nextFloat(-120.0f, 120.0f);
+                        float y =  random.nextFloat(-120.0f, -100.0f);
+                        e.createChildRelative(firefly(x), x, y, 5);
+                    }
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                2200,
+                e -> {
+                    for (int i = 0; i < 3; ++i) {
+                        float x = random.nextFloat(-160.0f, 160.0f);
+                        float y =  random.nextFloat(-120.0f, -40.0f);
+                        e.createChildRelative(firefly(x), x, y, 5);
+                    }
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                2700,
+                e -> {
+                    for (int i = 0; i < 2; ++i) {
+                        float x = random.nextFloat(-160.0f, 160.0f);
+                        float y =  random.nextFloat(-120.0f, -40.0f);
+                        e.createChildRelative(firefly(x), x, y, 5);
+                    }
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                3200,
+                e -> {
+                    for (int i = 0; i < 4; ++i) {
+                        float x = random.nextFloat(-160.0f, 160.0f);
+                        float y =  random.nextFloat(-120.0f, -40.0f);
+                        e.createChildRelative(firefly(x), x, y, 5);
+                    }
+                    return true;
+                }
             )
         );
     }
@@ -186,7 +265,7 @@ public class Stage02 extends Stage {
                     e.setSprite(getAnm(1), "Leaf");
                     e.setVelocity(MathUtils.PI * (0.5f + -hDir * 0.5f), random.nextFloat(5.0f, 9.0f));
                     boolean score = random.nextBoolean();
-                    e.setDrop(score ? 2 : 0, score ? 0 : 2);
+                    e.setDrop(score ? 1 : 0, score ? 0 : 1);
                     e.setHitbox(14.0f, 14.0f);
                     if (spawnBullet) {
                         e.initGun(0);
@@ -222,7 +301,7 @@ public class Stage02 extends Stage {
                     e.setSprite(getAnm(1), "Nightingale");
                     e.setSpriteRotation(true);
                     boolean power = random.nextBoolean();
-                    e.setDrop(power ? 0 : 1, power ? 1 : 0);
+                    e.setDrop(power ? 0 : 2, power ? 1 : 0);
                     e.setHitbox(12.0f, 12.0f);
                     e.initGun(0);
                     e.setGunBulletType(0, Gun.BulletType.BULLET_8x8_WHITE);
@@ -265,7 +344,7 @@ public class Stage02 extends Stage {
                     e.setSpriteRotation(true);
                     boolean power = random.nextBoolean();
                     e.setAngle(-MathUtils.HALF_PI);
-                    e.setDrop(power ? 0 : 1, power ? 1 : 0);
+                    e.setDrop(power ? 0 : 2, power ? 2 : 0);
                     e.setHitbox(12.0f, 12.0f);
                     e.initGun(0);
                     e.setGunBulletType(0, Gun.BulletType.BULLET_10x16_RED);
@@ -435,11 +514,135 @@ public class Stage02 extends Stage {
             Task.keyframe(
                 120,
                 e -> {
+                    midboss = null;
                     e.changePosition(INTERPOLATION_EASE_IN, 400.0f, -80.0f, 90);
                     return true;
                 }
             ),
             Task.keyframe(210, e -> true)
+        );
+    }
+
+    private TimelineTask leafMidbossDefeated(float x) {
+        return Task.timeline(
+            Task.keyframe(
+                e -> {
+                    e.setSprite(getAnm(1), "Leaf");
+                    e.setHitbox(14.0f, 14.0f);
+                    boolean score = random.nextBoolean();
+                    e.setDrop(score ? 1 : 0, score ? 0 : 1);
+                    float angle = MathUtils.HALF_PI * -0.5f;
+                    if (x > 70.0f)
+                        angle -= MathUtils.HALF_PI;
+                    else if (x > -70.0f && MathUtils.randomBoolean())
+                        angle -= MathUtils.HALF_PI;
+                    float speed = random.nextFloat(8.0f, 15.0f);
+                    e.setVelocity(angle, speed);
+                    e.initGun(0);
+                    e.setGunBulletType(0, Gun.BulletType.BULLET_8x12_RED);
+                    e.setGunAim(0, Gun.Aim.RING_PLAYER);
+                    e.setGunCount(0, 4, 1);
+                    e.setGunSpeed(0, 2.0f, 2.0f);
+                    e.setGunRepeating(0, 0);
+                    e.setGunRepeatInterval(0, 15);
+                    e.setGunDelay(0, 30);
+                    e.turnGunOn(0);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                180,
+                e -> true
+            )
+        );
+    }
+
+    private TimelineTask bird03(float x) {
+        return Task.timeline(
+            Task.keyframe(
+                e -> {
+                    e.setSprite(getAnm(1), "Nightingale");
+                    e.setSpriteRotation(true);
+                    e.setVelocity(-MathUtils.HALF_PI, random.nextFloat(6.0f, 8.0f));
+                    boolean power = random.nextBoolean();
+                    e.setDrop(power ? 0 : 1, power ? 1 : 0);
+                    e.setHitbox(12.0f, 12.0f);
+                    e.initGun(0);
+                    e.setGunBulletType(0, Gun.BulletType.BULLET_12x12_RED);
+                    e.setGunAim(0, Gun.Aim.RING_PLAYER);
+                    e.setGunAngle(0, 0.0f, MathUtils.degRad * 12.0f);
+                    e.setGunCount(0, 4, 1);
+                    e.setGunRadius(0, 2.0f, 1.0f);
+                    e.setGunRepeating(0, 1);
+                    e.setGunSpeed(0, 2.0f, 1.0f);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                20,
+                e -> {
+                    float angle = random.nextFloat(MathUtils.HALF_PI * -0.25f, MathUtils.HALF_PI * 0.25f);
+                    if ((x < 0.0f && x > -50.0f) || x > 50.0f)
+                        angle -= MathUtils.PI;
+                    e.changeVelocity(INTERPOLATION_LINEAR, random.nextFloat(6.0f, 8.0f), angle, 15);
+                    e.turnGunOn(0);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                90,
+                e -> true
+            )
+        );
+    }
+
+    private TimelineTask firefly(float x) {
+        return Task.timeline(
+            Task.keyframe(
+                e -> {
+                    e.setSprite(getAnm(1), "Firefly");
+                    e.setCollision(false);
+                    e.interrupt(1);
+                    e.moveCircularly(0.0f, 90.0f);
+                    e.changeSpeed(INTERPOLATION_LINEAR, random.nextBoolean() ? -12.0f : 12.0f, 65);
+                    boolean power = random.nextBoolean();
+                    e.setDrop(power ? 0 : 4, power ? 2 : 0);
+                    e.setHitbox(16.0f, 16.0f);
+                    e.initGun(0);
+                    e.setGunBulletType(0, Gun.BulletType.BULLET_RINGED_16x16_WHITE);
+                    e.setGunAim(0, Gun.Aim.RANDOM_FAN_PLAYER);
+                    e.setGunAngle(0, 0.0f, MathUtils.degRad * 46.0f);
+                    e.setGunCount(0, 4, 1);
+                    e.setGunRepeating(0, 1);
+                    e.setGunSpeed(0, 4.0f, 3.0f);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                65,
+                e -> {
+                    e.setCollision(true);
+                    float angle = x < 0.0f ? -MathUtils.PI : 0.0f;
+                    float speed = random.nextFloat(-9.0f, 9.0f);
+                    e.setSpeed(speed);
+                    e.moveOrbitally(angle, 70.0f, 30.0f);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                120,
+                e -> {
+                    e.moveLinearly();
+                    e.turnGunOn(0);
+                    float angle = random.nextBoolean() ? -MathUtils.PI : 0.0f;
+                    e.changeVelocity(INTERPOLATION_EASE_IN, 8.0f, angle, 40);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                260,
+                e -> true
+            )
         );
     }
 }

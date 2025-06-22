@@ -432,7 +432,7 @@ public class Enemy {
      * @author uwuhasmile
      */
     public void setSpeed(float speed) {
-        velocity.nor().scl(speed);
+        velocity.set(1.0f, 0.0f).setAngleRad(currentAngle).scl(speed);
         this.speed = speed;
     }
 
