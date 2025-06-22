@@ -45,7 +45,7 @@ public final class Stage01 extends Stage {
                 }
             ),
             Task.keyframe(
-                100,
+                200,
                 en -> {
                     background.setCameraLimits(128.0f, 192.0f, true);
                     en.createChildAbsolute(dragonflyB(40), -100.0f, 20.0f, 20);
