@@ -7,7 +7,6 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.utils.I18NBundle;
-import jdk.tools.jmod.Main;
 import ua.tmmaple.pr25.assets.Assets;
 import ua.tmmaple.pr25.assets.Stage;
 import ua.tmmaple.pr25.entities.GameplayManager;
