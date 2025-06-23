@@ -3,7 +3,7 @@ package ua.tmmaple.pr25.task;
 import ua.tmmaple.pr25.entities.Enemy;
 
 /**
- * Дія, що емулює цикл for (int i = 0; i < n; ++i) { }
+ * Дія, що емулює цикл for { }
  * @author uwuhasmile
  */
 public final class RepeatTask implements Task {

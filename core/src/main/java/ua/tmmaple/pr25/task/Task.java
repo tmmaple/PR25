@@ -53,7 +53,7 @@ public interface Task {
     /**
      * @param times кількість повторень
      * @param body дія, яка виконується в тілі циклу
-     * @return дія, що емулює цикл for (int i = 0; i < n; ++i) { }
+     * @return дія, що емулює цикл for { }
      * @author uwuhasmile
      */
     static RepeatTask repeat(Times times, Task body) {

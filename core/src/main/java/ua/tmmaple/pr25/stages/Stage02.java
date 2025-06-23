@@ -4,7 +4,6 @@ import com.badlogic.gdx.math.MathUtils;
 import ua.tmmaple.pr25.God;
 import ua.tmmaple.pr25.assets.Stage;
 import ua.tmmaple.pr25.entities.Enemy;
-import ua.tmmaple.pr25.entities.GameplayManager;
 import ua.tmmaple.pr25.entities.Gun;
 import ua.tmmaple.pr25.entities.VfxManager;
 import ua.tmmaple.pr25.task.Task;
