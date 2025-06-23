@@ -21,7 +21,7 @@ idle_start:
 fly_start:
 0:	source(LYNX_2);
 6:	source(LYNX_3);
-12: jump idle_start;
+12: jump fly_start;
 }
 
 script Ball {
