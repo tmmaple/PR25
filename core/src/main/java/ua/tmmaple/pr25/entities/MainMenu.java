@@ -5,6 +5,8 @@ import ua.tmmaple.pr25.Flow;
 import ua.tmmaple.pr25.God;
 import ua.tmmaple.pr25.Text;
 import ua.tmmaple.pr25.assets.Assets;
+import ua.tmmaple.pr25.audio.Audio;
+import ua.tmmaple.pr25.audio.Bgm;
 import ua.tmmaple.pr25.graphics.Anm;
 import ua.tmmaple.pr25.graphics.GraphicManager;
 import ua.tmmaple.pr25.graphics.TextManager;
@@ -134,6 +136,7 @@ public final class MainMenu {
      */
     public static void load() {
         Assets.global.load(Anm.class, "ui/mainMenu.anm");
+        Assets.global.load(Bgm.class, "bgm/theme.bgm");
     }
 
     /**
@@ -206,6 +209,7 @@ public final class MainMenu {
             if (ticksLeft > 0) {
                 --ticksLeft;
                 if (ticksLeft == 0) {
+                    Audio.global.playMusic("bgm/theme.bgm", true);
                     state = MainMenuState.MENU;
                     startButton.focus();
                 }
@@ -311,6 +315,7 @@ public final class MainMenu {
         this.next = next;
         ticksLeft = 40;
         state = MainMenuState.EXITING;
+        Audio.global.fadeMusic(2.0f);
     }
 
     /**
@@ -330,6 +335,7 @@ public final class MainMenu {
         logoVm.delete();
         leafVm.delete();
         Assets.global.unload("ui/mainMenu.anm");
+        Assets.global.unload("bgm/theme.bgm");
         return 0;
     }
 }
