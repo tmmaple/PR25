@@ -1,8 +1,10 @@
 package ua.tmmaple.pr25.stages;
 
 import com.badlogic.gdx.math.MathUtils;
+import ua.tmmaple.pr25.God;
 import ua.tmmaple.pr25.assets.Stage;
 import ua.tmmaple.pr25.entities.Enemy;
+import ua.tmmaple.pr25.entities.GameplayManager;
 import ua.tmmaple.pr25.entities.Gun;
 import ua.tmmaple.pr25.entities.VfxManager;
 import ua.tmmaple.pr25.task.Task;
@@ -12,6 +14,7 @@ public class Stage02 extends Stage {
     private float birdX;
 
     private Enemy midboss;
+    private Enemy boss;
 
     @Override
     public String[] anmList() {
@@ -254,6 +257,31 @@ public class Stage02 extends Stage {
                     }
                     return true;
                 }
+            ),
+            Task.keyframe(
+                3600,
+                e -> {
+                    background.resetCameraLimits();
+                    background.moveCamera((short) 130, 960.0f, INTERPOLATION_EASE_OUT);
+                    background.cameraVelocity = 0.0f;
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                3700,
+                Task.sequence(
+                    e -> {
+                        e.createChildRelative(boss(), 90.0f, 72.0f, 1000);
+                        return true;
+                    },
+                    Task.wait(() -> (short) 16),
+                    e -> boss == null || !boss.isActive(),
+                    Task.wait(() -> (short) 180),
+                    e -> {
+                        God.global.results();
+                        return true;
+                    }
+                )
             )
         );
     }
@@ -443,6 +471,7 @@ public class Stage02 extends Stage {
                     () -> (short) 3,
                     Task.sequence(
                         e -> {
+                            e.destroyGunBullets(0);
                             e.setInvincible(false);
                             e.turnGunOn(0);
                             return true;
@@ -642,6 +671,341 @@ public class Stage02 extends Stage {
             Task.keyframe(
                 260,
                 e -> true
+            )
+        );
+    }
+
+    private TimelineTask boss() {
+        TimelineTask ballA =  Task.timeline(
+            Task.keyframe(
+                e -> {
+                    e.setSprite(getAnm(2), "Ball");
+                    e.setInvincible(true);
+                    e.setHitbox(8.0f, 8.0f);
+                    e.changePosition(INTERPOLATION_EASE_IN, 48.0f, 0.0f, 40);
+
+                    e.initGun(0);
+                    e.setGunBulletType(0, Gun.BulletType.BULLET_16x16_RED);
+                    e.setGunFireSound(0, "sndNoise04.wav");
+                    e.setGunAim(0, Gun.Aim.RANDOM_FAN_STATIC);
+                    e.setGunCount(0, 1, 2);
+                    e.setGunAngle(0, -MathUtils.HALF_PI, MathUtils.degRad * 65.0f);
+                    e.setGunSpeed(0, 5.0f, 2.4f);
+                    e.setGunRepeating(0, 25);
+                    e.setGunRepeatInterval(0, 6);
+                    e.setGunDelay(0, 60);
+
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                40,
+                    Task.sequence(
+                    e -> {
+                        e.moveCircularly(0.0f, 48.0f);
+                        return true;
+                    },
+                    Task.whileLoop(
+                        () -> boss != null && boss.isActive(),
+                        Task.sequence(
+                            e -> {
+                                e.changeSpeed(INTERPOLATION_LINEAR, 16.0f, 180);
+                                e.turnGunOn(0);
+                                return true;
+                            },
+                            Task.wait(() -> (short) 180),
+                            e -> {
+                                e.changeSpeed(INTERPOLATION_LINEAR, 0.0f, 60);
+                                return true;
+                            },
+                            Task.wait(() -> (short) 70)
+                        )
+                    )
+                )
+            )
+        );
+        TimelineTask ballB =  Task.timeline(
+            Task.keyframe(
+                e -> {
+                    e.setSprite(getAnm(2), "Ball");
+                    e.setInvincible(true);
+                    e.setHitbox(8.0f, 8.0f);
+                    e.changePosition(INTERPOLATION_EASE_IN, -48.0f, 0.0f, 40);
+
+                    e.initGun(0);
+                    e.setGunBulletType(0, Gun.BulletType.BULLET_16x16_RED);
+                    e.setGunFireSound(0, "sndNoise04.wav");
+                    e.setGunAim(0, Gun.Aim.RANDOM_FAN_STATIC);
+                    e.setGunCount(0, 1, 2);
+                    e.setGunAngle(0, -MathUtils.HALF_PI, MathUtils.degRad * 65.0f);
+                    e.setGunSpeed(0, 5.0f, 2.4f);
+                    e.setGunRepeating(0, 25);
+                    e.setGunRepeatInterval(0, 6);
+                    e.setGunDelay(0, 60);
+
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                40,
+                Task.sequence(
+                    e -> {
+                        e.moveCircularly(MathUtils.PI, 48.0f);
+                        return true;
+                    },
+                    Task.whileLoop(
+                        () -> boss != null && boss.isActive(),
+                        Task.sequence(
+                            e -> {
+                                e.changeSpeed(INTERPOLATION_LINEAR, 16.0f, 180);
+                                e.turnGunOn(0);
+                                return true;
+                            },
+                            Task.wait(() -> (short) 180),
+                            e -> {
+                                e.changeSpeed(INTERPOLATION_LINEAR, 0.0f, 60);
+                                return true;
+                            },
+                            Task.wait(() -> (short) 70)
+                        )
+                    )
+                )
+            )
+        );
+
+        TimelineTask ballRoot = Task.timeline(
+            Task.keyframe(
+                Task.sequence(
+                    e -> {
+                        e.setCollision(false);
+                        e.createChildRelative(ballA, 0.0f, 0.0f, 1);
+                        e.createChildRelative(ballB, 0.0f, 0.0f, 1);
+                        e.moveOrbitally(MathUtils.HALF_PI, 80.0f, 30.0f);
+                        e.changeSpeed(INTERPOLATION_EASE_IN, -6.5f, 100);
+                        return true;
+                    },
+                    e -> boss != null && boss.isActive()
+                )
+            )
+        );
+
+        return Task.timeline(
+            Task.keyframe(
+                e -> {
+                    boss = e;
+                    playMusic(1);
+
+                    e.setSprite(getAnm(2), "Lynx");
+                    e.setHitbox(48.0f, 48.0f);
+                    e.setInvincible(true);
+                    e.interrupt(2);
+                    e.changePosition(INTERPOLATION_EASE_OUT, 0.0f, -120.0f, 70);
+                    e.setDeathSound("sndNoise06.wav");
+                    e.setDeathVfx(VfxManager.Vfx.BOSS_ORANGE_DEATH);
+                    e.setDrop(15, 10);
+
+                    e.initGun(0);
+                    e.setGunBulletType(0, Gun.BulletType.BULLET_12x12_WHITE);
+                    e.setGunAim(0, Gun.Aim.FAN_PLAYER);
+                    e.setGunCount(0, 8, 3);
+                    e.setGunSpeed(0, 4.0f, 2.0f);
+                    e.setGunAngle(0, 0.0f, MathUtils.degRad * 12.0f);
+                    e.setGunFireSound(0, "sndNoise04.wav");
+                    e.setGunRepeating(0, 1);
+
+                    e.initGun(1);
+                    e.setGunBulletType(1, Gun.BulletType.BULLET_10x16_ORANGE);
+                    e.setGunAim(1, Gun.Aim.RING_PLAYER);
+                    e.setGunCount(1, 20, 1);
+                    e.setGunSpeed(1, 5.0f, 3.0f);
+                    e.setGunAcceleration(1, -0.04f, -0.04f);
+                    e.setGunFireSound(1, "sndNoise02.wav");
+                    e.setGunRepeating(1, 1);
+
+                    e.initGun(2);
+                    e.setGunBulletType(2, Gun.BulletType.BULLET_RINGED_16x16_RED);
+                    e.setGunAim(2, Gun.Aim.FAN_PLAYER);
+                    e.setGunCount(2, 1, 9);
+                    e.setGunSpeed(2, 2.0f, 6.0f);
+                    e.setGunFireSound(2, "sndNoise04.wav");
+                    e.setGunRepeating(2, 0);
+                    e.setGunRepeatInterval(2, 19);
+
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                50,
+                e -> {
+                    e.setInvincible(false);
+                    e.interrupt(1);
+                    e.makeBoss("lynx");
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                90,
+                e -> {
+                    e.turnGunOn(0);
+                    e.interrupt(2);
+                    e.changePosition(INTERPOLATION_EASE_OUT, -90.0f, -90.0f, 70);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                160,
+                e -> {
+                    e.turnGunOn(0);
+                    e.interrupt(2);
+                    e.changePosition(INTERPOLATION_EASE_OUT, 90.0f, -90.0f, 70);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                250,
+                Task.sequence(
+                    e -> {
+                        e.interrupt(2);
+                        e.moveOrbitally(0.0f, 90.0f, 40.0f);
+                        e.setSpeed(12.0f);
+                        e.setInvincible(true);
+                        return true;
+                    },
+                    Task.repeat(
+                        () -> (short) 2,
+                        Task.sequence(
+                            e -> {
+                                e.turnGunOn(1);
+                                return true;
+                            },
+                            Task.wait(() -> (short) 10)
+                        )
+                    ),
+                    e -> {
+                        e.stopMovement();
+                        e.setInvincible(false);
+                        e.changePosition(INTERPOLATION_EASE_OUT, -70.0f, -60.0f, 70);
+                        return true;
+                    },
+                    Task.wait(() -> (short) 60),
+                    e -> {
+                        e.interrupt(1);
+                        return true;
+                    },
+                    Task.wait(() -> (short) 30),
+                    Task.sequence(
+                        e -> {
+                            e.interrupt(2);
+                            e.moveOrbitally(-MathUtils.PI - MathUtils.HALF_PI * 0.3f, 90.0f, 40.0f);
+                            e.setSpeed(13.0f);
+                            e.setInvincible(true);
+                            return true;
+                        },
+                        Task.repeat(
+                            () -> (short) 3,
+                            Task.sequence(
+                                e -> {
+                                    e.turnGunOn(1);
+                                    return true;
+                                },
+                                Task.wait(() -> (short) 10)
+                            )
+                        )
+                    ),
+                    e -> {
+                        e.turnGunOn(2);
+                        e.stopMovement();
+                        e.setInvincible(false);
+                        e.changePosition(INTERPOLATION_EASE_OUT, 70.0f, -60.0f, 70);
+                        return true;
+                    },
+                    Task.wait(() -> (short) 60),
+                    e -> {
+                        e.adjustGunSpeed(1, 3.0f);
+                        e.adjustGunAcceleration(1, 0.0f);
+                        e.turnGunOff(2);
+                        e.interrupt(1);
+                        return true;
+                    },
+                    Task.wait(() -> (short) 30)
+                )
+            ),
+            Task.keyframe(
+                270,
+                e -> {
+                    e.interrupt(2);
+                    e.changePosition(INTERPOLATION_EASE_OUT, 70.0f, -40.0f, 40);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                310,
+                e -> {
+                    e.interrupt(1);
+                    e.moveOrbitally(0.0f, 70.0f, 20.0f);
+                    e.setSpeed(-2.4f);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                340,
+                Task.sequence(
+                    e -> {
+                        e.initGun(0);
+                        e.initGun(1);
+                        e.setGunBulletType(0, Gun.BulletType.BULLET_10x16_WHITE);
+                        e.setGunBulletType(1, Gun.BulletType.BULLET_10x16_WHITE);
+                        e.setGunAim(0, Gun.Aim.FAN_STATIC);
+                        e.setGunAim(1, Gun.Aim.FAN_STATIC);
+                        e.setGunOffset(0, Gun.OffsetMode.ENEMY, 20.0f, 0.0f);
+                        e.setGunOffset(1, Gun.OffsetMode.ENEMY, -20.0f, 0.0f);
+                        float baseAngle = -MathUtils.HALF_PI;
+                        float relativeAngle = MathUtils.degRad * -12.0f;
+                        e.setGunAngle(0, baseAngle - relativeAngle, MathUtils.degRad * 12.0f);
+                        e.setGunAngle(1, baseAngle + relativeAngle, MathUtils.degRad * 12.0f);
+                        e.setGunSpeed(0, 2.0f, 1.0f);
+                        e.setGunSpeed(1, 2.0f, 1.0f);
+                        e.setGunCount(0, 4, 1);
+                        e.setGunCount(1, 4, 1);
+                        e.setGunRepeating(0, 0);
+                        e.setGunRepeating(1, 0);
+                        e.setGunRepeatInterval(0, 20);
+                        e.setGunRepeatInterval(1, 20);
+                        e.setGunFireSound(0, "sndNoise04.wav");
+                        e.turnGunOn(0);
+                        e.turnGunOn(1);
+                        return true;
+                    },
+                    Task.wait(() -> (short) 900),
+                    e -> {
+                        e.turnGunOff(0);
+                        e.turnGunOff(1);
+                        return true;
+                    }
+                )
+            ),
+            Task.keyframe(
+                351,
+                e -> {
+                    e.stopMovement();
+                    e.changePosition(INTERPOLATION_EASE_OUT, 15.0f, -60.0f, 30);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                440,
+                e -> {
+                    e.createChildRelative(ballRoot, 0.0f, -30.0f, 1);
+                    e.changeSpeed(INTERPOLATION_LINEAR, 4.0f, 200);
+                    return true;
+                }
+            ),
+            Task.keyframe(
+                1200,
+                e -> {
+                    e.damage(10000000);
+                    return true;
+                }
             )
         );
     }

@@ -547,7 +547,7 @@ public class Gun {
         Vector2 absolutePosition = offset.cpy().add(GameplayManager.VIEWPORT_START_X +GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT);
         switch (offsetMode) {
             case ENEMY:
-                absolutePosition.add(owner.position);
+                absolutePosition.add(owner.absolutePosition());
                 break;
             case PLAYER:
                 absolutePosition.add(Player.global.position);
