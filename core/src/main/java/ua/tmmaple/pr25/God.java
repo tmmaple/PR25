@@ -101,7 +101,7 @@ public final class God {
 
     /**
      * Реєструє global в список оновлення.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static int register() {
         Flow.FlowNode<God> node = new Flow.FlowNode<>(global, God::update, God::added, God::removed);
@@ -111,7 +111,7 @@ public final class God {
     /**
      * Ініціалізує екземпляр God після реєстрації в список оновлень.
      * В ініціалізацію входить завантаження та застосування налаштувань.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private static int added(God god) {
         I18NBundle.setExceptionOnMissingKey(false);
@@ -142,7 +142,7 @@ public final class God {
 
     /**
      * Оновлює екземпляр God.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private static int update(God god) {
         if (god.exit)
@@ -169,7 +169,7 @@ public final class God {
 
     /**
      * Оновлює стан клавіш керування.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void updateControls() {
         for (int i = 0; i < controls.length; ++i) {
@@ -190,7 +190,7 @@ public final class God {
 
     /**
      * Зберігає параметри після видалення зі списку оновлення.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private static int removed(God god) {
         GameplayManager.shutdown();
@@ -215,7 +215,7 @@ public final class God {
 
     /**
      * Переходить в головне меню.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void toMainMenu() {
         pendingGameState = GameState.MAIN_MENU;
@@ -225,7 +225,7 @@ public final class God {
     /**
      * Починає гру.
      * @param stage стадія, з якої треба розпочати гру
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void startGame(Stage stage) {
         pendingGameState = GameState.GAME;
@@ -234,7 +234,7 @@ public final class God {
 
     /**
      * Закінчує гру з екраном результатів.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void results() {
         pendingGameState = GameState.RESULT_SCREEN;
@@ -243,7 +243,7 @@ public final class God {
 
     /**
      * Очищує ресурси поточного стану ігрового додатку.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void shutdownCurrent() {
         switch (gameState) {
@@ -265,7 +265,7 @@ public final class God {
 
     /**
      * Позначає гру для виходу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void exit() {
         exit = true;
@@ -275,7 +275,7 @@ public final class God {
      * Встановлює режим вікна.
      * Якщо scale дорівнює 0, то гра переходить в повноекранний режим.
      * @param scale розмір вікна в межах [0, 6]
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setWindowMode(int scale) {
         scale = scale < 0 ? 0 : (scale > 6 ? 6 : scale);
@@ -301,7 +301,7 @@ public final class God {
 
     /**
      * @return Повертає локалізований текст
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public String getLocalizedString(String id, boolean idIfNotFound) {
         try {
@@ -316,7 +316,7 @@ public final class God {
     /**
      * @return Повертає локалізований текст з форматуванням
      * @param formatArgs параметри
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public String getFormattedLocalizedString(String id, boolean idIfNotFound, Object... formatArgs) {
         try {
@@ -331,7 +331,7 @@ public final class God {
     /**
      * Встановлює мову.
      * @param language 0 - англійська, 1 - українська
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setLanguage(int language) {
         if (language < 0 || language >= LANGUAGES.length)
@@ -342,7 +342,7 @@ public final class God {
 
     /**
      * @return стан дії вводу, вказаної в control
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public byte inputState(int control) {
         if (control < 0 || control >= controls.length) throw new PR25RuntimeException("Control " + control + " doesn't exist");
@@ -351,7 +351,7 @@ public final class God {
 
     /**
      * @param volume нова гучність звукових ефектів
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setSfxVolume(float volume) {
         sfxVolume = volume < 0.0f ? 0.0f : Math.min(volume, 1.0f);
@@ -359,7 +359,7 @@ public final class God {
 
     /**
      * @param volume нова гучність музики
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setMusicVolume(float volume) {
         musicVolume = volume < 0.0f ? 0.0f : Math.min(volume, 1.0f);
@@ -367,7 +367,7 @@ public final class God {
 
     /**
      * @param hiScore новий найкращий рахунок
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void updateHiScore(long hiScore) {
         this.hiScore = hiScore;
@@ -375,7 +375,7 @@ public final class God {
 
     /**
      * @return поточний розмір вікна, 0 - повноекранний режим
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public int windowScale() {
         return windowScale;
@@ -383,7 +383,7 @@ public final class God {
 
     /**
      * @return поточна гучність звукових ефектів
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public float sfxVolume() {
         return sfxVolume;
@@ -391,7 +391,7 @@ public final class God {
 
     /**
      * @return поточна гучність музики
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public float musicVolume() {
         return musicVolume;
@@ -399,7 +399,7 @@ public final class God {
 
     /**
      * @return поточна мова
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public int language() {
         return language;
@@ -407,7 +407,7 @@ public final class God {
 
     /**
      * @return поточний найвищий рахунок
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public long hiScore() {
         return hiScore;

@@ -123,7 +123,7 @@ public class BulletManager {
 
     /**
      * Завантажує ресурси.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void load() {
         Assets.global.load(Anm.class,"game/bullets.anm");
@@ -151,7 +151,7 @@ public class BulletManager {
 
     /**
      * Очищує екран від усіх куль.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void clear() {
         for (PlayersBullet b : plrSmallBullets)
@@ -164,7 +164,7 @@ public class BulletManager {
 
     /**
      * Видаляє всі кулі ворога з екрану, з візуальними ефектами.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void destroyEnemyBullets() {
         for (EnemyBullet b : enemyBullets) {
@@ -179,7 +179,7 @@ public class BulletManager {
      * Видаляє всі кулі ворога в певному радіусі, з візуальними ефектами.
      * @param origin точка, навколо якої мають видалятись кулі
      * @param radius радіус, в межах якого видалятимуться кулі
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void destroyEnemyBulletsInRadius(Vector2 origin, float radius) {
         for (EnemyBullet b : enemyBullets)
@@ -221,7 +221,7 @@ public class BulletManager {
 
     /**
      * Очищує всі кулі та ресурси.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private static int removed(BulletManager bulletManager) {
         for (int i=0; i<bulletManager.plrSmallBullets.length; i++)
@@ -376,7 +376,7 @@ public class BulletManager {
      * @param angularAcceleration прискорення повороту кулі
      * @param type тип кулі (впливає на спрайт та розмір колізії)
      * @return якщо пул куль не заповнено, то буде видана нова куля. Інакше null.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public EnemyBullet createEnemyBullet(Vector2 pos, float angle, float speed, float acceleration, float angularSpeed, float angularAcceleration, int type) {
         int i = 0;
@@ -433,7 +433,7 @@ public class BulletManager {
 
         /**
          * Встановлює тип кулі.
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         public void setType(BulletType type) {
             sprite.loadScriptAndPlay(type.sprite);
@@ -453,7 +453,7 @@ public class BulletManager {
     /**
      * Загальний клас кулі
      * @author SkyWarp
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public abstract class Bullet {
         public final Polygon collider;
@@ -481,7 +481,7 @@ public class BulletManager {
          * Встановлює швидкість кулі в полярних координатах.
          * @param angle кут в радіанах
          * @param speed лінійна швидкість
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         public void setVelocity(float angle, float speed) {
             if (speed < 0.0f)
@@ -493,7 +493,7 @@ public class BulletManager {
 
         /**
          * Встановлює лінійну швидкість кулі.
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         public void setSpeed(float speed) {
             if (speed <= 0.0f)
@@ -507,7 +507,7 @@ public class BulletManager {
         /**
          * Встановлює напрям кулі.
          * @param angle кут напряму в радіанах
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         public void setAngle(float angle) {
             this.angle = angle;
@@ -517,7 +517,7 @@ public class BulletManager {
         /**
          * Встановлює швидкість прискорення кулі.
          * @param angularSpeed прискорення в радіанах
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         public void setAngularSpeed(float angularSpeed) {
             this.angularSpeed = angularSpeed;
@@ -525,7 +525,7 @@ public class BulletManager {
 
         /**
          * @return лінійна швидкість кулі
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         public float getSpeed() {
             return speed;
@@ -533,7 +533,7 @@ public class BulletManager {
 
         /**
          * @return напрям кулі в радіанах
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         public float getAngle() {
             return angle;
@@ -541,7 +541,7 @@ public class BulletManager {
 
         /**
          * @return кутове прискорення кулі в радіанах
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         public float getAngularSpeed() {
             return angularSpeed;
@@ -558,7 +558,7 @@ public class BulletManager {
 
     /**
      * Тип кулі ворога: спрайт, розмір колізії
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static final class BulletType {
         public final String sprite;

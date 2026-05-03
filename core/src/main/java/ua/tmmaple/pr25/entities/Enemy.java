@@ -110,7 +110,7 @@ public class Enemy {
 
     /**
      * @param allow чи дозволити поворот спрайту
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setSpriteRotation(boolean allow) {
         if (allow)
@@ -121,7 +121,7 @@ public class Enemy {
 
     /**
      * @param deathSound звук смерті цього ворога
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setDeathSound(String deathSound) {
         this.deathSound = deathSound;
@@ -129,7 +129,7 @@ public class Enemy {
 
     /**
      * @param deathVfx візуальний ефект при смерті ворога
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setDeathVfx(VfxManager.Vfx deathVfx) {
         if (deathVfx == null)
@@ -409,7 +409,7 @@ public class Enemy {
      * Встановлює швидкість в полярних коориданатах.
      * @param angle кут напряму в радіанах
      * @param speed лінійна швидкість
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setVelocity(float angle, float speed) {
         currentAngle = angle;
@@ -420,7 +420,7 @@ public class Enemy {
 
     /**
      * @param angle кут напряму в радіанах
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setAngle(float angle) {
         currentAngle = angle;
@@ -429,7 +429,7 @@ public class Enemy {
 
     /**
      * @param speed лінійна швидкість
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setSpeed(float speed) {
         velocity.set(1.0f, 0.0f).setAngleRad(currentAngle).scl(speed);
@@ -440,7 +440,7 @@ public class Enemy {
      * Встановлює позицію відносно батьківського ворога.
      * @param x горизонтальна позиція
      * @param y вертикальна позиція
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setPosition(float x, float y) {
         this.position.set(x, y);
@@ -448,7 +448,7 @@ public class Enemy {
 
     /**
      * @param collision чи має колізія бути увімкнена
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setCollision(boolean collision) {
         if (collision)
@@ -459,7 +459,7 @@ public class Enemy {
 
     /**
      * @param immortal чи має ворог бути безсмертним
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setInvincible(boolean immortal) {
         if (immortal)
@@ -471,7 +471,7 @@ public class Enemy {
     /**
      * Робить ворога босом.
      * @param name ім'я ворога, що має показуватись на шкалі здоров'я
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void makeBoss(String name) {
         flags |= FLAG_BOSS;
@@ -481,7 +481,7 @@ public class Enemy {
     /**
      * Ініціалізує "gun" для конфігурації майбутніх куль.
      * @param idx ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void initGun(int idx) {
         if (idx < 0 || idx >= guns.length)
@@ -493,7 +493,7 @@ public class Enemy {
      * Встановлює тип куль для певного "gun".
      * @param gun ідентифікатор gun'а, в межах [0, 6).
      * @param type тип куль, впливає на спрайт та розмір колізії
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunBulletType(int gun, Gun.BulletType type) {
         if (gun < 0 || gun >= guns.length)
@@ -505,7 +505,7 @@ public class Enemy {
      * Встановлює тип прицілювання для певного "gun".
      * @param gun ідентифікатор gun'а, в межах [0, 6).
      * @param aim тип прицілювання, впливає на інтерпретацію значень у "gun". Див. {@link ua.tmmaple.pr25.entities.Gun.Aim}
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunAim(int gun, Gun.Aim aim) {
         if (gun < 0 || gun >= guns.length)
@@ -519,7 +519,7 @@ public class Enemy {
      * @param mode режим розміщення, визначає, відносно чого позиція. Див. {@link ua.tmmaple.pr25.entities.Gun.OffsetMode}
      * @param x горизонтальна позиція
      * @param y вертикальна позиція
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunOffset(int gun, Gun.OffsetMode mode, float x, float y) {
         if (gun < 0 || gun >= guns.length)
@@ -532,7 +532,7 @@ public class Enemy {
      * Встановлює звук стрільби кулями цього gun.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
      * @param sound назва звуку, з розширенням .ogg або .wav
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunFireSound(int gun, String sound) {
         if (gun < 0 || gun >= guns.length)
@@ -544,7 +544,7 @@ public class Enemy {
      * Встановлює кількість нових куль.
      * Інтерпретується залежно від встановленого {@link ua.tmmaple.pr25.entities.Gun.Aim}.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunCount(int gun, int countA, int countB) {
         if (gun < 0 || gun >= guns.length)
@@ -557,7 +557,7 @@ public class Enemy {
      * Встановлює швидкість нових куль.
      * Інтерпретується залежно від встановленого {@link ua.tmmaple.pr25.entities.Gun.Aim}.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunSpeed(int gun, float speedA, float speedB) {
         if (gun < 0 || gun >= guns.length)
@@ -570,7 +570,7 @@ public class Enemy {
      * Встановлює лінійне прискорення нових куль.
      * Інтерпретується залежно від встановленого {@link ua.tmmaple.pr25.entities.Gun.Aim}.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunAcceleration(int gun, float accelerationA, float accelerationB) {
         if (gun < 0 || gun >= guns.length)
@@ -583,7 +583,7 @@ public class Enemy {
      * Встановлює напрям нових куль.
      * Інтерпретується залежно від встановленого {@link ua.tmmaple.pr25.entities.Gun.Aim}.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunAngle(int gun, float angleA, float angleB) {
         if (gun < 0 || gun >= guns.length)
@@ -596,7 +596,7 @@ public class Enemy {
      * Встановлює швидкість повороту нових куль.
      * Інтерпретується залежно від встановленого {@link ua.tmmaple.pr25.entities.Gun.Aim}.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunAngularSpeed(int gun, float angularSpeedA, float angularSpeedB) {
         if (gun < 0 || gun >= guns.length)
@@ -609,7 +609,7 @@ public class Enemy {
      * Встановлює прискорення повороту нових куль.
      * Інтерпретується залежно від встановленого {@link ua.tmmaple.pr25.entities.Gun.Aim}.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunAngularAcceleration(int gun, float angularAccelerationA, float angularAccelerationB) {
         if (gun < 0 || gun >= guns.length)
@@ -622,7 +622,7 @@ public class Enemy {
      * Встановлює радіус стрільби нових куль.
      * Інтерпретується залежно від встановленого {@link ua.tmmaple.pr25.entities.Gun.Aim}.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunRadius(int gun, float radiusA, float radiusB) {
         if (gun < 0 || gun >= guns.length)
@@ -635,7 +635,7 @@ public class Enemy {
      * Встановлює кількість повторних вистрілів gun'у.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
      * @param times кількість повторів, якщо 0, то нескінченно
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunRepeating(int gun, int times) {
         if (gun < 0 || gun >= guns.length)
@@ -647,7 +647,7 @@ public class Enemy {
      * Встановлює інтервали між вистрілами gun'у.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
      * @param interval кількість тіків між пострілами
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunRepeatInterval(int gun, int interval) {
         if (gun < 0 || gun >= guns.length)
@@ -659,7 +659,7 @@ public class Enemy {
      * Встановлює затримку перед початком стрільби gun'у.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
      * @param delay кількість тіків перед першим пострілом
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setGunDelay(int gun, int delay) {
         if (gun < 0 || gun >= guns.length)
@@ -670,7 +670,7 @@ public class Enemy {
     /**
      * Починає стрільбу з певного gun'а.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void turnGunOn(int gun) {
         if (gun < 0 || gun >= guns.length)
@@ -681,7 +681,7 @@ public class Enemy {
     /**
      * Закінчує стрільбу з певного gun'а.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void turnGunOff(int gun) {
         if (gun < 0 || gun >= guns.length)
@@ -692,7 +692,7 @@ public class Enemy {
     /**
      * Спрямовує вже випущені кулі gun'а в сторону гравця.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustGunAimAtPlayer(int gun, float offsetX, float offsetY) {
         if (gun < 0 || gun >= guns.length)
@@ -703,7 +703,7 @@ public class Enemy {
     /**
      * Спрямовує вже випущені кулі gun'а в сторону певної точки.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustGunAimAt(int gun, Vector2 position) {
         if (gun < 0 || gun >= guns.length)
@@ -714,7 +714,7 @@ public class Enemy {
     /**
      * Змінює швидкість вже випущених куль gun'а в полярних координатах.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustGunVelocity(int gun, float angle, float speed) {
         if (gun < 0 || gun >= guns.length)
@@ -725,7 +725,7 @@ public class Enemy {
     /**
      * Змінює лінійну швидкість вже випущених куль gun'а.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustGunSpeed(int gun, float speed) {
         if (gun < 0 || gun >= guns.length)
@@ -736,7 +736,7 @@ public class Enemy {
     /**
      * Змінює прискорення вже випущених куль gun'а.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustGunAcceleration(int gun, float acceleration) {
         if (gun < 0 || gun >= guns.length)
@@ -747,7 +747,7 @@ public class Enemy {
     /**
      * Змінює напрямок вже випущених куль gun'а.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustGunAngle(int gun, float angle) {
         if (gun < 0 || gun >= guns.length)
@@ -758,7 +758,7 @@ public class Enemy {
     /**
      * Змінює швидкість повороту вже випущених куль gun'а.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustGunAngularSpeed(int gun, float angularSpeed) {
         if (gun < 0 || gun >= guns.length)
@@ -769,7 +769,7 @@ public class Enemy {
     /**
      * Змінює прискорення повороту вже випущених куль gun'а.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustGunAngularAcceleration(int gun, float angularAcceleration) {
         if (gun < 0 || gun >= guns.length)
@@ -780,7 +780,7 @@ public class Enemy {
     /**
      * Змінює тип вже випущених куль gun'а.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustGunBulletType(int gun, Gun.BulletType bulletType) {
         if (gun < 0 || gun >= guns.length)
@@ -791,7 +791,7 @@ public class Enemy {
     /**
      * Знищує всі вже випущені кулі gun'а.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void destroyGunBullets(int gun) {
         if (gun < 0 || gun >= guns.length)
@@ -803,7 +803,7 @@ public class Enemy {
      * Змінює тип вже випущених куль gun'а.
      * @param gun ідентифікатор gun'а, в межах [0, 6).
      * @param vfx чи використовувати візуальні ефекти
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void destroyGunBullets(int gun, boolean vfx) {
         if (gun < 0 || gun >= guns.length)
@@ -813,7 +813,7 @@ public class Enemy {
 
     /**
      * @return ім'я ворога як боса, або null, якщо не бос
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public String getName() {
         if ((flags & FLAG_BOSS) == 0) return null;
@@ -823,7 +823,7 @@ public class Enemy {
 
     /**
      * Встановлює, чи буде ворог наносити гравцю шкоду за умови перетину.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setIgnorePlayer(boolean ignore) {
         if (ignore)
@@ -834,7 +834,7 @@ public class Enemy {
 
     /**
      * Скидає дотик, щоб гравець знову міг отримати очки за нього.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void resetGraze() {
         flags &= ~FLAG_GRAZED;
@@ -842,7 +842,7 @@ public class Enemy {
 
     /**
      * Знищує ворога
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void destroy() {
         positionTweener.end();
@@ -926,7 +926,7 @@ public class Enemy {
 
     /**
      * Наносить шкоду ворогу. Якщо після цього в нього нуль здоров'я та не встановлене безсмертя, то ворог гине.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void damage(int damage) {
         if ((flags & FLAG_NO_COLLISION) != 0)
@@ -940,7 +940,7 @@ public class Enemy {
 
     /**
      * @return чи може ворог взагалі перетинатись з чимось
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public boolean hasCollision() {
         return (flags & FLAG_NO_COLLISION) == 0;
@@ -948,7 +948,7 @@ public class Enemy {
 
     /**
      * @return чи живий на даний момент ворог
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public boolean isActive() {
         return active;
@@ -956,7 +956,7 @@ public class Enemy {
 
     /**
      * @return чи може гравець нанести шкоду ворогу
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private boolean canGetHit() {
         return (flags & FLAG_NO_COLLISION) == 0 && (flags & FLAG_INVINCIBLE) == 0;
@@ -972,7 +972,7 @@ public class Enemy {
 
     /**
      * @return абсолютна позиція ворога відносно ігрового поля
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public Vector2 absolutePosition() {
         Vector2 result = new Vector2();
@@ -986,7 +986,7 @@ public class Enemy {
 
     /**
      * @return абсолютна позиція ворога відносно вікна гри
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public Vector2 viewportPosition() {
         return absolutePosition().add(GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT);

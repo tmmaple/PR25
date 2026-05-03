@@ -4,18 +4,18 @@ import ua.tmmaple.pr25.entities.Enemy;
 
 /**
  * Дія, що виконується ворогом.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public interface Task {
     /**
      * @return true, якщо виконання дії завершено, та можна продовжити, false, якщо дія ще не завершена
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     boolean execute(Enemy enemy);
 
     /**
      * @return глибоко скопійована дія
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     default Task copy() { return this; }
 
@@ -23,7 +23,7 @@ public interface Task {
      * @param condition умова, що перевіряється
      * @param then якщо умова повертає true
      * @return умовна дія
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     static IfElseTask ifElse(Condition condition, Task then) {
         return new IfElseTask(condition, then);
@@ -34,7 +34,7 @@ public interface Task {
      * @param thenArm якщо умова повертає true
      * @param elseArm якщо умова повертає false
      * @return умовна дія
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     static IfElseTask ifElse(Condition condition, Task thenArm, Task elseArm) {
         return new IfElseTask(condition, thenArm, elseArm);
@@ -44,7 +44,7 @@ public interface Task {
      * @param condition умова для циклу
      * @param body дія, яка виконується в тілі циклу
      * @return дія, що емулює цикл while () { }
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     static WhileTask whileLoop(Condition condition, Task body) {
         return new WhileTask(condition, body);
@@ -54,7 +54,7 @@ public interface Task {
      * @param times кількість повторень
      * @param body дія, яка виконується в тілі циклу
      * @return дія, що емулює цикл for { }
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     static RepeatTask repeat(Times times, Task body) {
         return new RepeatTask(times, body);
@@ -63,7 +63,7 @@ public interface Task {
     /**
      * @param ticks функція, що повертає кількість тіків
      * @return дія, що чекає певну кількість тіків перед продовженням
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     static WaitTask wait(Times ticks) {
         return new WaitTask(ticks);
@@ -72,7 +72,7 @@ public interface Task {
     /**
      * @param tasks набір дій для виконання
      * @return дія, що послідовно виконує внутрішні дії.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     static SequenceTask sequence(Task... tasks) {
         return new SequenceTask(tasks);
@@ -81,7 +81,7 @@ public interface Task {
     /**
      * @param keyframes набір ключів (дій за часом)
      * @return дія, що виконує внутрішні дії, що розставлені за часом
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     static TimelineTask timeline(TimelineTask.Keyframe... keyframes) {
         return new TimelineTask(keyframes);
@@ -90,7 +90,7 @@ public interface Task {
     /**
      * @param task тіло ключа
      * @return ключ таймлайну з часовим маркером 0
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     static TimelineTask.Keyframe keyframe(Task task) {
         return new TimelineTask.Keyframe(task);
@@ -100,7 +100,7 @@ public interface Task {
      * @param timeMarker час, у тіках (один тік = 1/60 секунди)
      * @param task тіло ключа
      * @return ключ таймлайну
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     static TimelineTask.Keyframe keyframe(int timeMarker, Task task) {
         return new TimelineTask.Keyframe((short) timeMarker, task);

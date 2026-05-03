@@ -9,14 +9,14 @@ import ua.tmmaple.pr25.graphics.GraphicManager;
 
 /**
  * Керує візуальними ефектами під час гри.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class VfxManager {
     public static VfxManager global;
 
     /**
      * Тип візуальних ефектів (частинок).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public enum Vfx {
         NONE,
@@ -45,7 +45,7 @@ public final class VfxManager {
 
     /**
      * Завантажує ресурси.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void load() {
         Assets.global.load(Anm.class, "game/vfx.anm");
@@ -53,7 +53,7 @@ public final class VfxManager {
 
     /**
      * Реєструє у списку оновлень та відмалювань.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void register() {
         if (updateNode != null) return;
@@ -65,7 +65,7 @@ public final class VfxManager {
 
     /**
      * Видаляє зі списку оновлень та відмалювань.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void shutdown() {
         if (updateNode == null) return;
@@ -88,7 +88,7 @@ public final class VfxManager {
      * @param count кількість пилинок
      * @param radius радіус відносно center, на якому будуть створюватись пилинки
      * @param speed швидкість пилинок
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void spawnDust(Vector2 center, float startAngle, int count, float radius, float speed) {
         if (anm == null) return;
@@ -108,7 +108,7 @@ public final class VfxManager {
     /**
      * Спавнить частинки смерті гравця.
      * @param center позиція, де помер гравець, і навколо якої будуть частинки
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void spawnPlayerDeath(Vector2 center) {
         if (anm == null) return;
@@ -126,7 +126,7 @@ public final class VfxManager {
     /**
      * Спавнить частинки шкоди ворогу.
      * @param position позиція, де ворогу була нанесена шкода, де буде створена частинка
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void spawnEnemyDamage(Vector2 position) {
         if (anm == null) return;
@@ -140,7 +140,7 @@ public final class VfxManager {
      * Спавнить частинки смерті ворога.
      * @param position позиція, де помер ворог, та навколо якої будуть частинки
      * @param script ANM-скрипт спрайту частинки
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void spawnEnemyDeath(Vector2 position, String script) {
         if (anm == null) return;
@@ -154,7 +154,7 @@ public final class VfxManager {
      * Спавнить частинки смерті мідбоса.
      * @param position позиція, де помер ворог, та навколо якої будуть частинки
      * @param script ANM-скрипт спрайту частинки
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void spawnMidbossDeath(Vector2 position, String script) {
         if (anm == null) return;
@@ -176,7 +176,7 @@ public final class VfxManager {
      * Спавнить частинки смерті боса.
      * @param position позиція, де помер ворог, та навколо якої будуть частинки
      * @param script ANM-скрипт спрайту частинки
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void spawnBossDeath(Vector2 position, String script) {
         if (anm == null) return;
@@ -198,7 +198,7 @@ public final class VfxManager {
      * Спавнить візуальний ефект в певній позиції.
      * @param vfx тип візуального ефекту
      * @param position позиція, де помер ворог, та навколо якої будуть частинки
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void spawn(Vfx vfx, Vector2 position) {
         switch (vfx) {
@@ -235,7 +235,7 @@ public final class VfxManager {
 
     /**
      * Ініціалізація.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int added() {
         anm = Assets.global.get(Anm.class, "game/vfx.anm");
@@ -245,7 +245,7 @@ public final class VfxManager {
 
     /**
      * Оновлення всіх частинок та таймерів.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int update() {
         if (!GameplayManager.global.canUpdate())
@@ -279,7 +279,7 @@ public final class VfxManager {
 
     /**
      * Відмалювання всіх частинок.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int draw() {
         for (int i = 0; i < particles.length; ++i) {
@@ -292,7 +292,7 @@ public final class VfxManager {
 
     /**
      * Очищення ресурсів.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int removed() {
         clear();
@@ -303,7 +303,7 @@ public final class VfxManager {
 
     /**
      * Очищення від всіх частинок.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void clear() {
         for (Particle particle : particles)
@@ -313,7 +313,7 @@ public final class VfxManager {
 
     /**
      * Витягає частинку з пулу. Якщо частинки закінчились, то старі будуть перевикористані, тож вони зникнуть з екрану.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private Particle pull() {
         if (anm == null)
@@ -331,7 +331,7 @@ public final class VfxManager {
 
     /**
      * Повертає частинку до пулу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void put(Particle particle) {
         particle.reset();
@@ -340,7 +340,7 @@ public final class VfxManager {
 
     /**
      * Одна частинка.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private final class Particle {
         public final int idx;
@@ -363,7 +363,7 @@ public final class VfxManager {
 
         /**
          * Скидає частинку до параметрів за замовчуванням.
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         public void reset() {
             movementType = MovementType.DIRECTIONAL;

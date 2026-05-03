@@ -4,7 +4,7 @@ import ua.tmmaple.pr25.entities.Enemy;
 
 /**
  * Дія, що чекає певну кількість тіків перед продовженням.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class WaitTask implements Task {
     private final Times ticks;
@@ -12,7 +12,7 @@ public final class WaitTask implements Task {
 
     /**
      * @param ticks функція, що повертає кількість тіків
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public WaitTask(Times ticks) {
         this.ticks = ticks;

@@ -2,7 +2,7 @@ package ua.tmmaple.pr25;
 
 /**
  * Локалізований текст. Звертається до завантаженої таблиці даних локалізації та повертає відповідний рядок.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class Text implements CharSequence {
     private final String id;
@@ -13,7 +13,7 @@ public final class Text implements CharSequence {
      * @param id ідентифікатор текста в таблиці
      * @param idIfNotFound якщо такого не знайдено, то замість """???<code>id</code>???" повертати <code>id</code>
      * @param formatArgs аргументи для форматування тексту
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public Text(String id, boolean idIfNotFound, Object... formatArgs) {
         this.id = id;
@@ -24,7 +24,7 @@ public final class Text implements CharSequence {
     /**
      * @param id ідентифікатор текста в таблиці
      * @param idIfNotFound якщо такого не знайдено, то замість """???<code>id</code>???" повертати <code>id</code>
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public Text(String id, boolean idIfNotFound) {
         this(id, idIfNotFound, (Object[]) null);
@@ -33,7 +33,7 @@ public final class Text implements CharSequence {
     /**
      * @param id ідентифікатор текста в таблиці
      * @param formatArgs аргументи для форматування тексту
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public Text(String id, Object... formatArgs) {
         this(id, false, formatArgs);
@@ -41,7 +41,7 @@ public final class Text implements CharSequence {
 
     /**
      * @param id ідентифікатор текста в таблиці
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public Text(String id) {
         this(id, false);
@@ -50,7 +50,7 @@ public final class Text implements CharSequence {
     /**
      * Переназначає параметри тексту.
      * @param args параметри
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void params(Object... args) {
         this.args = args;

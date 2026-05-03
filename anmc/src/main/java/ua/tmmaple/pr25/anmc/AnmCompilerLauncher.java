@@ -10,7 +10,7 @@ import java.nio.file.Files;
 
 /**
  * Запускає компілятор ANM.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class AnmCompilerLauncher {
     private String from;
@@ -46,7 +46,7 @@ public final class AnmCompilerLauncher {
      * @param from тека, звідки беруться <code>.anmsrc</code>
      * @param to тека, куди будуть зберігатись скомпільовані <code>.anm</code>
      * @return 1, якщо помилка, 0, якщо успіх
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int run(String from, String to) {
         from = from.replace('\\', '/');
@@ -71,7 +71,7 @@ public final class AnmCompilerLauncher {
      * Компілює певний файл, або рекурсивно компілює теку.
      * Компілює тільки <code>.anmsrc</code>
      * @param file файл або тека
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void compile(File file) throws IOException {
         if (file.isDirectory()) {

@@ -75,7 +75,7 @@ public class EnemyManager {
 
     /**
      * Видаляє всіх ворогів. Вороги просто видаляються з екрану та повертаються до пулу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void clear() {
         for (int i = 0; i < enemies.length; ++i)
@@ -88,7 +88,7 @@ public class EnemyManager {
      * @param a позиція, навколо якої треба нанести шкоду ворогам
      * @param radius радіус відносно a
      * @param damage кількість шкоди, нанесеної ворогам
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public boolean damageAllInRadius(Vector2 a, float radius, int damage) {
         boolean result = false;

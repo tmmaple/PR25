@@ -13,7 +13,7 @@ import ua.tmmaple.pr25.util.PR25RuntimeException;
 
 /**
  * Керує завантаженням та вивантаженням ресурсів.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class Assets {
     public static Assets global;
@@ -28,7 +28,7 @@ public final class Assets {
 
     /**
      * Реєструє global в список оновлення.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static int register() {
         Flow.FlowNode<Assets> node = new Flow.FlowNode<>(global, Assets::update, Assets::added, Assets::removed);
@@ -46,7 +46,7 @@ public final class Assets {
 
     /**
      * Додає ресурс до черги завантажень, якщо його ще не завантажено.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public <T> void load(Class<T> type, String filename) {
         loaded = false;
@@ -56,7 +56,7 @@ public final class Assets {
     /**
      * Додає ресурс до черги завантажень, якщо його ще не завантажено.
      * @param params Параметри для завантаження ресурсу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public <T> void load(Class<T> type, String filename, AssetLoaderParameters<T> params) {
         loaded = false;
@@ -65,7 +65,7 @@ public final class Assets {
 
     /**
      * Вивантажує ресурс, якщо ним ніхто не користується.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void unload(String filename) {
         if (manager.isLoaded(filename)) {
@@ -76,7 +76,7 @@ public final class Assets {
 
     /**
      * Вивантажує всі ресурси, якщо вони не використовуються.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void unload() {
         for (String a : manager.getAssetNames())
@@ -86,7 +86,7 @@ public final class Assets {
 
     /**
      * Повністю очищує всі ресурси.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void flush() {
         manager.clear();
@@ -95,7 +95,7 @@ public final class Assets {
 
     /**
      * @return чи не завантажуються ніякі ресурси
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public boolean isLoaded() {
         return loaded;
@@ -103,7 +103,7 @@ public final class Assets {
 
     /**
      * @return чи завантажений ресурс filename
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public boolean isLoaded(String filename) {
         return manager.isLoaded(filename);
@@ -111,7 +111,7 @@ public final class Assets {
 
     /**
      * Ініціалізує екземпляр Assets після додавання до списку оновлення.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private static int added(Assets assets) {
         assets.manager = new AssetManager();
@@ -123,7 +123,7 @@ public final class Assets {
     /**
      * Оновлює екземпляр Assets.
      * Під час одного оновлення намагається завантажити якомога більше ресурсів.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private static int update(Assets instance) {
         instance.loaded = instance.manager.update(17);
@@ -132,7 +132,7 @@ public final class Assets {
 
     /**
      * Очищається від всіх ресурсів після видалення зі списку оновлення.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private static int removed(Assets instance) {
         instance.manager.dispose();

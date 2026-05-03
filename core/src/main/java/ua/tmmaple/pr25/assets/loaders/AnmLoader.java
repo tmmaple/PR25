@@ -14,7 +14,7 @@ import ua.tmmaple.pr25.graphics.Anm;
 
 /**
  * Завантажувач ANM.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class AnmLoader extends AsynchronousAssetLoader<Anm, AnmLoader.AnmParameter> {
     private Anm.AnmData data;

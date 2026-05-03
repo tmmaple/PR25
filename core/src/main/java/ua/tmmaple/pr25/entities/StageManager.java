@@ -9,7 +9,7 @@ import ua.tmmaple.pr25.graphics.Anm;
 
 /**
  * Керує стадіями у грі: завантажує та змінює їх.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class StageManager {
     public static StageManager global;
@@ -25,7 +25,7 @@ public final class StageManager {
 
     /**
      * Реєструє у списку оновлень.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void register() {
         node = new Flow.FlowNode<>(global, StageManager::update);
@@ -35,7 +35,7 @@ public final class StageManager {
 
     /**
      * Видаляє зі списку оновлень.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void shutdown() {
         Flow.global.cut(node);
@@ -44,7 +44,7 @@ public final class StageManager {
 
     /**
      * Ставить наступну стадію на очікування та завантажує її ресурси.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void load(Stage stage) {
         unload();
@@ -60,7 +60,7 @@ public final class StageManager {
 
     /**
      * Вивантажує поточну стадію.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void unload() {
         if (stage == null)
@@ -86,7 +86,7 @@ public final class StageManager {
 
     /**
      * @return чи працює стадія. Повертає false, якщо стадія завантажується.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public boolean isActive() {
         return !loading && root != null;
@@ -94,7 +94,7 @@ public final class StageManager {
 
     /**
      * Оновлює менеджер.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int update() {
         if (root != null && !root.active)
@@ -116,7 +116,7 @@ public final class StageManager {
 
     /**
      * Очищує ресурси.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int removed() {
         unload();

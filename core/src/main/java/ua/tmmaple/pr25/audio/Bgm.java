@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Музичний трек.
  * Обгортка над {@link com.badlogic.gdx.audio.Music}, але може повторюватись з певної позиції.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public class Bgm implements Disposable {
     private float loopPoint;
@@ -41,7 +41,7 @@ public class Bgm implements Disposable {
     /**
      * Програє трек.
      * @param looping чи повторювати трек після програвання
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void play(boolean looping) {
         backing.play();
@@ -54,7 +54,7 @@ public class Bgm implements Disposable {
 
     /**
      * Ставить програвання на паузу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void pause() {
         backing.pause();
@@ -62,7 +62,7 @@ public class Bgm implements Disposable {
 
     /**
      * Продовжу програвання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void resume() {
         backing.play();
@@ -70,7 +70,7 @@ public class Bgm implements Disposable {
 
     /**
      * Зупиняє програвання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void stop() {
         backing.stop();
@@ -79,7 +79,7 @@ public class Bgm implements Disposable {
 
     /**
      * Встановлює гучність.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setVolume(float volume) {
         backing.setVolume(volume);
@@ -87,7 +87,7 @@ public class Bgm implements Disposable {
 
     /**
      * @return чи програється трек на даний момент
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public boolean isPlaying() {
         return backing.isPlaying();
@@ -96,7 +96,7 @@ public class Bgm implements Disposable {
     /**
      * Читає з файлу .bgm.
      * В файлі на першому рядку обов'язково має бути ім'я аудіофайлу, на другому позиція повторення в секундах.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void parse(FileHandle file) {
         try (BufferedReader r = file.reader(256)) {

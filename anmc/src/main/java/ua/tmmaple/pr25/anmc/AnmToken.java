@@ -2,7 +2,7 @@ package ua.tmmaple.pr25.anmc;
 
 /**
  * Токен, згенерований лексером.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class AnmToken {
     public static final int TOKEN_EOF = 0;

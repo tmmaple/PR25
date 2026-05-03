@@ -15,7 +15,7 @@ import ua.tmmaple.pr25.ui.MenuItem;
 
 /**
  * Екран результатів. Показується або після проходження гри, або після програшу.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class Results {
     private static final float VSPACING = 26.0f;
@@ -88,7 +88,7 @@ public final class Results {
 
     /**
      * Завантажує ресурси.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void load() {
         Assets.global.load(Anm.class, "ui/results.anm");
@@ -96,7 +96,7 @@ public final class Results {
 
     /**
      * Реєструє в списки оновлення та малювання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void register() {
         if (updateNode != null) return;
@@ -108,7 +108,7 @@ public final class Results {
 
     /**
      * Видаляє зі списків оновлення та малювання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void shutdown() {
         if (updateNode == null) return;
@@ -120,7 +120,7 @@ public final class Results {
 
     /**
      * Ініціалізує віртуальні машини та текст.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int added() {
         Audio.global.stopMusic();
@@ -142,7 +142,7 @@ public final class Results {
 
     /**
      * Оновлює віртуальні машини та ввід від гравця.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int update() {
         if (state == ResultsState.INTRO) {
@@ -171,7 +171,7 @@ public final class Results {
 
     /**
      * Малює результати на екран.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int draw() {
         backgroundVm.draw();
@@ -197,7 +197,7 @@ public final class Results {
 
     /**
      * Повертає в меню за натиском кнопки.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void onBackToMenu(MenuItem button) {
         backToMenuVm.interrupt((byte) 1);
@@ -208,7 +208,7 @@ public final class Results {
 
     /**
      * Очищує ресурси та видаляє віртуальні машини.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int removed() {
         backgroundVm.delete();

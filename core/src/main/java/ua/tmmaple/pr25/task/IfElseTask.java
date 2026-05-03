@@ -4,7 +4,7 @@ import ua.tmmaple.pr25.entities.Enemy;
 
 /**
  * Умовна дія ворога.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class IfElseTask implements Task {
     private final Condition condition;
@@ -17,7 +17,7 @@ public final class IfElseTask implements Task {
      * @param condition умова, що перевіряється
      * @param thenArm якщо умова повертає true
      * @param elseArm якщо умова повертає false
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public IfElseTask(Condition condition, Task thenArm, Task elseArm) {
         this.condition = condition;
@@ -28,7 +28,7 @@ public final class IfElseTask implements Task {
     /**
      * @param condition умова, що перевіряється
      * @param thenArm якщо умова повертає true
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public IfElseTask(Condition condition, Task thenArm) {
         this.condition = condition;

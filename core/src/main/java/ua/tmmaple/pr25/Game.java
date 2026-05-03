@@ -13,7 +13,7 @@ import ua.tmmaple.pr25.graphics.TextManager;
 
 /**
  * Клас гри libGDX, де відбувається головний цикл.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public class Game extends ApplicationAdapter {
     public static final int BASE_WINDOW_WIDTH = 640;
