@@ -4,7 +4,7 @@ import ua.tmmaple.pr25.entities.Enemy;
 
 /**
  * Дія, що емулює цикл for { }
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class RepeatTask implements Task {
     private final Times times;
@@ -15,7 +15,7 @@ public final class RepeatTask implements Task {
     /**
      * @param times кількість повторень
      * @param task дія, яка виконується в тілі циклу
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public RepeatTask(Times times, Task task) {
         this.times = times;

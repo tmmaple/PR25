@@ -15,7 +15,7 @@ import ua.tmmaple.pr25.ui.MenuItem;
 
 /**
  * Головне меню гри, працює як окрема система.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class MainMenu {
     private static final float VSPACING = 26.0f;
@@ -132,7 +132,7 @@ public final class MainMenu {
 
     /**
      * Завантаження ресурсів.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void load() {
         Assets.global.load(Anm.class, "ui/mainMenu.anm");
@@ -141,7 +141,7 @@ public final class MainMenu {
 
     /**
      * Реєструє у списку оновлення та відмалювання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void register() {
         if (updateNode != null) return;
@@ -153,7 +153,7 @@ public final class MainMenu {
 
     /**
      * Видаляє зі списку оновлення та відмалювання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void shutdown() {
         if (updateNode == null) return;
@@ -165,7 +165,7 @@ public final class MainMenu {
 
     /**
      * Ініціалізує всі графічні елементи та кнопки.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int added() {
         next = 0;
@@ -192,7 +192,7 @@ public final class MainMenu {
 
     /**
      * Оновлює графічні елементи та кнопки.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int update() {
         menuVm.execute();
@@ -230,7 +230,7 @@ public final class MainMenu {
 
     /**
      * Малює головне меню на екран.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int draw() {
         backgroundVm.draw();
@@ -248,7 +248,7 @@ public final class MainMenu {
 
     /**
      * Запускає гру з першої стадії через кнопку.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void onStart(MenuItem button) {
         next(0);
@@ -256,7 +256,7 @@ public final class MainMenu {
 
     /**
      * Змінює мову гри через слайдер.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void onLanguageChange(MenuItem slider, int value) {
         God.global.setLanguage(value);
@@ -264,7 +264,7 @@ public final class MainMenu {
 
     /**
      * Змінює розмір вікна гри через слайдер.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void onScalingChange(MenuItem slider, int value) {
         God.global.setWindowMode(value);
@@ -273,7 +273,7 @@ public final class MainMenu {
 
     /**
      * Змінює гучність звуків через слайдер.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void onSfxVolumeChange(MenuItem slider, float value) {
         God.global.setSfxVolume(value);
@@ -282,7 +282,7 @@ public final class MainMenu {
 
     /**
      * Змінює гучність музики через слайдер.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void onMusicVolumeChange(MenuItem slider, float value) {
         God.global.setMusicVolume(value);
@@ -291,7 +291,7 @@ public final class MainMenu {
 
     /**
      * Виходить з гри через кнопку.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void onExit(MenuItem button) {
         next(1);
@@ -299,7 +299,7 @@ public final class MainMenu {
 
     /**
      * Запускає процес переходу до іншого екрану, а також запускає відповідні анімації.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void next(int next) {
         startButton.unfocus();
@@ -320,7 +320,7 @@ public final class MainMenu {
 
     /**
      * Видаляє ресурси.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int removed() {
         anm = null;

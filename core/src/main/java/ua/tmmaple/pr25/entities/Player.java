@@ -14,7 +14,7 @@ import ua.tmmaple.pr25.graphics.GraphicManager;
 
 /**
  * Клас об'єкту гравця, зроблений як окрема система у Flow.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public class Player {
     private enum MovementDirection {
@@ -78,7 +78,7 @@ public class Player {
 
     /**
      * Завантажує ресурси перед створенням.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void load() {
         Assets.global.load(Anm.class,"game/plr.anm");
@@ -86,7 +86,7 @@ public class Player {
 
     /**
      * Реєструє до списку оновлень та відмалювань.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static int register() {
         if (updateNode != null)
@@ -100,7 +100,7 @@ public class Player {
 
     /**
      * Видаляє зі списку оновлень та відмалювань.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void shutdown() {
         Flow.global.cut(updateNode);
@@ -128,7 +128,7 @@ public class Player {
     /**
      * Пробує нарахувати дотик при відповідному перетині гравця з кулями або ворогами.
      * Не зараховується у випадку, коли гровець в стані DeathBombing або помирає.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void graze() {
         if (isDeathBombing() || gameOverCooldown > 0)
@@ -143,7 +143,7 @@ public class Player {
 
     /**
      * Встановлює напрям руху гравця та змінює анімацію.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void setDirection(MovementDirection direction) {
         if (this.direction != direction) {
@@ -171,7 +171,7 @@ public class Player {
     /**
      * Наносить шкоду гравцю, якщо в того нема тимчасового безсмертя.
      * Якщо є бомба, то запускає таймер для deathbombing, але звук все одно програється.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void damage() {
         if (gameOverCooldown > 0 || invincibilityCooldown > 0)
@@ -185,7 +185,7 @@ public class Player {
 
     /**
      * Вбиває гравця та запускає маленький таймер перед переходом до екрану програшу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void kill() {
         VfxManager.global.spawnPlayerDeath(position);
@@ -195,7 +195,7 @@ public class Player {
 
     /**
      * Респавнить гравця на початковій позиції, із тимчасовим безсмертям.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void respawn() {
         makeInvincible(RESPAWN_INVINCIBILITY_COOLDOWN);
@@ -206,7 +206,7 @@ public class Player {
 
     /**
      * Тимчасово робить безсмертним.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void makeInvincible(short ticks) {
         invincibilityCooldown = ticks;
@@ -216,7 +216,7 @@ public class Player {
     /**
      * Головна логіка оновлення гравця, виконується 60 разів на секунду.
      * Тут виконується рух та стрільба, а також рахунок таймерів.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int update() {
         if (grazeSoundCooldown > 0)
@@ -374,7 +374,7 @@ public class Player {
 
     /**
      * @return true, якщо гравець має змогу застосувати бомбу після отримання шкоди.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public boolean isDeathBombing() {
         return deathBombCooldown > 0;
@@ -382,7 +382,7 @@ public class Player {
 
     /**
      * Відмальовує всі спрайти гравця на екран.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int draw() {
         if (gameOverCooldown > 0)
@@ -402,7 +402,7 @@ public class Player {
 
     /**
      * Ініціалізація після додавання до списків.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int added() {
         Anm anm = Assets.global.get(Anm.class, "game/plr.anm");
@@ -426,7 +426,7 @@ public class Player {
 
     /**
      * Видалення ресурсів після видалення зі списків.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int removed() {
         parentVM.delete();
@@ -440,7 +440,7 @@ public class Player {
 
     /**
      * @return чи може гравець стріляти
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private boolean canFire() {
         return !BombManager.global.isInUse() && StageManager.global.isActive();

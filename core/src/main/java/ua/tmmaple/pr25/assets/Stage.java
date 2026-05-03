@@ -9,7 +9,7 @@ import ua.tmmaple.pr25.task.TimelineTask;
 
 /**
  * Базовий клас для стадії (тобто, рівня) у грі.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public abstract class Stage {
     /** Значення змінюється зі сталою швидкістю **/
@@ -31,13 +31,13 @@ public abstract class Stage {
 
     /**
      * @return список ANM-ресурсів стадії для завантаження.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public abstract String[] anmList();
 
     /**
      * @return список BGM-ресурсів (фонової музики) для завантаження.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public abstract String[] bgmList();
 
@@ -46,7 +46,7 @@ public abstract class Stage {
 
     /**
      * @return Головний таймлайн подій під час стадії, такі як спавн ворогів, рух ворогів, спавн куль, і т.д.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public abstract TimelineTask main();
 
@@ -54,7 +54,7 @@ public abstract class Stage {
      * Ініціалізує стадію після завантаження.
      * @param owner StageManager, що контролює цю стадію
      * @param background посилання на фон для легкого контролю
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void init(StageManager owner, Background background) {
         this.owner = owner;
@@ -64,7 +64,7 @@ public abstract class Stage {
     /**
      * @param idx індекс ANM-ресурсу
      * @return завантажений стадією ANM-ресурс
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     protected Anm getAnm(int idx) {
         return owner.anms[idx];
@@ -73,7 +73,7 @@ public abstract class Stage {
     /**
      * Програє музику на стадії.
      * @param idx індекс завантаженого BGM-ресурсу
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     protected void playMusic(int idx) {
         Audio.global.playMusic(owner.bgms[idx], true);
@@ -82,7 +82,7 @@ public abstract class Stage {
     /**
      * Плавно закінчує музику з затуханням.
      * @param t час затухання в секундах
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     protected void fadeMusic(float t) {
         Audio.global.fadeMusic(t);
@@ -90,7 +90,7 @@ public abstract class Stage {
 
     /**
      * Зупиняє музику.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     protected void stopMusic() {
         Audio.global.stopMusic();

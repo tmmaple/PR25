@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 /**
  * Анімація зміни між двома значеннями.
  * Має оновлюватись власноруч у системах чи власних об'єктах.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public abstract class Tweener<T> {
     public static final byte INTERPOLATION_LINEAR = 0;
@@ -34,7 +34,7 @@ public abstract class Tweener<T> {
      * @param a початкове значення
      * @param b кінцеве значення
      * @param t час інтерполяції, в тіках
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public final void start(byte type, T a, T b, short t) {
         initializeValues(a, b);
@@ -48,7 +48,7 @@ public abstract class Tweener<T> {
 
     /**
      * Зупиняє анімацію
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public final void end() {
         running = false;
@@ -56,7 +56,7 @@ public abstract class Tweener<T> {
 
     /**
      * Оновлює анімацію на один тік
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public final void update() {
         if (!isRunning()) return;
@@ -103,7 +103,7 @@ public abstract class Tweener<T> {
 
     /**
      * Анімація зміни між двома значеннями float.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static class FloatTweener extends Tweener<Float> {
         @Override
@@ -121,7 +121,7 @@ public abstract class Tweener<T> {
 
     /**
      * Анімація зміни між двома двовимірними векторами.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static class Vector2Tweener extends Tweener<Vector2> {
         public Vector2Tweener() {
@@ -144,7 +144,7 @@ public abstract class Tweener<T> {
 
     /**
      * Анімація зміни між двома кольорами.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static class ColorTweener extends Tweener<Color> {
         public ColorTweener() {

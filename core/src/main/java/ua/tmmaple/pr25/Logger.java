@@ -4,12 +4,12 @@ import com.badlogic.gdx.Gdx;
 
 /**
  * Глобальний логгер для гри.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class Logger {
     /**
      * Виводить інформацію.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void info(String msg) {
         Gdx.app.log("INFO", msg);
@@ -17,7 +17,7 @@ public final class Logger {
 
     /**
      * Виводить інформацію з тегом класу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void info(Class<?> cl, String msg) {
         Gdx.app.log("INFO " + cl.getSimpleName(), msg);
@@ -25,7 +25,7 @@ public final class Logger {
 
     /**
      * Виводить інформацію з власним тегом.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void info(String tag, String msg) {
         Gdx.app.log("INFO " + tag, msg);
@@ -33,7 +33,7 @@ public final class Logger {
 
     /**
      * Виводить помилку.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void error(String msg) {
         Gdx.app.error("ERROR", msg);
@@ -41,7 +41,7 @@ public final class Logger {
 
     /**
      * Виводить помилку з тегом класу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void error(Class<?> cl, String msg) {
         Gdx.app.error("ERROR " + cl.getSimpleName(), msg);
@@ -49,7 +49,7 @@ public final class Logger {
 
     /**
      * Виводить помилку з власним тегом.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void error(String tag, String msg) {
         Gdx.app.error("ERROR " + tag, msg);
@@ -57,7 +57,7 @@ public final class Logger {
 
     /**
      * Виводить повідомлення для дебагу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void debug(String msg) {
         Gdx.app.debug("DEBUG", msg);
@@ -65,7 +65,7 @@ public final class Logger {
 
     /**
      * Виводить повідомлення для дебагу з тегом класу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void debug(Class<?> cl, String msg) {
         Gdx.app.debug("DEBUG " + cl.getSimpleName(), msg);
@@ -73,7 +73,7 @@ public final class Logger {
 
     /**
      * Виводить повідомлення для дебагу з власним тегом.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void debug(String tag, String msg) {
         Gdx.app.debug("DEBUG " + tag, msg);

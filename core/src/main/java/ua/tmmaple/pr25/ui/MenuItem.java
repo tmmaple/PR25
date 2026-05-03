@@ -11,7 +11,7 @@ import ua.tmmaple.pr25.graphics.TextManager;
 /**
  * Пункт меню інтерфейсу користувача.
  * Може бути кількох типів. Взаємодія через клавіатуру, має бути виділена.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class MenuItem {
     private enum ItemType {
@@ -63,7 +63,7 @@ public final class MenuItem {
     /**
      * Робить з елементу просто кнопку, що виконує якусь дію при натисканні.
      * @param listener дія, що має виконатись при натисканні
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem makeButton(ButtonListener listener) {
         this.listener = listener;
@@ -79,7 +79,7 @@ public final class MenuItem {
      * @param min найменше можливе значення
      * @param max найбільше можливе значення
      * @param loop чи може значення зациклитись
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem makeIntSlider(IntListener listener, int start, int step, int min, int max, boolean loop) {
         this.listener = listener;
@@ -101,7 +101,7 @@ public final class MenuItem {
      * @param min найменше можливе значення
      * @param max найбільше можливе значення
      * @param loop чи може значення зациклитись
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem makeFloatSlider(FloatListener listener, float start, float step, float min, float max, boolean loop) {
         this.listener = listener;
@@ -117,7 +117,7 @@ public final class MenuItem {
 
     /**
      * @param font шрифт, коли елемент не виділено
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem unfocusedFont(int font) {
         unfocusedSettings.setFont((byte) font);
@@ -126,7 +126,7 @@ public final class MenuItem {
 
     /**
      * @param color колір, коли елемент не виділено
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem unfocusedColor(int color) {
         Color.rgb888ToColor(unfocusedSettings.color, color);
@@ -135,7 +135,7 @@ public final class MenuItem {
 
     /**
      * @param font шрифт, коли елемент виділено
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem focusedFont(int font) {
         focusedSettings.setFont((byte) font);
@@ -144,7 +144,7 @@ public final class MenuItem {
 
     /**
      * @param color колір, коли елемент виділено
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem focusedColor(int color) {
         Color.rgb888ToColor(focusedSettings.color, color);
@@ -153,7 +153,7 @@ public final class MenuItem {
 
     /**
      * @param align горизонтальне розташування тексту в елементі
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem align(int align) {
         unfocusedSettings.hAlign = align;
@@ -163,7 +163,7 @@ public final class MenuItem {
 
     /**
      * @param width ширина зони, де показується текст
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem width(int width) {
         unfocusedSettings.targetWidth = width;
@@ -174,7 +174,7 @@ public final class MenuItem {
     /**
      * @param x горизонтальна позиція
      * @param y вертикальна позиція
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem position(float x, float y) {
         this.position.set(x, y);
@@ -185,7 +185,7 @@ public final class MenuItem {
     /**
      * @param x горизонтальне зміщення тексту
      * @param y вертикальне зміщення тексту
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem offset(float x, float y) {
         this.offset.set(x, y);
@@ -194,7 +194,7 @@ public final class MenuItem {
 
     /**
      * @param text текст, що показується
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem text(CharSequence text) {
         this.text = text;
@@ -205,7 +205,7 @@ public final class MenuItem {
      * Задає ANM-скрипт, за яким слідуватиме елемент.
      * @param anm ANM-ресурс
      * @param script анімація в ANM-ресурсі
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem anm(Anm anm, String script) {
         if (usesVm)
@@ -227,7 +227,7 @@ public final class MenuItem {
     /**
      * Задає батьківську віртуальну машину ANM.
      * @param vm віртуальна машина
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem parent(GraphicManager.AnmVirtualMachine vm) {
         this.parentVm = vm;
@@ -241,7 +241,7 @@ public final class MenuItem {
 
     /**
      * Задає елемент згори, для навігації
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem up(MenuItem up) {
         this.up = up;
@@ -250,7 +250,7 @@ public final class MenuItem {
 
     /**
      * Задає елемент знизу, для навігації
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public MenuItem down(MenuItem down) {
         this.down = down;
@@ -259,7 +259,7 @@ public final class MenuItem {
 
     /**
      * Виділяє елемент для можливості взаємодії
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void focus() {
         if (focused)
@@ -272,7 +272,7 @@ public final class MenuItem {
 
     /**
      * Знімає виділення з елементу
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void unfocus() {
         if (!focused)
@@ -284,7 +284,7 @@ public final class MenuItem {
 
     /**
      * Оновлює графіку та стан вводу користувача для взаємодії з елементом
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void update() {
         if (type == null)
@@ -354,7 +354,7 @@ public final class MenuItem {
 
     /**
      * Малює елемент на екрані
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void draw() {
         if (type == null)
@@ -376,7 +376,7 @@ public final class MenuItem {
 
     /**
      * @return відносна позиція елементу на екрані
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public Vector2 position() {
         return position.cpy();
@@ -384,7 +384,7 @@ public final class MenuItem {
 
     /**
      * Знищує функціональну та візуальну частину елемента для переналаштування.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void destroy() {
         type = null;

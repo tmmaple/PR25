@@ -5,7 +5,7 @@ import ua.tmmaple.pr25.God;
 
 /**
  * Статистика гравця під час гри.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class GameplayStats {
     public static GameplayStats global;
@@ -30,7 +30,7 @@ public final class GameplayStats {
 
     /**
      * Реєструє в списку оновлень.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void register() {
         if (node != null)
@@ -41,7 +41,7 @@ public final class GameplayStats {
 
     /**
      * Видаляє зі списку оновлень.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void shutdown() {
         if (node == null)
@@ -52,7 +52,7 @@ public final class GameplayStats {
 
     /**
      * @return чи має гравець достатньо очок дотику, щоб можна було скористатися бомбою
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public boolean canBomb() {
         return grazeBombCounter == GRAZE_BOMB_THRESHOLD;
@@ -60,7 +60,7 @@ public final class GameplayStats {
 
     /**
      * Має викликатись при використанні гравцем бомби, тоді віднімає кількість дотиків, потрібних для здобуття бомби.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void bombUsed() {
         graze -= grazeBombCounter;
@@ -72,7 +72,7 @@ public final class GameplayStats {
 
     /**
      * Зарахувати дотик гравцеві.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void graze() {
         score += 10;
@@ -85,7 +85,7 @@ public final class GameplayStats {
     /**
      * Зарахувати очки гравцеві.
      * @param amount кількість очок
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void score(long amount) {
         score += amount;
@@ -96,7 +96,7 @@ public final class GameplayStats {
     /**
      * Зарахувати потужність гравцеві, якщо вона ще не досягла 100.
      * @param amount кількість очок потужності
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void power(int amount) {
         if (power >= 100)
@@ -108,7 +108,7 @@ public final class GameplayStats {
 
     /**
      * @return поточна кількість очок
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public long getScore() {
         return score;
@@ -116,7 +116,7 @@ public final class GameplayStats {
 
     /**
      * @return поточна найвища кількість очок
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public long getHiScore() {
         return hiScore;
@@ -124,7 +124,7 @@ public final class GameplayStats {
 
     /**
      * @return поточна кількість очок дотику
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public long getGraze() {
         return graze;
@@ -132,7 +132,7 @@ public final class GameplayStats {
 
     /**
      * @return поточна кількість очок дотику для використання бомби
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public long getBombCounter() {
         return grazeBombCounter;
@@ -140,7 +140,7 @@ public final class GameplayStats {
 
     /**
      * @return поточна потужність
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public int getPower() {
         return power;
@@ -148,7 +148,7 @@ public final class GameplayStats {
 
     /**
      * @return чи досяг гравець максимальної кількості очок потужності
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public boolean isFullPower() {
         return power == 100;
@@ -156,7 +156,7 @@ public final class GameplayStats {
 
     /**
      * Скидає статистику для нової гри
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void reset() {
         hiScore = God.global.hiScore();
@@ -169,7 +169,7 @@ public final class GameplayStats {
 
     /**
      * Зараховує використання монети для продовження гри після смерті.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void coinUsed() {
         ++coinsUsed;
@@ -185,7 +185,7 @@ public final class GameplayStats {
 
     /**
      * @return кількість монет, використаних за гру
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public int getCoinsUsed() {
         return coinsUsed;
@@ -193,7 +193,7 @@ public final class GameplayStats {
 
     /**
      * Нараховує додаткові очки за дотик, та скидає значення до таких для наступного рівня.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void nextLevel() {
         score += graze * 100;
@@ -204,7 +204,7 @@ public final class GameplayStats {
 
     /**
      * Скидає очки дотику та потужності після респавну.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void respawn() {
         graze = 0L;
@@ -214,7 +214,7 @@ public final class GameplayStats {
 
     /**
      * Скидає показники до нуля після додавання до списку оновлень (нова гра).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int added() {
         reset();
@@ -223,7 +223,7 @@ public final class GameplayStats {
 
     /**
      * Оновлює таймер очок дотику для використання бомби.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int update() {
         if (!GameplayManager.global.canUpdate())
@@ -242,7 +242,7 @@ public final class GameplayStats {
 
     /**
      * Записує остаточний результат
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int removed() {
         God.global.updateHiScore(hiScore);

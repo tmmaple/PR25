@@ -6,7 +6,7 @@ import java.io.*;
 
 /**
  * Фінальний компілятор у файл.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class AnmCompiler {
     private DataOutputStream dos;
@@ -18,7 +18,7 @@ public final class AnmCompiler {
      * Компілює згенеровану раніше програму в байткод.
      * @param program згенерована програма
      * @param output файл, в який записати байткод
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void compile(AnmIM.AnmProgram program, File output) {
         this.program = program;

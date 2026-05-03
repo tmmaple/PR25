@@ -15,7 +15,7 @@ import ua.tmmaple.pr25.ui.MenuItem;
 
 /**
  * Інтерфейс користувача під час активного ігрового процесу.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class Hud {
     private static final Vector2 BASE = new Vector2(440.0f, 480.0f - 64.0f);
@@ -114,7 +114,7 @@ public final class Hud {
 
     /**
      * Завантажує ресурси.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void load() {
         Assets.global.load(Anm.class, "ui/hud.anm");
@@ -122,7 +122,7 @@ public final class Hud {
 
     /**
      * Реєструє в список оновлень та відмалювання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void register() {
         if (updateNode != null) return;
@@ -134,7 +134,7 @@ public final class Hud {
 
     /**
      * Видаляє зі списків оновлення та відмалювання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void shutdown() {
         if (updateNode == null) return;
@@ -146,7 +146,7 @@ public final class Hud {
 
     /**
      * Показує виїжджаюче повідомлення.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void popup(String text) {
         if (text == null)
@@ -160,7 +160,7 @@ public final class Hud {
 
     /**
      * Показує кількість при підборі очок.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void pickup(Vector2 position, long points) {
         Pickup p = pickups[freePickup++];
@@ -175,7 +175,7 @@ public final class Hud {
 
     /**
      * Ініціалізація.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int added() {
         for (int i = 0; i < pickups.length; ++i)
@@ -201,7 +201,7 @@ public final class Hud {
 
     /**
      * Оновлення.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int update() {
         updateInGame();
@@ -224,7 +224,7 @@ public final class Hud {
 
     /**
      * Показує оверлей паузи. Використовується як у, власне, меню паузи, так і в меню продовження після смерті.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void showPauseOverlay() {
         pauseOverlayVm.loadAnm(anm);
@@ -233,7 +233,7 @@ public final class Hud {
 
     /**
      * Ховає паузу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void hidePause() {
         pauseOverlayVm.interrupt((byte) 1);
@@ -243,7 +243,7 @@ public final class Hud {
 
     /**
      * Показує меню паузи.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void showPauseMenu() {
         pauseTitle = new Text("pause");
@@ -253,7 +253,7 @@ public final class Hud {
 
     /**
      * Показує меню монети (меню продовження гри після смерті).
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void showCoinMenu() {
         pauseTitle = new Text("coins", GameplayManager.global.getCoins());
@@ -263,7 +263,7 @@ public final class Hud {
 
     /**
      * Відмальовує.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int draw() {
         for (int i = 0; i < pickups.length; ++i) {
@@ -320,7 +320,7 @@ public final class Hud {
     /**
      * Оновлює елементи, що показують ігрову інформацію.
      * Не оновлюється, якщо на паузі.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void updateInGame() {
         if (!GameplayManager.global.canUpdate())
@@ -370,7 +370,7 @@ public final class Hud {
 
     /**
      * Очищує ресурси.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int removed() {
         anm = null;
@@ -386,7 +386,7 @@ public final class Hud {
 
     /**
      * Текст, що показує кількість очок підібраного дропу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private static final class Pickup {
         public final Vector2 position;

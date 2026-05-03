@@ -4,7 +4,7 @@ import ua.tmmaple.pr25.graphics.Anm;
 
 /**
  * Визначення інструкцій ANM для компілятора.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class AnmInstructionDecl {
     public static final AnmInstructionDecl[] INSTRUCTION_TABLE = {
@@ -59,7 +59,7 @@ public final class AnmInstructionDecl {
     /**
      * @param name назва, за якою парсер буде її шукати
      * @param args типи аргументів
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private AnmInstructionDecl(String name, byte... args) {
         this.name = name;
@@ -69,7 +69,7 @@ public final class AnmInstructionDecl {
     /**
      * @return розмір однієї інструкції певного опкоду. Всі інструкції мають фіксований розмір - 1 байт на опкод, 2 байти на часову мітку, та аргументи.
      * @throws AnmParserException якщо опкоду не існує
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static int size(int opcode) {
         if (opcode >= Anm.ANM_INSTRUCTION_SIZES.length) throw new AnmParserException("Invalid opcode: " + opcode);
@@ -78,7 +78,7 @@ public final class AnmInstructionDecl {
 
     /**
      * @return розмір однієї інструкції за іменем, або 0, якщо інструкції не існує
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static int size(String name) {
         for (int i = 0; i < INSTRUCTION_TABLE.length; ++i)
@@ -88,7 +88,7 @@ public final class AnmInstructionDecl {
 
     /**
      * @return опкод інструкції за ключовим словом, або nop, якщо інструкції не існує
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static byte byKeyword(int keyword) {
         if (keyword < KEYWORD_LOOKUP_TABLE.length) return KEYWORD_LOOKUP_TABLE[keyword];
@@ -98,7 +98,7 @@ public final class AnmInstructionDecl {
     /**
      * @return типи аргументів інструкції за опкодом
      * @throws AnmParserException якщо опкоду не існує
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static byte[] args(int opcode) {
         if (opcode >= INSTRUCTION_TABLE.length) throw new AnmParserException("Invalid opcode: " + opcode);
@@ -107,7 +107,7 @@ public final class AnmInstructionDecl {
 
     /**
      * @return розмір інструкції за ключовим словом, або 0, якщо інструкції не існує
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static byte sizeByKeyword(int keyword) {
         if (keyword < KEYWORD_LOOKUP_TABLE.length) return Anm.ANM_INSTRUCTION_SIZES[KEYWORD_LOOKUP_TABLE[keyword]];
@@ -116,7 +116,7 @@ public final class AnmInstructionDecl {
 
     /**
      * @return опкод за іменем, або nop, якщо не існує
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static byte find(String name) {
         for (byte i = 0; i < INSTRUCTION_TABLE.length; ++i)

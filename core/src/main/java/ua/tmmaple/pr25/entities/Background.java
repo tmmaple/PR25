@@ -9,7 +9,7 @@ import ua.tmmaple.pr25.util.Tweener;
 
 /**
  * Фон під час ігрового процесу
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class Background {
     public static Background global;
@@ -35,7 +35,7 @@ public final class Background {
 
     /**
      * Реєструє в списки оновлення та відмалювання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static int register() {
         updateNode = new Flow.FlowNode<>(global, Background::update);
@@ -47,7 +47,7 @@ public final class Background {
 
     /**
      * Видаляє зі списків оновлення та відмалювання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void shutdown() {
         Flow.global.cut(updateNode);
@@ -67,7 +67,7 @@ public final class Background {
     /**
      * Трясе камеру.
      * @param power сила трясіння. Накопичується.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void shakeCamera(int power) {
         cameraShakePower += power;
@@ -75,7 +75,7 @@ public final class Background {
 
     /**
      * Встановлює позицію камери.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setCameraPosition(float cameraPosition) {
         this.cameraPosition = cameraPosition;
@@ -93,7 +93,7 @@ public final class Background {
      *                      <li><code>INTERPOLATION_EASE_OUT</code> - починає швидко, закінчує повільно</li>
      *                      <li><code>INTERPOLATION_EASE_IN_OUT</code> - починає повільно, прискорюється, потім сповільнюється</li>
      *                      </ul>
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void moveCamera(short ticks, float to, byte interpolation) {
         positionTweener.start(interpolation, cameraPosition, to, ticks);
@@ -110,7 +110,7 @@ public final class Background {
      *                      <li><code>INTERPOLATION_EASE_OUT</code> - починає швидко, закінчує повільно</li>
      *                      <li><code>INTERPOLATION_EASE_IN_OUT</code> - починає повільно, прискорюється, потім сповільнюється</li>
      *                      </ul>
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void accelerateCamera(short ticks, float to, byte interpolation) {
         velocityTweener.start(interpolation, cameraVelocity, to, ticks);
@@ -120,7 +120,7 @@ public final class Background {
      * Встановлює межі, в яких камера може рухатись.
      * @param min найнижча точка
      * @param max найвища точка
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setCameraLimits(float min, float max) {
         setCameraLimits(min, max, false);
@@ -131,7 +131,7 @@ public final class Background {
      * @param min найнижча точка
      * @param max найвища точка
      * @param loop визначає, чи має камера телепортуватись до протилежної межі до досягненої
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void setCameraLimits(float min, float max, boolean loop) {
         cameraMinPos = min;
@@ -141,7 +141,7 @@ public final class Background {
 
     /**
      * Скидає межі камери.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void resetCameraLimits() {
         cameraMinPos = 0.0f;
@@ -165,7 +165,7 @@ public final class Background {
 
     /**
      * Вивантажує поточний фон та зупиняє всі твінери.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void unload() {
         positionTweener.end();
@@ -176,7 +176,7 @@ public final class Background {
 
     /**
      * Оновлює фон, рухаючи його та оновлюючи трясіння камери, інтерполяції, і т.д.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int update() {
         if (!GameplayManager.global.canUpdate() || Player.global.isDeathBombing())
@@ -211,7 +211,7 @@ public final class Background {
 
     /**
      * Відмальовує фон на екрані.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int draw() {
         vm.draw();

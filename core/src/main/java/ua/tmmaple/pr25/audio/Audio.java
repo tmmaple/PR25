@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 /**
  * Керує програванням звуків та музики.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class Audio {
     public static Audio global;
@@ -28,7 +28,7 @@ public final class Audio {
 
     /**
      * Ініціалізує менеджер та завантажує всі звуки в теці assets/sounds.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void initialize() {
         String[] assets = Gdx.files.internal("assets.txt").readString().split("\n");
@@ -45,7 +45,7 @@ public final class Audio {
     /**
      * Програє звук з певною гучністю.
      * @throws PR25RuntimeException якщо звуку з таким ім'ям не існує.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void playSound(String name, float volume) {
         if (!sounds.containsKey(name)) throw new PR25RuntimeException("No sound " + name);
@@ -56,7 +56,7 @@ public final class Audio {
     /**
      * Програє музику з певною гучністю.
      * Трек має бути завантажений через {@link ua.tmmaple.pr25.assets.Assets} заздалегідь.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void playMusic(String name, boolean loop) {
         if (bgm != null) stopMusic();
@@ -70,7 +70,7 @@ public final class Audio {
 
     /**
      * Ставить трек на паузу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void pauseMusic() {
         if (bgm != null && bgm.isPlaying())
@@ -79,7 +79,7 @@ public final class Audio {
 
     /**
      * Продовжує трек після паузи.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void resumeMusic() {
         if (bgm != null && !bgm.isPlaying())
@@ -94,7 +94,7 @@ public final class Audio {
 
     /**
      * Оновлює гучність музики до актуальних параметрів, якщо вона грає.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void update(float delta) {
         if (bgm != null && bgm.isPlaying()) {
@@ -109,7 +109,7 @@ public final class Audio {
 
     /**
      * Зупиняє музику.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void stopMusic() {
         if (bgm == null) return;
@@ -122,7 +122,7 @@ public final class Audio {
 
     /**
      * Очищує всі завантажені звуки з пам'яті.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void shutdown() {
         for (Sound sound : sounds.values())

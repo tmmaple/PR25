@@ -5,7 +5,7 @@ import ua.tmmaple.pr25.entities.Enemy;
 /**
  * Виконує дії, що розставлені за часом.
  * Проте виконання не буде повністю слідувати часу - якщо є дія, що повертає false за якихось умов, то продовження виконання буде відкладене.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class TimelineTask implements Task {
     private final Keyframe[] keyframes;
@@ -14,7 +14,7 @@ public final class TimelineTask implements Task {
 
     /**
      * @param keyframes набір ключів
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public TimelineTask(Keyframe[] keyframes) {
         this.keyframes = keyframes;
@@ -52,7 +52,7 @@ public final class TimelineTask implements Task {
 
     /**
      * Ключ на таймлайні, до якого прив'язана дія.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static class Keyframe {
         private final short timeMarker;
@@ -61,7 +61,7 @@ public final class TimelineTask implements Task {
         /**
          * @param timeMarker час, у тіках (один тік = 1/60 секунди)
          * @param task тіло ключа
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         public Keyframe(short timeMarker, Task task) {
             this.timeMarker = timeMarker;
@@ -70,7 +70,7 @@ public final class TimelineTask implements Task {
 
         /**
          * @param task тіло ключа
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         public Keyframe(Task task) {
             this.timeMarker = 0;

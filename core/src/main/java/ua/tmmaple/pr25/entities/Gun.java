@@ -10,7 +10,7 @@ import java.util.Random;
 /**
  * Створює патерни та візерунки куль ворога
  * @author SkyWarp
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public class Gun {
     public enum BulletType {
@@ -30,7 +30,7 @@ public class Gun {
 
     /**
      * Тип прицілювання gun'а, впливає спавн та інтерпретацію подальших значень.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public enum Aim {
         /**
@@ -319,7 +319,7 @@ public class Gun {
 
     /**
      * Типи позиціонування gun.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public enum OffsetMode {
         /** Створює кулі відносно позиції цього ворога. **/
@@ -376,7 +376,7 @@ public class Gun {
 
     /**
      * Ініціалізує до початкових параметрів.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void init() {
         fireSound = null;
@@ -404,7 +404,7 @@ public class Gun {
 
     /**
      * Починає стрільбу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void start() {
         on = true;
@@ -414,7 +414,7 @@ public class Gun {
 
     /**
      * Зупиняє стрільбу.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void stop() {
         on = false;
@@ -422,7 +422,7 @@ public class Gun {
 
     /**
      * Оновлює стан таймерів та стріляє, якщо таймери закінчились.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void update() {
         for (int i = 0; i < ownedBullets.size; ++i) {
@@ -444,7 +444,7 @@ public class Gun {
 
     /**
      * Спрямовує випущені кулі на гравця.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustAimAtPlayer(Vector2 offset) {
         Vector2 position = offset.cpy().add(Player.global.position);
@@ -454,7 +454,7 @@ public class Gun {
 
     /**
      * Спрямовує випущені кулі на <code>position</code>.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustAimAt(Vector2 position) {
         Vector2 absolutePosition = position.cpy().add(GameplayManager.VIEWPORT_START_X + GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT);
@@ -464,7 +464,7 @@ public class Gun {
 
     /**
      * Змінює швидкість випущених куль в полярних координатах.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustVelocity(float angle, float speed) {
         for (BulletManager.Bullet bullet : ownedBullets)
@@ -473,7 +473,7 @@ public class Gun {
 
     /**
      * Змінює лінійну швидкість випущених куль.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustSpeed(float speed) {
         for (BulletManager.Bullet bullet : ownedBullets)
@@ -482,7 +482,7 @@ public class Gun {
 
     /**
      * Змінює лінійне прискорення випущених куль.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustAcceleration(float acceleration) {
         for (BulletManager.Bullet bullet : ownedBullets)
@@ -491,7 +491,7 @@ public class Gun {
 
     /**
      * Змінює напрям випущених куль.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustAngle(float angle) {
         for (BulletManager.Bullet bullet : ownedBullets)
@@ -500,7 +500,7 @@ public class Gun {
 
     /**
      * Змінює швидкість повороту випущених куль.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustAngularSpeed(float angularSpeed) {
         for (BulletManager.Bullet bullet : ownedBullets)
@@ -509,7 +509,7 @@ public class Gun {
 
     /**
      * Змінює прискорення повороту випущених куль.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustAngularAcceleration(float angularAcceleration) {
         for (BulletManager.Bullet bullet : ownedBullets)
@@ -518,7 +518,7 @@ public class Gun {
 
     /**
      * Змінює тип випущених куль.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void adjustType(BulletType bulletType) {
         for (BulletManager.EnemyBullet bullet : ownedBullets)
@@ -528,7 +528,7 @@ public class Gun {
     /**
      * Знищує всі кулі.
      * @param vfx чи програвати візуальні ефекти.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void destroyAll(boolean vfx) {
         for (BulletManager.Bullet bullet : ownedBullets) {
@@ -541,7 +541,7 @@ public class Gun {
 
     /**
      * Стріляє кулями в певному патерні на основі заданих раніше параметрів.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void fire() {
         Vector2 absolutePosition = offset.cpy().add(GameplayManager.VIEWPORT_START_X +GameplayManager.VIEWPORT_WIDTH * 0.5f, GameplayManager.VIEWPORT_START_Y + GameplayManager.VIEWPORT_HEIGHT);

@@ -5,7 +5,7 @@ import ua.tmmaple.pr25.util.PR25RuntimeException;
 /**
  * Керує списками оновлення та відмалювання.
  * Максимум може містити по 32 системи для кожного списку, тож системи мають внутрішньо оновлювати власні об'єкти, якщо їх більше.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class Flow {
     public static final int FLOW_RESULT_CONTINUE = 0;
@@ -33,7 +33,7 @@ public final class Flow {
     /**
      * Додає вузол до списку оновлення.
      * @param priority приоритет, впливає на позицію вузла в списку
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public int addToUpdate(FlowNode<?> node, int priority) {
         if (toUpdateSize == toUpdate.length) throw new PR25RuntimeException("Flow update list is full");
@@ -56,7 +56,7 @@ public final class Flow {
     /**
      * Додає вузол до списку відмалювання.
      * @param priority приоритет, впливає на позицію вузла в списку
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public int addToDraw(FlowNode<?> node, int priority) {
         if (toDrawSize == toDraw.length) throw new PR25RuntimeException("Flow draw list is full");
@@ -78,7 +78,7 @@ public final class Flow {
 
     /**
      * Видаляє вузол зі списків.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public int cut(FlowNode<?> node) {
         int type = 0;
@@ -104,7 +104,7 @@ public final class Flow {
 
     /**
      * Оброблює всі вузли в списку оновлення
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public int executeUpdate() {
         execution:
@@ -135,7 +135,7 @@ public final class Flow {
 
     /**
      * Оброблює всі вузли в списку відмалювання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public int executeDraw() {
         execution:
@@ -166,7 +166,7 @@ public final class Flow {
 
     /**
      * Очищає список оновлення.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void shutdown() {
         for (int i = 0; i < toUpdateSize; ++i)
@@ -184,7 +184,7 @@ public final class Flow {
     /**
      * Вузол списку оновлень.
      * @param <T> Тип об'єкту вузла
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static final class FlowNode<T> {
         private int priority;
@@ -230,7 +230,7 @@ public final class Flow {
 
         /**
          * Оновлює вузол.
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         private int call() {
             if (listener != null) return listener.call(ref);
@@ -239,7 +239,7 @@ public final class Flow {
 
         /**
          * Викликає метод при додаванні вузла до списку
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         private int added() {
             int value = 0;
@@ -252,7 +252,7 @@ public final class Flow {
 
         /**
          * Викликає метод при видаленні вузла зі списку
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         private int removed() {
             int value = 0;

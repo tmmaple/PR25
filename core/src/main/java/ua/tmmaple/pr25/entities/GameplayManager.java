@@ -8,7 +8,7 @@ import ua.tmmaple.pr25.graphics.GraphicManager;
 
 /**
  * Головний клас, що керує грою в стані активного ігрового процесу.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class GameplayManager {
     private static final short DEATHBOMB_COOLDOWN = (short) 10;
@@ -30,7 +30,7 @@ public final class GameplayManager {
 
     /**
      * Завантажує ресурси гравця, куль, дропів, візуальних ефектів, та HUD.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void load(Stage stage) {
         toLoad = stage;
@@ -44,7 +44,7 @@ public final class GameplayManager {
 
     /**
      * Реєструє в списку оновлень.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static int register() {
         node = new Flow.FlowNode<>(global, null, GameplayManager::added, GameplayManager::removed);
@@ -54,7 +54,7 @@ public final class GameplayManager {
 
     /**
      * Видаляє зі списку оновлень.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void shutdown() {
         Flow.global.cut(node);
@@ -89,7 +89,7 @@ public final class GameplayManager {
 
     /**
      * @return 0, якщо гра триває, 1, якщо гра в меню паузи, 2, якщо гра в меню монети
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public int getPauseState() {
         return gameState;
@@ -97,7 +97,7 @@ public final class GameplayManager {
 
     /**
      * Ставить гру на паузу
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void pause() {
         gameState = 1;
@@ -105,7 +105,7 @@ public final class GameplayManager {
 
     /**
      * Продовжує гру після паузи. Якщо це було меню монет, то респавнить гравця та скидає статистику.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void resume() {
         if (gameState == 2) {
@@ -118,7 +118,7 @@ public final class GameplayManager {
 
     /**
      * Якщо ще є монети, то показує відповідне меню. В іншому випадку викидує з гри на екран показу результатів.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void gameOver() {
         if (--coins > 0)
@@ -129,7 +129,7 @@ public final class GameplayManager {
 
     /**
      * Ініціалізація після додавання до списку оновлення.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int added() {
         StageManager.register();
@@ -152,7 +152,7 @@ public final class GameplayManager {
 
     /**
      * Очищення після видалення зі списку оновлення.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int removed() {
         GameplayStats.shutdown();

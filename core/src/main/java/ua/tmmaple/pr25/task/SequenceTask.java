@@ -4,7 +4,7 @@ import ua.tmmaple.pr25.entities.Enemy;
 
 /**
  * Послідовно виконує внутрішні дії.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class SequenceTask implements Task {
     private final Task[] tasks;
@@ -12,7 +12,7 @@ public final class SequenceTask implements Task {
 
     /**
      * @param tasks набір дій для виконання
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public SequenceTask(Task[] tasks) {
         this.tasks = tasks;

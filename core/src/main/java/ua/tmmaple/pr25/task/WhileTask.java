@@ -4,7 +4,7 @@ import ua.tmmaple.pr25.entities.Enemy;
 
 /**
  * Дія, що емулює цикл while () { }
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class WhileTask implements Task {
     private final Condition condition;
@@ -13,7 +13,7 @@ public final class WhileTask implements Task {
     /**
      * @param condition умова для циклу
      * @param task дія, яка виконується в тілі циклу
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public WhileTask(Condition condition, Task task) {
         this.condition = condition;

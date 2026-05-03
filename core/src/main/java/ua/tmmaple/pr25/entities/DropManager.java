@@ -44,7 +44,7 @@ public class DropManager {
 
     /**
      * Завантажує ресурси
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void load() {
         Assets.global.load(Anm.class, "game/drops.anm");
@@ -73,7 +73,7 @@ public class DropManager {
     /**
      * Спавнить зірку.
      * @param pos позиція
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void spawnStar(Vector2 pos) {
         Drop d = pull();
@@ -88,7 +88,7 @@ public class DropManager {
     /**
      * Спавнить предмет потужності.
      * @param pos позиція
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void spawnPower(Vector2 pos) {
         Drop d = pull();
@@ -103,7 +103,7 @@ public class DropManager {
     /**
      * Забирає дроп з пулу.
      * @return якщо пул не заповнений, то витягнутий дроп. Інакше null.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private Drop pull() {
         if (free == drops.length)
@@ -117,7 +117,7 @@ public class DropManager {
 
     /**
      * Повертає кулю в пул.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void delete(Drop drop) {
         drop.active = false;
@@ -128,7 +128,7 @@ public class DropManager {
 
     /**
      * Ініціалізує всі дропи.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int added() {
         anm = Assets.global.get(Anm.class, "game/drops.anm");
@@ -196,7 +196,7 @@ public class DropManager {
 
     /**
      * Очищує всі ресурси та дропи після видалення зі списків.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int removed() {
         for (Drop drop : drops)

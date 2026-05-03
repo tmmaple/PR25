@@ -8,7 +8,7 @@ import ua.tmmaple.pr25.graphics.GraphicManager;
 
 /**
  * Керує бомбою гравця.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class BombManager {
     private static final short DURATION = 420;
@@ -29,7 +29,7 @@ public final class BombManager {
 
     /**
      * Завантажує ресурси.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void load() {
         Assets.global.load(Anm.class, "game/bomb.anm");
@@ -37,7 +37,7 @@ public final class BombManager {
 
     /**
      * Реєструє в списки оновлення та відмалювання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void register() {
         if (updateNode != null)
@@ -50,7 +50,7 @@ public final class BombManager {
 
     /**
      * Видаляє зі списків оновлення та відмалювання.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public static void shutdown() {
         if (updateNode == null)
@@ -68,7 +68,7 @@ public final class BombManager {
 
     /**
      * Ініціалізує віртуальні машини ANM для відображення фону бомби та портрету.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int added() {
         Anm anm = Assets.global.get(Anm.class, "game/bomb.anm");
@@ -84,7 +84,7 @@ public final class BombManager {
     /**
      * Запускає бомбу та робить гравця безсмертним на певний час.
      * Не залежить від поточної статистики.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void use() {
         Audio.global.playSound("bomb.ogg", 1.4f);
@@ -97,7 +97,7 @@ public final class BombManager {
 
     /**
      * @return чи використовується бомба в цей момент часу
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public boolean isInUse() {
         return left > 0;
@@ -105,7 +105,7 @@ public final class BombManager {
 
     /**
      * Закінчує використання бомби.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void end() {
         left = (short) 0;
@@ -115,7 +115,7 @@ public final class BombManager {
 
     /**
      * Оновлює стан та таймери бомби, а також віртуальні машини.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int update() {
         if (!GameplayManager.global.canUpdate())
@@ -143,7 +143,7 @@ public final class BombManager {
 
     /**
      * Відмальовує віртуальні машини бомби на екран.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int draw() {
         backgroundVm.draw();
@@ -153,7 +153,7 @@ public final class BombManager {
 
     /**
      * Видаляє віртуальні машини та вивантажує ресурси.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private int removed() {
         backgroundVm.delete();

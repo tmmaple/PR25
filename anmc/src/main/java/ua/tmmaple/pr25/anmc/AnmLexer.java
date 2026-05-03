@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * Лексер ANM.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class AnmLexer {
     private static final String[] directives = {
@@ -34,7 +34,7 @@ public final class AnmLexer {
 
     /**
      * Токенізує вхідний текст.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void tokenize(String input) {
         tokens.clear();
@@ -57,7 +57,7 @@ public final class AnmLexer {
     /**
      * Сканує токен.
      * @throws AnmLexerException якщо неправильний символ або сталась інша лексична помилка
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void scanToken() {
         startIndex = index;
@@ -96,7 +96,7 @@ public final class AnmLexer {
     /**
      * Сканує директиву.
      * @throws AnmLexerException якщо директиви не існує
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void directive(int startLine, int startColumn) {
         StringBuilder b = new StringBuilder();
@@ -114,7 +114,7 @@ public final class AnmLexer {
     /**
      * Сканує рядковий літерал.
      * @throws AnmLexerException якщо неправильний escape sequence або раптовий кінець файлу
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void string() {
         StringBuilder b = new StringBuilder();
@@ -156,7 +156,7 @@ public final class AnmLexer {
 
     /**
      * Сканує число.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private void number() {
         while (Character.isDigit(peek())) advance();
@@ -170,7 +170,7 @@ public final class AnmLexer {
 
     /**
      * @return поточний символ, або <code>\0</code>
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private char peek() {
         if (isAtEnd()) return '\0';
@@ -180,7 +180,7 @@ public final class AnmLexer {
     /**
      * Переходить до наступного символу.
      * @return поточний символ до переходу, або <code>\0</code>
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private char advance() {
         char c = input[index++];
@@ -194,7 +194,7 @@ public final class AnmLexer {
 
     /**
      * @return чи було прочитано весь текст.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     private boolean isAtEnd() {
         return index >= input.length;

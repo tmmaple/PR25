@@ -9,7 +9,7 @@ import ua.tmmaple.pr25.util.PR25RuntimeException;
 
 /**
  * Керує відмалюванням тексту на екран.
- * @author uwuhasmile
+ * @author afiliushkin
  */
 public final class TextManager {
     public static TextManager global;
@@ -24,7 +24,7 @@ public final class TextManager {
 
     /**
      * Передзавантажує всі шрифти в пам'ять.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void initialize() {
         fonts[0] = new BitmapFont(Gdx.files.internal("fonts/ui24.fnt"), false);
@@ -37,7 +37,7 @@ public final class TextManager {
 
     /**
      * Вивантажує всі шрифти з пам'яті.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void shutdown() {
         if (drawing) end();
@@ -49,7 +49,7 @@ public final class TextManager {
      * Переходить в режим малювання.
      * Має викликатись тоді, коли {@link ua.tmmaple.pr25.graphics.GraphicManager} переходить в режим малювання.
      * @throws PR25RuntimeException якщо вже в режимі малювання
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void begin() {
         if (drawing) throw new PR25RuntimeException("TextManager already begun");
@@ -60,7 +60,7 @@ public final class TextManager {
      * Виходить з режиму малювання.
      * Має викликатись тоді, коли {@link ua.tmmaple.pr25.graphics.GraphicManager} переходить в режим відмалювання.
      * @throws PR25RuntimeException якщо не в режимі малювання
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public void end() {
         if (!drawing) throw new PR25RuntimeException("TextManager did not begin");
@@ -69,7 +69,7 @@ public final class TextManager {
 
     /**
      * Шаблон налаштувань тексту.
-     * @author uwuhasmile
+     * @author afiliushkin
      */
     public class TextSettings {
         private byte font;
@@ -108,7 +108,7 @@ public final class TextManager {
         /**
          * Відмальовує текст з певними налаштуваннями.
          * @throws PR25RuntimeException якщо не в режимі малювання
-         * @author uwuhasmile
+         * @author afiliushkin
          */
         public void draw(CharSequence text) {
             if (!drawing) throw new PR25RuntimeException("TextManager did not begin");
